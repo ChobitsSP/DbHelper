@@ -81,9 +81,37 @@ SELECT
             return new SqlConnection(connstr);
         }
 
+        /// <summary>
+        /// https://stackoverflow.com/questions/9018518/how-to-add-a-comment-to-an-existing-table-column-in-sql-server
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        /// <param name="comment"></param>
         public void UpdateComment(string table, string column, string comment)
         {
-            throw new NotImplementedException();
+//            var sql = @"
+//EXEC sp_updateextendedproperty 
+//@name = N'MS_Description', @value = 'Your description',
+//@level0type = N'Schema', @level0name = dbo, 
+//@level1type = N'Table',  @level1name = Your Table Name, 
+//@level2type = N'Column', @level2name = Yuur Column Name;
+//";
+
+            using (var db = new SqlConnection(connstr))
+            {
+                var dic = new Dictionary<string, string>();
+                dic["name"] = "MS_Description";
+                dic["value"] = comment;
+
+                dic["level0type"] = "Schema";
+                dic["level0name"] = "dbo";
+                dic["level1type"] = "Table";
+                dic["level1name"] = table;
+                dic["level2type"] = "Column";
+                dic["level2name"] = column;
+
+                db.Execute("sp_updateextendedproperty", dic, commandType: CommandType.StoredProcedure);
+            }
         }
 
         public class RootObject
