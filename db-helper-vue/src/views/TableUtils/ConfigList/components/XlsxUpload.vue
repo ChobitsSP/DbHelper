@@ -71,7 +71,6 @@
       async ReadXlsx(data) {
         try {
           const result = await ReadXlsx(data.file);
-          console.log(result);
           const sheetName = Object.keys(result.Sheets)[0];
           const sheet = result.Sheets[sheetName];
           if (sheet == null) throw new Error();
