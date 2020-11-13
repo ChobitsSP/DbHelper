@@ -57,7 +57,7 @@
         const row = await DbUtils.DbConfigGet(id);
         const url = '/api/sql/tablenames';
         const rsp = await axios.post(url, row);
-        return rsp.map(t => ({ id, label: t, isLeaf: true }));
+        return rsp.data.map(t => ({ id, label: t, isLeaf: true }));
       },
       async loadNode(node, resolve) {
         if (node.level === 0) {

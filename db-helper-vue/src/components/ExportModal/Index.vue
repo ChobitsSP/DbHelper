@@ -63,8 +63,11 @@
         const axios = require('axios')
         const data = Object.assign(this.item, this.coninfo)
         const rsp = await axios.post('/api/sql/listget', data);
-        const clist = this.tableData.map(t => ({ label: t.name, prop: t.name }));
-        CsvExport(rsp, clist);
+        
+        if (rsp.code === 0) {
+          const clist = this.tableData.map(t => ({ label: t.name, prop: t.name }));
+          CsvExport(rsp.data, clist);
+        }
       }
     }
   }

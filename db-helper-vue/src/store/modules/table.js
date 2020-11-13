@@ -14,26 +14,30 @@ const getters = {};
 
 // actions
 const actions = {
-  getColumns: async function(t, data) {
+  getColumns: async function (t, data) {
     const rsp = await axios.post("/api/sql/tablecolumns", data);
 
-    rsp.forEach((col, i) => {
-      col.id = i + 1;
-    });
+    if (rsp.code === 0) {
+      const list = rsp.data;
 
-    t.commit("SET_COLUMNS", rsp);
-    t.commit("SET_TABLE_NAME", data.table);
+      list.forEach((col, i) => {
+        col.id = i + 1;
+      });
+
+      t.commit("SET_COLUMNS", list);
+      t.commit("SET_TABLE_NAME", data.table);
+    }
   }
 };
 
 // mutations
 let mutations = {};
 
-mutations[types.SET_TABLE_NAME] = function(state, r) {
+mutations[types.SET_TABLE_NAME] = function (state, r) {
   state.table = r;
 };
 
-mutations[types.SET_COLUMNS] = function(state, r) {
+mutations[types.SET_COLUMNS] = function (state, r) {
   state.columns = r;
 };
 

@@ -104,18 +104,21 @@
         };
 
         /** @type{string[]} */
-        const names = await axios.post('/api/sql/tablenames', item);
+        const names = (await axios.post('/api/sql/tablenames', item)).data;
         const plist = names.map(table => axios.post('/api/sql/tablecolumns', Object.assign({ table }, item)));
         const list = await Promise.all(plist);
 
         for (let i = 0; i < names.length; i++) {
           const name = names[i];
-          const cols = list[i];
-          // 导出
 
-          if (!Array.isArray(cols)) {
+          const rsp = list[i];
+
+          if (rsp.code !== 0) {
             continue;
           }
+
+          const cols = rsp.data;
+          // 导出
 
           cols.forEach((col, i) => {
             col.id = i + 1;
@@ -126,7 +129,8 @@
         const row1 = Object.keys(exportDic).map(key => exportDic[key]);
 
         const rows = _.chain(list)
-          .filter(t => Array.isArray(t))
+          .filter(t => t.code === 0)
+          .map(t => t.data)
           .flatten()
           .map(col => {
             return Object.keys(exportDic).map(key => col[key]);

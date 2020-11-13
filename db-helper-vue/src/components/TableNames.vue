@@ -1,5 +1,9 @@
 <template>
-  <el-select v-model="value" :loading="loading" filterable @change="change" placeholder="请选择">
+  <el-select v-model="value"
+             :loading="loading"
+             filterable
+             @change="change"
+             placeholder="请选择">
     <el-option v-for="option in options"
                :key="option"
                :label="option"
@@ -24,9 +28,12 @@
     },
     methods: {
       async query() {
-        this.loading = true
-        this.options = await axios.post('/api/sql/tablenames', this.coninfo)
-        this.loading = false
+        this.loading = true;
+        const rsp = await axios.post('/api/sql/tablenames', this.coninfo);
+        if (rsp.code === 0) {
+          this.options = rsp.data;
+        }
+        this.loading = false;
       },
       change(val) {
         this.$emit('change', val)
