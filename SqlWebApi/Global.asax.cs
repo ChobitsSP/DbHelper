@@ -15,6 +15,10 @@ namespace SqlWebApi
         {
             Utils.LogService.Init(HttpContext.Current.Server.MapPath("~").TrimEnd('\\') + log4net);
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            var serializerSettings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
+            var contractResolver = (Newtonsoft.Json.Serialization.DefaultContractResolver)serializerSettings.ContractResolver;
+            contractResolver.IgnoreSerializableAttribute = true;
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)

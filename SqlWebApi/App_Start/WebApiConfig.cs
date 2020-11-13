@@ -39,7 +39,7 @@ namespace SqlWebApi
             // Log an exception 
             Utils.LogService.Error(context.Exception);
 
-            context.Response = context.Request.CreateResponse(HttpStatusCode.OK, context.Exception.Message);
+            context.Response = context.Request.CreateResponse(HttpStatusCode.OK, new ItemResult(500, context.Exception.Message));
 
             base.OnException(context);
         }

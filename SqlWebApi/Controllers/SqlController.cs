@@ -26,28 +26,29 @@ namespace SqlWebApi.Controllers
 
         [HttpPost]
         [Route("TableNames")]
-        public IEnumerable<string> TableNames(SqlRequest req)
+        public ItemResult TableNames(SqlRequest req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
             var list = utils.GetTableNames();
-            return list;
+            return new ItemResult(list);
         }
 
         [HttpPost]
         [Route("TableColumns")]
-        public IEnumerable<TableColumn> TableColumns(SqlRequest req)
+        public ItemResult TableColumns(SqlRequest req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
             var list = utils.GetColumns(req.table);
-            return list;
+            return new ItemResult(list);
         }
 
         [HttpPost]
         [Route("ListGet")]
-        public IList ListGet(SqlRequest req)
+        public ItemResult ListGet(SqlRequest req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
-            return utils.ListGet(req.table, req.skip, req.take);
+            var result = utils.ListGet(req.table, req.skip, req.take);
+            return new ItemResult(result);
         }
 
         [HttpPost]
