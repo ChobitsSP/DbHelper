@@ -1,0 +1,42 @@
+{
+  "name": "vue-cli3-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve --open",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "clipboard": "^1.7.1",
+    "dexie": "^2.0.4",
+    "element-ui": "^2.8.2",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "qrious": "^4.0.2",
+    "qs": "^6.6.0",
+    "rxjs": "^5.4.2",
+    "vue": "^2.6.6",
+    "vue-class-component": "^6.0.0",
+    "vue-property-decorator": "^7.0.0",
+    "vue-router": "^3.0.1",
+    "vue-rx": "^5.0.0",
+    "vue2-filters": "^0.2.2",
+    "vuex": "^3.0.1",
+    "xlsx": "^0.14.1"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.3.29",
+    "@types/lodash": "^4.14.121",
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-plugin-typescript": "^3.7.0",
+    "@vue/cli-service": "^3.7.0",
+    "gulp": "^4.0.0",
+    "gulplog": "^1.0.0",
+    "require-dir": "^1.2.0",
+    "typescript": "^3.3.3",
+    "vinyl-ftp": "^0.6.1",
+    "vue-template-compiler": "^2.6.6"
+  }
+}
