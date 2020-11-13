@@ -78,7 +78,7 @@
           const rows = XLSX.utils
             .sheet_to_json(sheet)
             .map(t => GetRow(t))
-            .filter(t => !!t.comments);
+            .filter(t => !!t.comment);
 
           this.$emit('input', rows);
         } catch (err) {
