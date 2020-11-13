@@ -32,14 +32,18 @@
                              width="220">
             </el-table-column>
             <el-table-column label="操作"
-                             width="220">
+                             width="360">
               <template slot-scope="{ row }">
                 <el-button size="mini"
                            type="success"
                            @click.stop="edit(row)">编辑</el-button>
                 <el-button size="mini"
+                           type="warning"
                            :loading="loading"
                            @click.stop="exportAll(row)">导出</el-button>
+                <XlsxUpload :loading="loading"
+                            @input="arr => importColComment(arr, row)">
+                </XlsxUpload>
                 <el-button size="mini"
                            type="danger"
                            @click.stop="remove(row)">删除</el-button>
@@ -55,16 +59,18 @@
 </template>
 
 <script>
+  import _ from "lodash";
   import axios from "axios";
   import configs from '@/data/configs';
   import ConAddModal from '@/components/ConAddModal';
   import * as DbUtils from '@/utils/DbUtils.ts';
   import { ExportExcel } from "@/utils/CsvExport.ts";
-  import _ from "lodash";
+  import XlsxUpload from "./components/XlsxUpload.vue";
 
   export default {
     components: {
-      ConAddModal
+      ConAddModal,
+      XlsxUpload,
     },
     data() {
       return {
@@ -138,6 +144,17 @@
           .value();
 
         ExportExcel([row1, ...rows], item.name);
+
+        this.loading = false;
+      },
+      async importColComment(list, row) {
+        this.loading = true;
+
+        const plist = list
+          .map(t => Object.assign({}, t, row))
+          .map(t => axios.post("/api/sql/UpdateColumnComment", t));
+
+        await Promise.all(plist);
 
         this.loading = false;
       }

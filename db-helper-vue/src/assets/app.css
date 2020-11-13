@@ -9,3 +9,7 @@
 .el-col {
   border-radius: 4px;
 }
+
+.el-upload input[type="file"] {
+  display: none !important;
+}
