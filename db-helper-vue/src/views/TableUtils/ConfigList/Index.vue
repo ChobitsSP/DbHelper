@@ -143,7 +143,7 @@
           })
           .value();
 
-        ExportExcel([row1, ...rows], item.name);
+        ExportExcel([row1, ...rows], item.name + "_dbinfo");
 
         this.loading = false;
       },
