@@ -1,4 +1,5 @@
 <template>
+
   <TableInfo @refresh="init"></TableInfo>
 </template>
 
@@ -23,6 +24,7 @@
     methods: {
       async init() {
         const config = await DbUtils.DbConfigGet(this.id);
+        this.$store.commit('SET_CONINFO', config);
         const data = Object.assign({ table: this.name }, config);
         await this.$store.dispatch('getColumns', data);
       }

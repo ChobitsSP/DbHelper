@@ -26,6 +26,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
   import { FormModel } from './models/Index.ts'
   import FormMixins from '@/mixins/FormMixins'
   import CsvExport from '@/utils/CsvExport.ts'
@@ -60,10 +61,13 @@
         this.dialogVisible = true
       },
       async submit() {
-        const axios = require('axios')
-        const data = Object.assign(this.item, this.coninfo)
+        const data = Object.assign({}, this.item, this.coninfo);
+
+
+        console.log(this.item, this.coninfo);
+        debugger;
         const rsp = await axios.post('/api/sql/listget', data);
-        
+
         if (rsp.code === 0) {
           const clist = this.tableData.map(t => ({ label: t.name, prop: t.name }));
           CsvExport(rsp.data, clist);

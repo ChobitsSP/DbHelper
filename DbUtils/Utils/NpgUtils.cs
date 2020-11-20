@@ -88,6 +88,7 @@ AND c.relname = t2.table_name) as COMMENTS";
 
         public void UpdateComment(string table, string column, string comment)
         {
+            // COMMENT ON COLUMN bill.id IS '±àºÅ';
             throw new NotImplementedException();
         }
     }

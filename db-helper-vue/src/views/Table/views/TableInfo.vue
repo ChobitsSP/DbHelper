@@ -100,13 +100,13 @@
       },
       async query(table) {
         this.loading = true
-        const data = Object.assign({ table: table }, this.coninfo)
+        const data = Object.assign({ table: table }, this.coninfo);
         await this.$store.dispatch('getColumns', data)
         this.loading = false
       },
       ExportTable() {
-        const columns = this.$refs.table.$children.filter(t => t.prop != null)
-        CsvExport(this.tableData, columns)
+        const columns = this.$refs.table.$children.filter(t => t.prop != null);
+        CsvExport(this.tableData, columns);
       },
       ExportList() {
         this.$refs.ExportModal.open();
