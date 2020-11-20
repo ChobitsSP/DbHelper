@@ -63,7 +63,8 @@ namespace SqlWebApi.Controllers
 
         public class TableDataAddReq : SqlRequest
         {
-            public JObject import_data { get; set; }
+            public string[] import_cols { get; set; }
+            public JObject[] import_datas { get; set; }
         }
 
         [HttpPost]
@@ -71,7 +72,7 @@ namespace SqlWebApi.Controllers
         public ItemResult TableDataAdd(TableDataAddReq req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
-            // utils.UpdateComment(req.table, req.column, req.comment);
+            utils.TableDataAdd(req.table, req.import_cols, req.import_datas);
             return new ItemResult();
         }
     }

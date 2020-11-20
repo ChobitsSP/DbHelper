@@ -9,7 +9,8 @@
                      @click="ExportTable">导出</el-button>
           <el-button type="success"
                      @click="ExportList">导出数据</el-button>
-          <XlsxUpload></XlsxUpload>
+          <XlsxUpload :loading="loading"
+                      @input="ImportData"></XlsxUpload>
         </el-form-item>
       </el-form>
     </el-row>
@@ -90,6 +91,14 @@
       },
       ExportList() {
         this.$refs.ExportModal.open();
+      },
+      ImportData(rows) {
+
+        const url = '/api/sql/TableDataAdd';
+        const params = {
+          import_datas: []
+        };
+
       }
     }
   }

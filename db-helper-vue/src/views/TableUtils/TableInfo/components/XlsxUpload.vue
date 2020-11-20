@@ -5,9 +5,8 @@
              :http-request="ReadXlsx"
              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
              :file-list="fileList">
-    <el-button size="mini"
-               :loading="loading"
-               type="primary">导入</el-button>
+    <el-button :loading="loading"
+               type="warning">导入</el-button>
     <!-- <div slot="tip"
          class="el-upload__tip">只能选择xlsx文件</div> -->
   </el-upload>
@@ -73,8 +72,6 @@
           const rows = XLSX.utils
             .sheet_to_json(sheet)
             .map(GetRow);
-
-          console.log(rows);
 
           this.$emit('input', rows);
         } catch (err) {
