@@ -62,10 +62,6 @@
       },
       async submit() {
         const data = Object.assign({}, this.item, this.coninfo);
-
-
-        console.log(this.item, this.coninfo);
-        debugger;
         const rsp = await axios.post('/api/sql/listget', data);
 
         if (rsp.code === 0) {
