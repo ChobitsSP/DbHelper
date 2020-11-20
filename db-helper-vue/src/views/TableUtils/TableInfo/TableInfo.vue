@@ -9,6 +9,7 @@
                      @click="ExportTable">导出</el-button>
           <el-button type="success"
                      @click="ExportList">导出数据</el-button>
+          <XlsxUpload></XlsxUpload>
         </el-form-item>
       </el-form>
     </el-row>
@@ -59,6 +60,7 @@
   import TableTabs from '@/components/TableTabs.vue'
   import ExportModal from '@/components/ExportModal/Index.vue'
   import TempEditor from '@/components/TempEditor/Index.vue'
+  import XlsxUpload from './components/XlsxUpload.vue'
   import CsvExport from '@/utils/CsvExport.ts'
 
   export default {
@@ -66,6 +68,7 @@
       TableTabs,
       ExportModal,
       TempEditor,
+      XlsxUpload,
     },
     data() {
       return {
