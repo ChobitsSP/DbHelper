@@ -1,4 +1,5 @@
 ﻿using DbUtils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,6 +58,20 @@ namespace SqlWebApi.Controllers
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
             utils.UpdateComment(req.table, req.column, req.comment);
+            return new ItemResult();
+        }
+
+        public class TableDataAddReq : SqlRequest
+        {
+            public JObject import_data { get; set; }
+        }
+
+        [HttpPost]
+        [Route("TableDataAdd")]
+        public ItemResult TableDataAdd(TableDataAddReq req)
+        {
+            var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
+            // utils.UpdateComment(req.table, req.column, req.comment);
             return new ItemResult();
         }
     }

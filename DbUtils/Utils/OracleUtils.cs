@@ -79,5 +79,10 @@ namespace DbUtils.Utils
         {
             throw new NotImplementedException();
         }
+
+        public void TableDataAdd(string table, string[] columns, object data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

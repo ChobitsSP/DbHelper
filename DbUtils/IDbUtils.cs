@@ -20,6 +20,8 @@ namespace DbUtils
         void UpdateComment(string table, string column, string comment);
 
         IDbConnection GetDb();
+
+        void TableDataAdd(string table, string[] columns, object data);
     }
 
     public static class DbHelper

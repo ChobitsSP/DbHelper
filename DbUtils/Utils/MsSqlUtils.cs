@@ -114,6 +114,11 @@ SELECT
             }
         }
 
+        public void TableDataAdd(string table, string[] columns, object data)
+        {
+            throw new NotImplementedException();
+        }
+
         public class RootObject
         {
             public string COLUMN_NAME { get; set; }

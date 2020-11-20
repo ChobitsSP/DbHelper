@@ -91,5 +91,10 @@ AND c.relname = t2.table_name) as COMMENTS";
             // COMMENT ON COLUMN bill.id IS '±àºÅ';
             throw new NotImplementedException();
         }
+
+        public void TableDataAdd(string table, string[] columns, object data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

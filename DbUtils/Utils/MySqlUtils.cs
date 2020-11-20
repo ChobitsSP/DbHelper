@@ -145,5 +145,18 @@ and table_name = ?table_name
                 db.Execute(sql2, new { comment });
             }
         }
+
+        public void TableDataAdd(string table, string[] columns, object data)
+        {
+            var str1 = string.Join(",", columns);
+            var str2 = string.Join(",", columns.Select(t => "?" + t));
+
+            var sql = string.Format(@"insert into {0} ({1}) values ({2})", table, str1, str2);
+
+            using (var db = new MySqlConnection(connstr))
+            {
+                db.Execute(sql, data);
+            }
+        }
     }
 }
