@@ -46,26 +46,26 @@
       }
     },
     computed: {
-      tableData() {
-        return this.$store.state.table.columns
+      tableInfo() {
+        return this.$store.state.table;
       },
       coninfo() {
-        return this.$store.state.user.coninfo
+        return this.$store.state.user.coninfo;
       }
     },
     methods: {
       open(item) {
         this.item = new FormModel();
         this.item.table = this.$route.params.table;
-        this.resetForm()
-        this.dialogVisible = true
+        this.resetForm();
+        this.dialogVisible = true;
       },
       async submit() {
-        const data = Object.assign({}, this.item, this.coninfo);
+        const data = Object.assign({ table: 'airport_notify' }, this.item, this.coninfo);
+        data.table = this.tableInfo.table;
         const rsp = await axios.post('/api/sql/listget', data);
-
         if (rsp.code === 0) {
-          const clist = this.tableData.map(t => ({ label: t.name, prop: t.name }));
+          const clist = this.tableInfo.columns.map(t => ({ label: t.name, prop: t.name }));
           CsvExport(rsp.data, clist);
         }
       }
