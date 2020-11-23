@@ -61,12 +61,12 @@
         this.dialogVisible = true;
       },
       async submit() {
-        const data = Object.assign({ table: 'airport_notify' }, this.item, this.coninfo);
+        const data = Object.assign({ table: '' }, this.item, this.coninfo);
         data.table = this.tableInfo.table;
         const rsp = await axios.post('/api/sql/listget', data);
         if (rsp.code === 0) {
           const clist = this.tableInfo.columns.map(t => ({ label: t.name, prop: t.name }));
-          CsvExport(rsp.data, clist);
+          CsvExport(rsp.data, clist, data.table);
         }
       }
     }
