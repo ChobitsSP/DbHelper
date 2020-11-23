@@ -62,7 +62,8 @@
   import ExportModal from '@/components/ExportModal/Index.vue'
   import TempEditor from '@/components/TempEditor/Index.vue'
   import XlsxUpload from './components/XlsxUpload.vue'
-  import CsvExport from '@/utils/CsvExport.ts'
+  import CsvExport from '@/utils/CsvExport.ts';
+  import axios from 'axios';
 
   export default {
     components: {
@@ -93,12 +94,22 @@
         this.$refs.ExportModal.open();
       },
       ImportData(rows) {
-
         const url = '/api/sql/TableDataAdd';
+
         const params = {
-          import_datas: []
+          import_cols: Object.keys(rows),
+          import_datas: rows,
         };
 
+        this.loading = true;
+
+        const rsp = await axios.post(url, params);
+
+        if (rsp.code !== 0) {
+          alert(rsp.msg);
+        }
+
+        this.loading = false;
       }
     }
   }
