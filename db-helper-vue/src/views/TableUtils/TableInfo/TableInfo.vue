@@ -99,14 +99,14 @@
       },
       async ImportData(rows) {
         if (rows.length === 0) return;
-        RowTypeTrans(rows, this.tableData);
+        let list = RowTypeTrans(rows, this.tableData);
 
         const url = '/api/sql/TableDataAdd';
 
         const params = {
           ...this.coninfo,
-          import_cols: Object.keys(rows[0]),
-          import_datas: rows,
+          import_cols: Object.keys(list[0]),
+          import_datas: list,
         };
 
         this.loading = true;

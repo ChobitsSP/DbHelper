@@ -1,13 +1,14 @@
 import { IColumn } from "../models/Index";
 import { TypeIsNumber, TypeIsDate, TypeIsString } from "./TableUtils";
 import moment from "moment";
+import _ from "lodash";
 
 function IsEmpty(value: string) {
   return value == null || value == "";
 }
 
 export function RowTypeTrans(rows: { [key: string]: any }[], columns: IColumn[]) {
-  rows.forEach(row => {
+  return _.chain(rows).cloneDeep().forEach(row => {
     Object.keys(row).forEach(key => {
       const col = columns.find(t => t.name === key);
       if (col == null) return;
@@ -27,6 +28,6 @@ export function RowTypeTrans(rows: { [key: string]: any }[], columns: IColumn[])
       if (TypeIsDate(col.type)) {
         row[key] = moment(value || new Date()).toDate();
       }
-    })
-  })
+    });
+  }).value();
 }
