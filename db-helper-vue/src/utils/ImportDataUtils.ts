@@ -2,6 +2,9 @@ import { IColumn } from "../models/Index";
 import { TypeIsNumber, TypeIsDate, TypeIsString } from "./TableUtils";
 import moment from "moment";
 import _ from "lodash";
+import JSZip from 'jszip';
+import FileSaver from 'file-saver';
+import axios from "axios";
 
 function IsEmpty(value: string) {
   return value == null || value == "";
@@ -30,4 +33,27 @@ export function RowTypeTrans(rows: { [key: string]: any }[], columns: IColumn[])
       }
     });
   }).value();
+}
+
+
+async function AppendTableData(zip: JSZip, config, table: string) {
+  const url = "/api/sql/listget";
+  const params = Object.assign({ take: 5e4, table, }, config);
+  const rsp: any = axios.post(url, params);
+
+  if (rsp.code === 0) {
+    zip.file(table + ".json", JSON.stringify(rsp.result));
+  }
+  else {
+    console.error(rsp.msg);
+  }
+}
+
+export async function ExportDbDatas(config, tables: string[]) {
+  let zip = new JSZip();
+  await Promise.all(tables.map(t => AppendTableData(zip, config, t)));
+
+  zip.generateAsync({ type: "blob" }).then(function (content) {
+    FileSaver.saveAs(content, "download.zip");
+  });
 }

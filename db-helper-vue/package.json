@@ -12,6 +12,8 @@
     "clipboard": "^1.7.1",
     "dexie": "^2.0.4",
     "element-ui": "^2.8.2",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.5.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "qrious": "^4.0.2",

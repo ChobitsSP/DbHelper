@@ -45,6 +45,9 @@
                             @input="arr => importColComment(arr, row)">
                 </XlsxUpload>
                 <el-button size="mini"
+                           type="success"
+                           @click.stop="exportDatas(row)">导出数据</el-button>
+                <el-button size="mini"
                            type="danger"
                            @click.stop="remove(row)">删除</el-button>
               </template>
@@ -66,6 +69,7 @@
   import * as DbUtils from '@/utils/DbUtils.ts';
   import { ExportExcel } from "@/utils/CsvExport.ts";
   import XlsxUpload from "./components/XlsxUpload.vue";
+  import { ExportDbDatas } from "@/utils/ImportDataUtils.ts";
 
   export default {
     components: {
@@ -155,6 +159,15 @@
           .map(t => axios.post("/api/sql/UpdateColumnComment", t));
 
         await Promise.all(plist);
+
+        this.loading = false;
+      },
+      async exportDatas(item) {
+        this.loading = true;
+
+        /** @type{string[]} */
+        const names = (await axios.post('/api/sql/tablenames', item)).data;
+        await ExportDbDatas(item, names);
 
         this.loading = false;
       }
