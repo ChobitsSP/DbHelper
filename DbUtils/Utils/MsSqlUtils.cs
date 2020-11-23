@@ -89,28 +89,46 @@ SELECT
         /// <param name="comment"></param>
         public void UpdateComment(string table, string column, string comment)
         {
-//            var sql = @"
-//EXEC sp_updateextendedproperty 
-//@name = N'MS_Description', @value = 'Your description',
-//@level0type = N'Schema', @level0name = dbo, 
-//@level1type = N'Table',  @level1name = Your Table Name, 
-//@level2type = N'Column', @level2name = Yuur Column Name;
-//";
+            //            var sql = @"
+            //EXEC sp_updateextendedproperty 
+            //@name = N'MS_Description', @value = 'Your description',
+            //@level0type = N'Schema', @level0name = dbo, 
+            //@level1type = N'Table',  @level1name = Your Table Name, 
+            //@level2type = N'Column', @level2name = Yuur Column Name;
+            //";
 
             using (var db = new SqlConnection(connstr))
             {
-                var dic = new Dictionary<string, string>();
-                dic["name"] = "MS_Description";
-                dic["value"] = comment;
+                var hasDesc = false;
 
-                dic["level0type"] = "Schema";
-                dic["level0name"] = "dbo";
-                dic["level1type"] = "Table";
-                dic["level1name"] = table;
-                dic["level2type"] = "Column";
-                dic["level2name"] = column;
+                var p = new DynamicParameters();
+                p.Add("@name", "MS_Description");
+                p.Add("@value", comment);
 
-                db.Execute("sp_updateextendedproperty", dic, commandType: CommandType.StoredProcedure);
+                p.Add("@level0type", "Schema");
+                p.Add("@level0name", "dbo");
+                p.Add("@level1type", "Table");
+                p.Add("@level1name", table);
+                p.Add("@level2type", "Column");
+                p.Add("@level2name", column);
+
+                try
+                {
+                    db.Execute("sys.sp_updateextendedproperty", p, commandType: CommandType.StoredProcedure);
+                }
+                catch
+                {
+                    db.Execute("sys.sp_addextendedproperty", p, commandType: CommandType.StoredProcedure);
+                }            
+
+                //if (!hasDesc)
+                //{
+                //    db.Execute("sys.sp_addextendedproperty", p, commandType: CommandType.StoredProcedure);
+                //}
+                //else
+                //{
+                //    db.Execute("sys.sp_updateextendedproperty", p, commandType: CommandType.StoredProcedure);
+                //}
             }
         }
 
