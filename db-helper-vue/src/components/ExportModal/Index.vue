@@ -34,7 +34,7 @@
   function ExportJson(filename, fileData) {
     //Get the file contents
     var txtFile = filename + ".json";
-    var file = new File(txtFile);
+    // var file = new File(txtFile);
     var jsonStr = JSON.stringify(fileData);
 
     //Write it as the href for the link
