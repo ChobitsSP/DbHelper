@@ -42,7 +42,7 @@ async function AppendTableData(zip: JSZip, config, table: string) {
   const rsp: any = axios.post(url, params);
 
   if (rsp.code === 0) {
-    zip.file(table + ".json", JSON.stringify(rsp.result));
+    zip.file(table + ".json", JSON.stringify(rsp.data));
   }
   else {
     console.error(rsp.msg);
