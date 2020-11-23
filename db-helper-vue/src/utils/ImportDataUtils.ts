@@ -39,7 +39,7 @@ export function RowTypeTrans(rows: { [key: string]: any }[], columns: IColumn[])
 async function AppendTableData(zip: JSZip, config, table: string) {
   const url = "/api/sql/listget";
   const params = Object.assign({ take: 5e4, table, }, config);
-  const rsp: any = axios.post(url, params);
+  const rsp: any = await axios.post(url, params);
 
   if (rsp.code === 0) {
     zip.file(table + ".json", JSON.stringify(rsp.data));
