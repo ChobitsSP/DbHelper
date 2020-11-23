@@ -78,6 +78,9 @@
       }
     },
     computed: {
+      coninfo() {
+        return this.$store.state.user.coninfo;
+      },
       tableData() {
         return this.$store.state.table.columns
       }
@@ -93,11 +96,14 @@
       ExportList() {
         this.$refs.ExportModal.open();
       },
-      ImportData(rows) {
+      async ImportData(rows) {
+        if (rows.length === 0) return;
+
         const url = '/api/sql/TableDataAdd';
 
         const params = {
-          import_cols: Object.keys(rows),
+          ...this.coninfo,
+          import_cols: Object.keys(rows[0]),
           import_datas: rows,
         };
 
