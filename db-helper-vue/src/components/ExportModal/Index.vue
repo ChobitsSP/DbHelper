@@ -31,6 +31,25 @@
   import FormMixins from '@/mixins/FormMixins'
   import CsvExport from '@/utils/CsvExport.ts'
 
+  function ExportJson(filename, fileData) {
+    //Get the file contents
+    var txtFile = filename + ".json";
+    var file = new File(txtFile);
+    var jsonStr = JSON.stringify(fileData);
+
+    //Write it as the href for the link
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
+    element.setAttribute('download', txtFile);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
   export default {
     mixins: [FormMixins],
     computed: {
@@ -66,7 +85,8 @@
         const rsp = await axios.post('/api/sql/listget', data);
         if (rsp.code === 0) {
           const clist = this.tableInfo.columns.map(t => ({ label: t.name, prop: t.name }));
-          CsvExport(rsp.data, clist, data.table);
+          ExportJson(data.table, rsp.data);
+          // CsvExport(rsp.data, clist, data.table);
         }
       }
     }
