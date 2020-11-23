@@ -1,6 +1,6 @@
 <template>
-
-  <TableInfo @refresh="init"></TableInfo>
+  <TableInfo :table-name="name"
+             @refresh="init"></TableInfo>
 </template>
 
 <script>

@@ -73,6 +73,9 @@
       TempEditor,
       XlsxUpload,
     },
+    props: {
+      tableName: String,
+    },
     data() {
       return {
         loading: false
@@ -105,6 +108,7 @@
 
         const params = {
           ...this.coninfo,
+          table: this.tableName,
           import_cols: Object.keys(list[0]),
           import_datas: list,
         };
