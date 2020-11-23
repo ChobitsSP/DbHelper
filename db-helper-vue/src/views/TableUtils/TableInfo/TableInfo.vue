@@ -64,6 +64,7 @@
   import XlsxUpload from './components/XlsxUpload.vue'
   import CsvExport from '@/utils/CsvExport.ts';
   import axios from 'axios';
+  import { RowTypeTrans } from '@/utils/ImportDataUtils.ts';
 
   export default {
     components: {
@@ -98,6 +99,7 @@
       },
       async ImportData(rows) {
         if (rows.length === 0) return;
+        RowTypeTrans(rows, this.tableData);
 
         const url = '/api/sql/TableDataAdd';
 
