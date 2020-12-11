@@ -38,13 +38,9 @@ function GetTsProp(col: IColumn) {
 export default function (tableName: string, cols: IColumn[]): string {
   const arr: string[] = [];
 
-  arr.push(`type ${toHump(tableName)} struct {`);
-
-  cols.forEach((col) => {
-    arr.push(GetTsProp(col));
-  });
-
-  arr.push(`}`);
+  arr.push(GetList(tableName, cols));
+  arr.push(GetUpdate(tableName, cols));
+  arr.push(GetDelete(tableName, cols));
 
   return arr.join("\n");
 }
@@ -86,9 +82,9 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
   const UpdateStr = cols.map(col => {
     const field = hump(col.name);
     return `old.${field} = item.${field}`;
-  }).join("\r\n");
+  }).join("\n");
 
-  var str = `
+  return `
   type ${className}UpdateReq struct {
     Item models.${className}
   }
@@ -126,5 +122,28 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
     }
   
     response.OkWithData(item, c)
+  }`;
+}
+
+function GetDelete(tableName: string, cols: IColumn[]) {
+  const className = hump(tableName);
+  const key = hump(cols[0].name);
+
+  return `
+  func ${className}Delete(c *gin.Context) {
+    claims, _ := c.Get("claims")
+    user := claims.(*request.CustomClaims)
+  
+    req := models.${className}{}
+    _ = c.ShouldBindJSON(&req)
+  
+    err := global.Db.Delete(req).Error
+  
+    if err != nil {
+      response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), c)
+    } else {
+      global.LOG.Warn("删除${className}", zap.String("userid", user.Id), zap.Any("${key}", req.${key}))
+      response.Ok(c)
+    }
   }`;
 }
