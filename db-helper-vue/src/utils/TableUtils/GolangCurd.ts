@@ -1,3 +1,4 @@
+import { hump } from '@/filters/Index';
 import { IColumn } from "../../models/Index";
 import { TypeIsNumber, TypeIsDate, TypeIsString } from "../TableUtils";
 
@@ -45,6 +46,76 @@ export default function (tableName: string, cols: IColumn[]): string {
   arr.push(`}`);
 
   return arr.join("\n");
+}
+
+function GetList(tableName: string, cols: IColumn[]): string {
+  const className = hump(tableName);
+  return `
+  type ${className}ListReq struct {
+    request.PageInfo
+  }
+  
+  func ${className}List(c *gin.Context) {
+    req := ${className}ListReq{}
+    _ = c.ShouldBindJSON(&req)
+  
+    list := []models.${className}{}
+    items := global.Db.Model(models.${className}{}).Where("1=1")
+    result, err := req.PagerResult(items, &list)
+  
+    if err != nil {
+      response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
+    } else {
+      response.OkWithData(result, c)
+    }
+  }`;
+}
+
+function GetUpdate(tableName: string, cols: IColumn[]) {
+  const className = hump(tableName);
+  const key = hump(cols[0].name);
+
+
+  var str = `
+  type ${className}UpdateReq struct {
+    Item models.${className}
+  }
+
+  func ${className}Update(c *gin.Context) {
+    req := ${className}UpdateReq{}
+    _ = c.ShouldBindJSON(&req)
+  
+    item := req.Item
+  
+    if item.${key} > 0 {
+      old := models.${className}{}
+      err := global.Db.First(&old, item.${key}).Error
+      if err != nil {
+        response.Fail(c)
+        return
+      }
+      
+      // old.${key} = item.${key}
+
+      err = global.Db.Save(&old).Error
+      if err != nil {
+        response.Fail(c)
+        return
+      }
+  
+      response.OkWithData(old, c)
+      return
+    }
+  
+    err := global.Db.Create(&item).Error
+    if err != nil {
+      response.Fail(c)
+      return
+    }
+  
+    response.OkWithData(item, c)
+  }
+  `;
 }
 
 function GetType(col: IColumn) {
