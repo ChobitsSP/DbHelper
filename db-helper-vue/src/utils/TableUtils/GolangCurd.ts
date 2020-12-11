@@ -1,6 +1,7 @@
 import { hump } from '@/filters/Index';
 import { IColumn } from "../../models/Index";
 import { TypeIsNumber, TypeIsDate, TypeIsString } from "../TableUtils";
+import { GetType } from "./GolangStruct";
 
 function toHump(name: string) {
   return name
@@ -50,9 +51,12 @@ export default function (tableName: string, cols: IColumn[]): string {
 
 function GetList(tableName: string, cols: IColumn[]): string {
   const className = hump(tableName);
+  const key = hump(cols[0].name);
+
   return `
   type ${className}ListReq struct {
     request.PageInfo
+    ${key} ${GetType(cols[0])} \`json:"${cols[0].name}"\`
   }
   
   func ${className}List(c *gin.Context) {
@@ -119,18 +123,4 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
   
     response.OkWithData(item, c)
   }`;
-}
-
-function GetType(col: IColumn) {
-  if (TypeIsNumber(col.type)) {
-    return `int`;
-  }
-  if (TypeIsDate(col.type)) {
-    return `time.Time`;
-  }
-  if (TypeIsString(col.type)) {
-    return `string`;
-  }
-
-  return `string`;
 }

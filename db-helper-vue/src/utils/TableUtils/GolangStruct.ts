@@ -47,7 +47,7 @@ export default function (tableName: string, cols: IColumn[]): string {
   return arr.join("\n");
 }
 
-function GetType(col: IColumn) {
+export function GetType(col: IColumn) {
   if (TypeIsNumber(col.type)) {
     return `int`;
   }
