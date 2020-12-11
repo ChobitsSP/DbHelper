@@ -8,6 +8,7 @@ import OldToNew from "./OldToNew";
 import TsClass from "./TsClass";
 import DevExtreme from "./DevExtreme";
 import OracleSeq from "./OracleSeq";
+import GolangCurd from "./GolangCurd";
 import GolangStruct from "./GolangStruct";
 import Ef6 from "./Ef6";
 
@@ -24,4 +25,5 @@ export {
   OracleSeq,
   Ef6,
   GolangStruct,
+  GolangCurd,
 };
