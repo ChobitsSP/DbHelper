@@ -3,7 +3,7 @@ import { TypeIsNumber, TypeIsDate, TypeIsString } from "../TableUtils";
 
 function toHump(name: string) {
   return name
-    .replace(/_([a-z])/g, function(g) {
+    .replace(/_([a-z])/g, function (g) {
       return g[1].toUpperCase();
     })
     .replace(/^[a-z]/g, (g) => g.toUpperCase());
@@ -29,12 +29,11 @@ function GetTsProp(col: IColumn) {
 
   const typeStr = (col.null_able ? "*" : "") + GetType(col);
 
-  return `${toHump(col.name)} ${typeStr} \`json:"${
-    col.name
-  }" gorm:"${plist.join(";")}"\``;
+  return `${toHump(col.name)} ${typeStr} \`json:"${col.name
+    }" gorm:"${plist.join(";")}"\`\t//${col.comments}`;
 }
 
-export default function(tableName: string, cols: IColumn[]): string {
+export default function (tableName: string, cols: IColumn[]): string {
   const arr: string[] = [];
 
   arr.push(`type ${toHump(tableName)} struct {`);
