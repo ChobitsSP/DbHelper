@@ -75,6 +75,10 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
   const className = hump(tableName);
   const key = hump(cols[0].name);
 
+  const UpdateStr = cols.map(col => {
+    const field = hump(col.name);
+    return `old.${field} = item.${field}`;
+  }).join("\r\n");
 
   var str = `
   type ${className}UpdateReq struct {
@@ -95,7 +99,7 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
         return
       }
       
-      // old.${key} = item.${key}
+      ${UpdateStr}
 
       err = global.Db.Save(&old).Error
       if err != nil {
@@ -114,8 +118,7 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
     }
   
     response.OkWithData(item, c)
-  }
-  `;
+  }`;
 }
 
 function GetType(col: IColumn) {
