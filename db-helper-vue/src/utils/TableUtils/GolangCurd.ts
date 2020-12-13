@@ -61,12 +61,12 @@ function GetList(tableName: string, cols: IColumn[]): string {
   
     list := []models.${className}{}
     items := global.Db.Model(models.${className}{}).Where("1=1")
-    result, err := req.PagerResult(items, &list)
-
+    
     if req.${key} > 0 {
       items = items.Where("${cols[0].name} = ?", req.${key})
     }
 
+    result, err := req.PagerResult(items, &list)
     if err != nil {
       response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
     } else {
