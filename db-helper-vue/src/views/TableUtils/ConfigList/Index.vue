@@ -32,7 +32,7 @@
                              width="220">
             </el-table-column>
             <el-table-column label="操作"
-                             width="360">
+                             width="450">
               <template slot-scope="{ row }">
                 <el-button size="mini"
                            type="success"
@@ -41,15 +41,15 @@
                            type="warning"
                            :loading="loading"
                            @click.stop="exportAll(row)">导出</el-button>
-                <XlsxUpload :loading="loading"
-                            @input="arr => importColComment(arr, row)">
-                </XlsxUpload>
                 <el-button size="mini"
                            type="success"
                            @click.stop="exportDatas(row)">导出数据</el-button>
                 <el-button size="mini"
                            type="danger"
                            @click.stop="remove(row)">删除</el-button>
+                <XlsxUpload :loading="loading"
+                            @input="arr => importColComment(arr, row)">
+                </XlsxUpload>
               </template>
             </el-table-column>
           </el-table>
