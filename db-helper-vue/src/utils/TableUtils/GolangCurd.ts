@@ -55,10 +55,7 @@ function GetList(tableName: string, cols: IColumn[]): string {
     ${key} ${GetType(cols[0])} \`json:"${cols[0].name}"\`
   }
   
-  func ${className}List(c *gin.Context) {
-    req := ${className}ListReq{}
-    _ = c.ShouldBindJSON(&req)
-  
+  func ${className}List(req ${className}ListReq) (*request.PageResult, error) {
     list := []models.${className}{}
     items := global.Db.Model(models.${className}{}).Where("1=1")
     
@@ -68,9 +65,9 @@ function GetList(tableName: string, cols: IColumn[]): string {
 
     result, err := req.PagerResult(items, &list)
     if err != nil {
-      response.FailWithMessage(fmt.Sprintf("获取数据失败，%v", err), c)
+      return nil, err
     } else {
-      response.OkWithData(result, c)
+      return result, nil
     }
   }`;
 }
@@ -89,10 +86,7 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
     Item models.${className}
   }
 
-  func ${className}Update(c *gin.Context) {
-    req := ${className}UpdateReq{}
-    _ = c.ShouldBindJSON(&req)
-  
+  func ${className}Update(req ${className}UpdateReq) (*models.${className}, error) {
     item := req.Item
   
     if item.${key} > 0 {
@@ -107,21 +101,18 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
 
       err = global.Db.Save(&old).Error
       if err != nil {
-        response.Fail(c)
-        return
+        return nil, err
       }
-  
-      response.OkWithData(old, c)
-      return
+
+      return &old, nil
     }
   
     err := global.Db.Create(&item).Error
     if err != nil {
-      response.Fail(c)
-      return
+      return nil, err
     }
   
-    response.OkWithData(item, c)
+    return &item, nil
   }`;
 }
 
@@ -130,20 +121,16 @@ function GetDelete(tableName: string, cols: IColumn[]) {
   const key = hump(cols[0].name);
 
   return `
-  func ${className}Delete(c *gin.Context) {
-    claims, _ := c.Get("claims")
-    user := claims.(*request.CustomClaims)
+  func ${className}Delete(req ${className}UpdateReq) error {
+    item := req.Item
   
-    req := models.${className}{}
-    _ = c.ShouldBindJSON(&req)
-  
-    err := global.Db.Delete(req).Error
+    err := global.Db.Delete(item).Error
   
     if err != nil {
-      response.FailWithMessage(fmt.Sprintf("删除失败：%v", err), c)
+      return err
     } else {
-      global.LOG.Warn("删除${className}", zap.String("userid", user.Id), zap.Any("${key}", req.${key}))
-      response.Ok(c)
+      global.LOG.Warn("删除${className}", zap.String("userid", user.Id), zap.Any("${key}", item.${key}))
+      return nil
     }
   }`;
 }
