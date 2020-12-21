@@ -93,8 +93,7 @@ function GetUpdate(tableName: string, cols: IColumn[]) {
       old := models.${className}{}
       err := global.Db.First(&old, item.${key}).Error
       if err != nil {
-        response.Fail(c)
-        return
+        return nil, err
       }
       
       ${UpdateStr}
@@ -129,7 +128,7 @@ function GetDelete(tableName: string, cols: IColumn[]) {
     if err != nil {
       return err
     } else {
-      global.LOG.Warn("删除${className}", zap.String("userid", user.Id), zap.Any("${key}", item.${key}))
+      global.LOG.Warn("删除${className}", zap.Any("${key}", item.${key}))
       return nil
     }
   }`;
