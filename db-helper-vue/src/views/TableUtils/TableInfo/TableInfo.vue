@@ -10,6 +10,7 @@
           <el-button type="success"
                      @click="ExportList">导出数据</el-button>
           <XlsxUpload :loading="loading"
+                      style="margin-left:10px;"
                       @input="ImportData"></XlsxUpload>
         </el-form-item>
       </el-form>

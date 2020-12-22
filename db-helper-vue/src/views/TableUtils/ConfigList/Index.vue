@@ -48,6 +48,7 @@
                            type="danger"
                            @click.stop="remove(row)">删除</el-button>
                 <XlsxUpload :loading="loading"
+                            style="margin-left:10px;"
                             @input="arr => importColComment(arr, row)">
                 </XlsxUpload>
               </template>
