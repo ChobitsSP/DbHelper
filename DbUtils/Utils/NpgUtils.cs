@@ -88,8 +88,13 @@ AND c.relname = t2.table_name) as COMMENTS";
 
         public void UpdateComment(string table, string column, string comment)
         {
-            // COMMENT ON COLUMN bill.id IS '±àºÅ';
-            throw new NotImplementedException();
+            // comment on column ecif_point_rule.add_growth is @comment;
+            string sql = string.Format("comment on column {0}.{1} is '{2}'", table, column, comment);
+
+            using (var db = new NpgsqlConnection(connstr))
+            {
+                db.Execute(sql, new { comment });
+            }
         }
 
         public void TableDataAdd(string table, string[] columns, object data)
