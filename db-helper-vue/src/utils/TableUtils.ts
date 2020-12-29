@@ -1,5 +1,5 @@
 const numberlist = ["NUMBER", "integer", "smallint", "int", "numeric", "bigint"];
-const datelist = ["DATE", "timestamp without time zone", "date", "datetime"];
+const datelist = ["DATE", "timestamp without time zone", "timestamp with time zone", "date", "datetime"];
 const strlist = [
   "character varying",
   "uuid",
