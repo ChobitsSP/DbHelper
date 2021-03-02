@@ -34,6 +34,10 @@ function GetTsComment(comment?: string) {
 export default function (tableName: string, cols: IColumn[]) {
   const arr: string[] = [];
 
+  arr.push(`import com.fasterxml.jackson.annotation.JsonProperty`);
+  arr.push(`import java.util.*`);
+  arr.push(``);
+
   arr.push(`public class ${tableName} {`);
 
   cols.forEach((col, i) => {
@@ -46,6 +50,7 @@ export default function (tableName: string, cols: IColumn[]) {
     const valType = GetTsProp(col);
     const funcNameCol = col.name[0].toUpperCase() + col.name.slice(1);
 
+    arr.push(`@JsonProperty("${col.name}")`);
     arr.push(`private ${valType} ${col.name};`);
     arr.push(`public ${valType} get${funcNameCol}() { return this.${col.name}; }`);
     arr.push(`public void set${funcNameCol}(${valType} value) { this.${col.name} = value; }`);
