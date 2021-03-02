@@ -34,8 +34,8 @@ function GetTsComment(comment?: string) {
 export default function (tableName: string, cols: IColumn[]) {
   const arr: string[] = [];
 
-  arr.push(`import com.fasterxml.jackson.annotation.JsonProperty`);
-  arr.push(`import java.util.*`);
+  arr.push(`import com.fasterxml.jackson.annotation.JsonProperty;`);
+  arr.push(`import java.util.*;`);
   arr.push(``);
 
   arr.push(`public class ${tableName} {`);
