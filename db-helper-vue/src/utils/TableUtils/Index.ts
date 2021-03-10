@@ -12,6 +12,7 @@ import GolangStruct from "./GolangStruct";
 import GinApi from "./GinApi";
 import Ef6 from "./Ef6";
 import JavaModel from "./JavaModel";
+import JavaMybatis from "./JavaMybatis";
 
 export {
   ASPxGridView,
@@ -28,4 +29,5 @@ export {
   GolangCurd,
   GinApi,
   JavaModel,
+  JavaMybatis,
 };
