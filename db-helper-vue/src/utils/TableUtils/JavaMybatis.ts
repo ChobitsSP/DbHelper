@@ -41,7 +41,7 @@ function BuildAdd(tableName: string, cols: IColumn[]) {
   let clist: IColumn[] = cols;
 
   if (TypeIsNumber(keyCol.type)) {
-    clist = clist.splice(1);
+    clist = _.cloneDeep(cols).splice(1);
   }
 
   const p1 = clist.map(t => t.name).join(",");
@@ -56,7 +56,8 @@ function BuildUpdate(tableName: string, cols: IColumn[]) {
   const arr: string[] = [];
   arr.push(`<update id="update" parameterType="${tableName}">`);
   const keyCol = cols[0];
-  const clist = cols.splice(1);
+
+  const clist = _.cloneDeep(cols).splice(1);
   const p1 = clist.map(t => `${t.name} = #{${t.name}}`).join(",");
   arr.push(`update ${tableName} set ${p1}`);
   arr.push(`where ${keyCol.name} = #{${keyCol.name}};`);
