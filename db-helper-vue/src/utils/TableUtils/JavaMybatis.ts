@@ -34,14 +34,17 @@ function GetTsComment(comment?: string) {
 
 function BuildAdd(tableName: string, cols: IColumn[]) {
   const arr: string[] = [];
-  arr.push(`<insert id="add" parameterType="${tableName}">`);
+
 
   const keyCol = cols[0];
 
   let clist: IColumn[] = cols;
 
   if (TypeIsNumber(keyCol.type)) {
+    arr.push(`<insert id="add" useGeneratedKeys="true" keyProperty="${cols[0].name}" parameterType="${tableName}">`);
     clist = _.cloneDeep(cols).splice(1);
+  } else {
+    arr.push(`<insert id="add" parameterType="${tableName}">`);
   }
 
   const p1 = clist.map(t => t.name).join(",");

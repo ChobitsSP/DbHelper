@@ -13,6 +13,7 @@ import GinApi from "./GinApi";
 import Ef6 from "./Ef6";
 import JavaModel from "./JavaModel";
 import JavaMybatis from "./JavaMybatis";
+import JavaOldToNew from "./JavaOldToNew";
 
 export {
   ASPxGridView,
@@ -30,4 +31,5 @@ export {
   GinApi,
   JavaModel,
   JavaMybatis,
+  JavaOldToNew,
 };
