@@ -1,10 +1,18 @@
 <template>
   <div>
-    <el-input type="textarea"
-              v-model="txt"></el-input>
-    <el-input type="textarea"
-              readonly
-              :value="result"></el-input>
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <el-input type="textarea"
+                  :rows="30"
+                  v-model="txt"></el-input>
+      </el-col>
+      <el-col :span="12">
+        <el-input type="textarea"
+                  readonly
+                  :rows="30"
+                  :value="result"></el-input>
+      </el-col>
+    </el-row>
   </div>
 </template>
 

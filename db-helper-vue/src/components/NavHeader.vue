@@ -51,6 +51,29 @@
             </ul>
           </li>
           <li>
+            <a class="dropdown-toggle"
+               style="cursor: pointer;"
+               data-toggle="dropdown">
+              工具
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- <li class="dropdown-header">Table</li> -->
+              <li>
+                <router-link class="dropdown-toggle"
+                             to="/OtherUtils/Json2Ts">
+                  Json2Ts
+                </router-link>
+              </li>
+              <li>
+                <router-link class="dropdown-toggle"
+                             to="/OtherUtils/Csv2Json">
+                  Csv2Json
+                </router-link>
+              </li>
+            </ul>
+          </li>
+          <li>
             <a target="_blank"
                href="https://github.com/ChobitsSP/vue-cli3-demo">
               vue-template
