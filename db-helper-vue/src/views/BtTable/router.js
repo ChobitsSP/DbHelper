@@ -1,7 +1,7 @@
-export default [
+﻿export default [
   {
     path: "/BtTable/Dom2Config",
-    component: resolve => require(["./Dom2Config/Index.vue"], resolve),
+    component: () => import("./Dom2Config/Index.vue"),
     meta: {
       title: "bt-table html转配置"
     }

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <el-row>
       <el-col :xs="{ span: 24, offset: 0 }"
@@ -66,7 +66,7 @@
   import _ from "lodash";
   import axios from "axios";
   import configs from '@/data/configs';
-  import ConAddModal from '@/components/ConAddModal';
+  import ConAddModal from '@/components/ConAddModal.vue';
   import * as DbUtils from '@/utils/DbUtils.ts';
   import { ExportExcel } from "@/utils/CsvExport.ts";
   import XlsxUpload from "./components/XlsxUpload.vue";

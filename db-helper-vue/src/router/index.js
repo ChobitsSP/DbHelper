@@ -1,4 +1,4 @@
-import Vue from 'vue';
+﻿import Vue from 'vue';
 import Router from 'vue-router';
 
 //import Table from "../views/Table/router";
@@ -11,13 +11,13 @@ Vue.use(Router);
 const routes = [
   {
     path: '/',
-    component: (resolve) => require(['../components/Home.vue'], resolve),
+    component: () => import('../components/Home.vue'),
     children: [
       {
         path: '',
         name: 'index',
         redirect: '/Table/TableInfo',
-        // component: resolve => require(["../views/Index.vue"], resolve),
+        // component: () => import("../views/Index.vue"),
         // meta: {
         //   noauth: true
         // }

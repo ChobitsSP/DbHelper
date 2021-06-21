@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <el-tabs v-model="activeName">
     <el-tab-pane :label="name"
                  v-for="name in names"
@@ -12,7 +12,7 @@
 
 <script>
   import * as UTILS from '@/utils/TableUtils/Index.ts'
-  import com1 from './TableAspxGridView'
+  import com1 from './TableAspxGridView.vue'
 
   export default {
     components: {

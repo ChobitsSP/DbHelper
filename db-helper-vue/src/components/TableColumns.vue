@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <el-row>
       <TableTabs></TableTabs>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-  import TableTabs from './TableTabs'
+  import TableTabs from './TableTabs.vue'
 
   export default {
     components: {

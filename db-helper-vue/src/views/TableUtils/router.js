@@ -1,21 +1,21 @@
-export default [
+﻿export default [
   {
     path: "Table/ConfigList",
-    component: resolve => require(["./ConfigList/Index.vue"], resolve),
+    component: () => import("./ConfigList/Index.vue"),
     meta: {
       title: "数据库配置"
     }
   },
   {
     path: "Table/TreeList",
-    component: resolve => require(["./TreeList/Index.vue"], resolve),
+    component: () => import("./TreeList/Index.vue"),
     meta: {
       title: "数据库配置"
     }
   },
   {
     path: "Table/TableInfo",
-    component: resolve => require(["./TreeList/Index.vue"], resolve),
+    component: () => import("./TreeList/Index.vue"),
     meta: {
       title: "数据库表详情"
     },
@@ -26,7 +26,7 @@ export default [
       {
         name: "TableInfo2",
         path: ":id([0-9]+)/:name",
-        component: resolve => require(["./TableInfo/Index.vue"], resolve),
+        component: () => import("./TableInfo/Index.vue"),
         props: route => {
           const id = parseInt(route.params.id, 10);
           const name = route.params.name;
