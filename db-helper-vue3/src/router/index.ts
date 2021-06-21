@@ -1,25 +1,19 @@
-import { createRouter, createWebHashHistory } from "vue-router"
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
 
-const routes: any[] = [
+import Common from "../views/Common/router";
+
+const routes: RouteRecordRaw[] = [
   {
-    path: '/',
-    name: 'Index',
-    component: () => import('../components/HelloWorld.vue')
-  },
-  // {
-  //   path: "/about",
-  //   name: "About",
-  //   component: () => import("../views/About.vue")
-  // },
-  // {
-  //   path: "/example",
-  //   name: "Example",
-  //   component: () => import("../views/Example.vue")
-  // }
+    path: "/",
+    component: () => import("@/components/Home.vue"),
+    children: [
+      ...Common,
+    ]
+  }
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
