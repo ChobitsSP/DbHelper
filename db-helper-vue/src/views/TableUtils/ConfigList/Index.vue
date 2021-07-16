@@ -7,23 +7,31 @@
               :lg="{ span: 16, offset: 4 }"
               :xl="{ span: 16, offset: 4 }">
         <el-row>
-          <el-button @click="edit(null)"
-                     icon="el-icon-plus"
-                     circle
-                     size="small"
-                     type="success"></el-button>
-          <el-button @click="exportConfig"
-                     circle
-                     icon="el-icon-download"
-                     size="small"
-                     type="warning"></el-button>
-          <el-upload accept=".json"
-                     :before-upload="importConfig">
-            <el-button circle
-                       icon="el-icon-upload"
-                       size="small"
-                       type="primary"></el-button>
-          </el-upload>
+          <el-form inline>
+            <el-form-item>
+              <el-button @click="edit(null)"
+                         icon="el-icon-plus"
+                         circle
+                         size="small"
+                         type="success"></el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="exportConfig"
+                         circle
+                         icon="el-icon-download"
+                         size="small"
+                         type="info"></el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-upload accept=".json"
+                         :before-upload="importConfig">
+                <el-button circle
+                           icon="el-icon-upload"
+                           size="small"
+                           type="primary"></el-button>
+              </el-upload>
+            </el-form-item>
+          </el-form>
         </el-row>
         <el-row>
           <el-table :data="tableData"
