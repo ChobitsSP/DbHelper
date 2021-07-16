@@ -4,15 +4,24 @@
       <el-col :xs="{ span: 24, offset: 0 }"
               :sm="{ span: 20, offset: 2 }"
               :md="{ span: 16, offset: 4 }"
-              :lg="{ span: 12, offset: 6 }"
-              :xl="{ span: 12, offset: 6 }">
+              :lg="{ span: 16, offset: 4 }"
+              :xl="{ span: 16, offset: 4 }">
         <el-row>
           <el-button @click="edit(null)"
-                     type="success">新增</el-button>
+                     icon="el-icon-plus"
+                     circle
+                     size="small"
+                     type="success"></el-button>
           <el-button @click="exportConfig"
-                     type="warning">导出配置</el-button>
+                     circle
+                     icon="el-icon-download"
+                     size="small"
+                     type="warning"></el-button>
           <el-button @click="importConfig"
-                     type="primary">导入配置</el-button>
+                     circle
+                     icon="el-icon-upload"
+                     size="small"
+                     type="primary"></el-button>
         </el-row>
         <el-row>
           <el-table :data="tableData"
@@ -177,7 +186,7 @@
         this.loading = false;
       },
       exportConfig() {
-
+        console.log(this.tableData);
       },
       importConfig() {
 
