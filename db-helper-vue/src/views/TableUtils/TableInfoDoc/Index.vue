@@ -3,6 +3,11 @@
     <el-row>
       <el-form inline>
         <el-form-item>
+          <el-input type="textarea"
+                    v-model.trim="cstr"
+                    clearable></el-input>
+        </el-form-item>
+        <el-form-item>
           <el-button type="success"
                      @click="ImportFromClipboard">粘贴板导入</el-button>
         </el-form-item>
@@ -65,12 +70,16 @@
         return this.$store.state.table.columns
       }
     },
-    created() {
-
+    data() {
+      return {
+        cstr: "",
+      }
     },
     methods: {
       async ImportFromClipboard() {
-        const text = await navigator.clipboard.readText();
+        if (!this.cstr) return;
+        // const text = await navigator.clipboard.readText();
+        const text = this.cstr;
         const rows = SheetClip.parse(text);
 
         const list = rows.map(cells => {
