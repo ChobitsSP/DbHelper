@@ -186,7 +186,15 @@
         this.loading = false;
       },
       exportConfig() {
-        console.log(this.tableData);
+        function download(content, fileName, contentType) {
+          var a = document.createElement("a");
+          var file = new Blob([content], { type: contentType });
+          a.href = URL.createObjectURL(file);
+          a.download = fileName;
+          a.click();
+        }
+
+        download(JSON.stringify(this.tableData), 'config.json', 'text/plain');
       },
       importConfig() {
 
