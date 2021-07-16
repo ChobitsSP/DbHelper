@@ -1,12 +1,12 @@
-import * as types from "../mutation-types";
+import * as types from '../mutation-types';
 
-import Vue from "vue";
-import axios from "axios";
+import Vue from 'vue';
+import axios from 'axios';
 
 // initial state
 const state = {
-  table: "",
-  columns: []
+  table: '',
+  columns: [],
 };
 
 // getters
@@ -14,8 +14,8 @@ const getters = {};
 
 // actions
 const actions = {
-  getColumns: async function (t, data) {
-    const rsp = await axios.post("/api/sql/tablecolumns", data);
+  getColumns: async function(t, data) {
+    const rsp = await axios.post('/api/sql/tablecolumns', data);
 
     if (rsp.code === 0) {
       const list = rsp.data;
@@ -24,20 +24,20 @@ const actions = {
         col.id = i + 1;
       });
 
-      t.commit("SET_COLUMNS", list);
-      t.commit("SET_TABLE_NAME", data.table);
+      t.commit('SET_COLUMNS', list);
+      t.commit('SET_TABLE_NAME', data.table);
     }
-  }
+  },
 };
 
 // mutations
 let mutations = {};
 
-mutations[types.SET_TABLE_NAME] = function (state, r) {
+mutations[types.SET_TABLE_NAME] = function(state, r) {
   state.table = r;
 };
 
-mutations[types.SET_COLUMNS] = function (state, r) {
+mutations[types.SET_COLUMNS] = function(state, r) {
   state.columns = r;
 };
 
@@ -45,5 +45,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

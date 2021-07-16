@@ -1,7 +1,9 @@
 import { IColumn } from "../../models/Index";
-import { TypeIsNumber, TypeIsDate, TypeIsString } from "../TableUtils";
+import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsJs } from "../TableUtils";
 
 function GetTsProp(col: IColumn) {
+  if (TypeIsJs(col.type)) return `${col.name}${col.null_able ? "?" : ""}: ${col.type};`;
+
   if (TypeIsNumber(col.type)) {
     return `${col.name}${col.null_able ? "?" : ""}: number;`;
   }
@@ -31,7 +33,7 @@ function GetTsComment(comment?: string) {
   return arr.join("\r\n");
 }
 
-export default function(tableName: string, cols: IColumn[]) {
+export default function (tableName: string, cols: IColumn[]) {
   const arr: string[] = [];
 
   arr.push(`class ${tableName} {`);

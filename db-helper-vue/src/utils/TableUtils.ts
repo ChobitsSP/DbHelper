@@ -1,5 +1,7 @@
 const numberlist = ["NUMBER", "integer", "smallint", "int", "numeric", "bigint"];
-const datelist = ["DATE", "timestamp without time zone", "timestamp with time zone", "date", "datetime"];
+
+const datelist = ["DATE", "Date", "timestamp without time zone", "timestamp with time zone", "date", "datetime"];
+
 const strlist = [
   "character varying",
   "uuid",
@@ -8,7 +10,9 @@ const strlist = [
   "uniqueidentifier",
   "nvarchar",
   "varchar",
-  "text"
+  "text",
+  "String",
+  "string",
 ];
 
 export function TypeIsNumber(type: string) {
@@ -21,4 +25,8 @@ export function TypeIsString(type: string) {
 
 export function TypeIsDate(type: string) {
   return datelist.some(t => t === type);
+}
+
+export function TypeIsJs(type: string) {
+  return ["string", "number", "boolean", "Date"].some(t => t === type);
 }

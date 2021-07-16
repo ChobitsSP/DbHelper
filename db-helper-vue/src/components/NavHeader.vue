@@ -71,6 +71,12 @@
                   Csv2Json
                 </router-link>
               </li>
+              <li>
+                <router-link class="dropdown-toggle"
+                             to="/Table/TableInfoDoc">
+                  动态生成
+                </router-link>
+              </li>
             </ul>
           </li>
           <li>
