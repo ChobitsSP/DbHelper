@@ -8,7 +8,11 @@
               :xl="{ span: 12, offset: 6 }">
         <el-row>
           <el-button @click="edit(null)"
-                     type="primary">新增</el-button>
+                     type="success">新增</el-button>
+          <el-button @click="exportConfig"
+                     type="warning">导出配置</el-button>
+          <el-button @click="importConfig"
+                     type="primary">导入配置</el-button>
         </el-row>
         <el-row>
           <el-table :data="tableData"
@@ -171,7 +175,13 @@
         await ExportDbDatas(item, names);
 
         this.loading = false;
-      }
+      },
+      exportConfig() {
+
+      },
+      importConfig() {
+
+      },
     }
   }
 </script>
