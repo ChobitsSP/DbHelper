@@ -41,7 +41,7 @@ function init() {
     list.forEach(t => db.DbConfig.add(t));
 
     window.localStorage.removeItem("configs");
-  } catch (err) {}
+  } catch (err) { }
 }
 
 init();

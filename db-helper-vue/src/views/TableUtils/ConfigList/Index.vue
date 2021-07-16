@@ -17,11 +17,13 @@
                      icon="el-icon-download"
                      size="small"
                      type="warning"></el-button>
-          <el-button @click="importConfig"
-                     circle
-                     icon="el-icon-upload"
-                     size="small"
-                     type="primary"></el-button>
+          <el-upload accept=".json"
+                     :before-upload="importConfig">
+            <el-button circle
+                       icon="el-icon-upload"
+                       size="small"
+                       type="primary"></el-button>
+          </el-upload>
         </el-row>
         <el-row>
           <el-table :data="tableData"
@@ -196,8 +198,21 @@
 
         download(JSON.stringify(this.tableData), 'config.json', 'text/plain');
       },
-      importConfig() {
+      importConfig(file) {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const list = JSON.parse(event.target.result);
 
+          const plist = list.map(item => {
+            delete item.id;
+            return DbUtils.DbConfigUpdate(item);
+          });
+
+          await Promise.all(plist);
+          this.refresh();
+        }
+        reader.readAsText(file);
+        return false;
       },
     }
   }
