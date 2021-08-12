@@ -1,7 +1,10 @@
 import { IColumn } from "../../models/Index";
-import { TypeIsNumber, TypeIsDate, TypeIsString } from "../TableUtils";
+import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsDecimal } from "../TableUtils";
 
 function GetTsProp(col: IColumn) {
+  if (TypeIsDecimal(col.type)) {
+    return `decimal${col.null_able ? "?" : ""}`;
+  }
   if (TypeIsNumber(col.type)) {
     return `int${col.null_able ? "?" : ""}`;
   }
