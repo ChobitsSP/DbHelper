@@ -1,21 +1,30 @@
 import { IColumn } from "../../models/Index";
 import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsDecimal } from "../TableUtils";
 
-function GetTsProp(col: IColumn) {
+function GetNetType(col: IColumn) {
   if (TypeIsDecimal(col.type)) {
-    return `decimal${col.null_able ? "?" : ""}`;
+    return `decimal`;
+  }
+  if (col.type === 'bigint') {
+    return `long`;
   }
   if (TypeIsNumber(col.type)) {
-    return `int${col.null_able ? "?" : ""}`;
+    return `int`;
   }
   if (TypeIsDate(col.type)) {
-    return `DateTime${col.null_able ? "?" : ""}`;
+    return `DateTime`;
   }
   if (TypeIsString(col.type)) {
     return `string`;
   }
 
   return `string`;
+}
+
+function GetTsProp(col: IColumn) {
+  const type = GetNetType(col);
+  if (type === 'string') return type;
+  return `${type}${col.null_able ? "?" : ""}`;
 }
 
 function GetTsComment(comment?: string) {
