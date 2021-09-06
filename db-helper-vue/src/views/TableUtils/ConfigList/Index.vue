@@ -242,7 +242,7 @@
               const str = Ef6Utils(table, rsp.data);
               return {
                 name: table + '.cs',
-                text: str,
+                text: ['namespace Models', '{', str, '}'].join('\r\n'),
               };
             });
         });
