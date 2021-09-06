@@ -255,6 +255,8 @@
           zip.file(file.name, file.text);
         });
 
+        zip.file('DbEntities.cs', names.map(name => `public DbSet<${name}> ${name} { get; set; }`).join('\r\n'));
+
         zip.generateAsync({ type: "blob" }).then((content) => {
           FileSaver.saveAs(content, "ef6.zip");
           this.loading = false;
