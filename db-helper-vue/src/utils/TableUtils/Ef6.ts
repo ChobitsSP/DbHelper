@@ -37,6 +37,7 @@ function GetTsComment(comment?: string) {
 export default function (tableName: string, cols: IColumn[]) {
   const arr: string[] = [];
 
+  arr.push(`using System;`);
   arr.push(`using System.Collections.Generic;`);
   arr.push(`using System.ComponentModel.DataAnnotations;`);
   arr.push(`using System.ComponentModel.DataAnnotations.Schema;`);
