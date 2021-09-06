@@ -52,7 +52,7 @@
             </el-table-column>
             <el-table-column prop="providerName"
                              label="provider"
-                             width="220">
+                             width="320">
             </el-table-column>
             <el-table-column label="操作"
                              width="450">
@@ -69,7 +69,7 @@
                            @click.stop="exportDatas(row)">导出数据</el-button>
                 <el-button size="mini"
                            type="success"
-                           @click.stop="exportEf(row)">导出ef</el-button>
+                           @click.stop="exportEf(row)">ef</el-button>
                 <el-button size="mini"
                            type="danger"
                            @click.stop="remove(row)">删除</el-button>
