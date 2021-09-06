@@ -52,10 +52,10 @@
             </el-table-column>
             <el-table-column prop="providerName"
                              label="provider"
-                             width="320">
+                             width="220">
             </el-table-column>
             <el-table-column label="操作"
-                             width="450">
+                             width="540">
               <template slot-scope="{ row }">
                 <el-button size="mini"
                            type="success"
