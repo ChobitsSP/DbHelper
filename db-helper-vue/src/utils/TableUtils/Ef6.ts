@@ -37,6 +37,7 @@ function GetTsComment(comment?: string) {
 export default function (tableName: string, cols: IColumn[]) {
   const arr: string[] = [];
 
+  arr.push(`[Table("${tableName}")]`);
   arr.push(`public partial class ${tableName} {`);
 
   cols.forEach((col, i) => {
