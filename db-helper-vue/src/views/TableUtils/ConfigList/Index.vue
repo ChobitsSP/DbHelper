@@ -228,7 +228,7 @@
         reader.readAsText(file);
         return false;
       },
-      exportEf(item) {
+      async exportEf(item) {
         this.loading = true;
 
         /** @type{string[]} */
