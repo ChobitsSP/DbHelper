@@ -68,6 +68,9 @@
                            type="success"
                            @click.stop="exportDatas(row)">导出数据</el-button>
                 <el-button size="mini"
+                           type="success"
+                           @click.stop="exportEf(row)">导出ef</el-button>
+                <el-button size="mini"
                            type="danger"
                            @click.stop="remove(row)">删除</el-button>
                 <XlsxUpload :loading="loading"
@@ -94,6 +97,9 @@
   import { ExportExcel } from "@/utils/CsvExport.ts";
   import XlsxUpload from "./components/XlsxUpload.vue";
   import { ExportDbDatas } from "@/utils/ImportDataUtils.ts";
+  import Ef6Utils from "@/utils/TableUtils/Ef6.ts";
+  import JSZip from 'jszip';
+  import FileSaver from 'file-saver';
 
   export default {
     components: {
@@ -221,6 +227,38 @@
         }
         reader.readAsText(file);
         return false;
+      },
+      exportEf(item) {
+        this.loading = true;
+
+        /** @type{string[]} */
+        const names = (await axios.post('/api/sql/tablenames', item)).data;
+
+        const plist = names.map(table => {
+          return axios.post('/api/sql/tablecolumns', Object.assign({ table }, item))
+            .then(rsp => {
+              if (rsp.code !== 0) return null;
+              /** @type{string} */
+              const str = Ef6Utils(table, rsp.data);
+              return {
+                name: table + '.cs',
+                text: str,
+              };
+            });
+        });
+
+        const list = await Promise.all(plist);
+
+        let zip = new JSZip();
+
+        list.forEach(file => {
+          zip.file(file.name, file.text);
+        });
+
+        zip.generateAsync({ type: "blob" }).then((content) => {
+          FileSaver.saveAs(content, "ef6.zip");
+          this.loading = false;
+        });
       },
     }
   }
