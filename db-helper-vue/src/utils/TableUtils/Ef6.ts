@@ -71,6 +71,7 @@ export default function (tableName: string, cols: IColumn[]) {
       }
     }
 
+    arr.push(`[Column("${col.name}")]`);
     arr.push(`public ${GetTsProp(col)} ${col.name} { get; set; }`);
 
     if ((i + 1) !== cols.length) {
