@@ -53,7 +53,7 @@ export default function (tableName: string, cols: IColumn[]) {
   arr.push(`using System.Linq;`);
   arr.push(`using System.Text;`);
   arr.push(`using System.Threading.Tasks;`);
-
+  arr.push('');
   arr.push(`[Table("${tableName}")]`);
   arr.push(`public partial class ${tableName} {`);
 
