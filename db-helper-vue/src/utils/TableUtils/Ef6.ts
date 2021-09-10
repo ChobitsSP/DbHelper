@@ -8,6 +8,9 @@ function GetNetType(col: IColumn) {
   if (col.type === 'bigint') {
     return `long`;
   }
+  if (col.type === 'smallint') {
+    return `short`;
+  }
   if (TypeIsNumber(col.type)) {
     return `int`;
   }
