@@ -4,8 +4,8 @@
       <el-col :xs="{ span: 24, offset: 0 }"
               :sm="{ span: 20, offset: 2 }"
               :md="{ span: 16, offset: 4 }"
-              :lg="{ span: 16, offset: 4 }"
-              :xl="{ span: 16, offset: 4 }">
+              :lg="{ span: 12, offset: 6 }"
+              :xl="{ span: 10, offset: 7 }">
         <el-row>
           <el-form inline>
             <el-form-item>
@@ -44,13 +44,15 @@
               </template>
             </el-table-column>
             <el-table-column prop="id"
-                             label="id">
+                             label="id"
+                             min-width="60">
             </el-table-column>
             <el-table-column prop="name"
                              label="name">
             </el-table-column>
             <el-table-column prop="providerName"
-                             label="provider">
+                             label="provider"
+                             min-width="220">
             </el-table-column>
             <el-table-column label="操作"
                              min-width="200">
