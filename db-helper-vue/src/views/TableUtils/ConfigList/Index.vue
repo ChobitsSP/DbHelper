@@ -53,7 +53,7 @@
                              label="provider">
             </el-table-column>
             <el-table-column label="操作"
-                             width="200">
+                             min-width="200">
               <template slot-scope="{ row }">
                 <el-dropdown @command="cmd => onCommand(row, cmd)">
                   <span class="el-dropdown-link">
