@@ -44,20 +44,46 @@
               </template>
             </el-table-column>
             <el-table-column prop="id"
-                             label="id"
-                             width="60">
+                             label="id">
             </el-table-column>
             <el-table-column prop="name"
                              label="name">
             </el-table-column>
             <el-table-column prop="providerName"
-                             label="provider"
-                             width="220">
+                             label="provider">
             </el-table-column>
             <el-table-column label="操作"
-                             width="540">
+                             width="200">
               <template slot-scope="{ row }">
-                <el-button size="mini"
+                <el-dropdown @command="cmd => onCommand(row, cmd)">
+                  <span class="el-dropdown-link">
+                    操作<i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item icon="el-icon-edit"
+                                      command="edit">编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-download"
+                                      command="exportAll">导出
+                    </el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-s-grid"
+                                      command="exportDatas">导出数据
+                    </el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-eleme"
+                                      command="exportEf">ef
+                    </el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-remove"
+                                      command="remove">删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+
+                <XlsxUpload :loading="loading"
+                            style="margin-left:10px;"
+                            @input="arr => importColComment(arr, row)">
+                </XlsxUpload>
+
+                <!-- <el-button size="mini"
                            type="success"
                            @click.stop="edit(row)">编辑</el-button>
                 <el-button size="mini"
@@ -76,7 +102,7 @@
                 <XlsxUpload :loading="loading"
                             style="margin-left:10px;"
                             @input="arr => importColComment(arr, row)">
-                </XlsxUpload>
+                </XlsxUpload> -->
               </template>
             </el-table-column>
           </el-table>
@@ -130,6 +156,12 @@
       },
       edit(item) {
         this.$refs.ConAddModal.open(item)
+      },
+      onCommand(row, cmd) {
+        const func = this[cmd];
+        if (typeof func === 'function') {
+          func(row);
+        }
       },
       async exportAll(item) {
         this.loading = true;
