@@ -11,6 +11,7 @@ import GolangCurd from "./GolangCurd";
 import GolangStruct from "./GolangStruct";
 import GinApi from "./GinApi";
 import Ef6 from "./Ef6";
+import EfCore from "./EfCore";
 import JavaModel from "./JavaModel";
 import JavaMybatis from "./JavaMybatis";
 import JavaOldToNew from "./JavaOldToNew";
@@ -26,6 +27,7 @@ export {
   DevExtreme,
   OracleSeq,
   Ef6,
+  EfCore,
   GolangStruct,
   GolangCurd,
   GinApi,
