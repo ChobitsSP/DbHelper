@@ -19,6 +19,10 @@ export function TypeIsDecimal(type: string) {
   return ["decimal"].some(t => t === type);
 }
 
+export function TypeIsLong(type: string) {
+  return ['bigint'].some(t => t === type);
+}
+
 export function TypeIsNumber(type: string) {
   return numberlist.some(t => t === type);
 }

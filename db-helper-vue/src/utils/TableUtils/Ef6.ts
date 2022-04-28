@@ -1,13 +1,12 @@
 import { IColumn } from "../../models/Index";
-import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsDecimal } from "../TableUtils";
+import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsDecimal, TypeIsLong } from "../TableUtils";
 
 function GetNetType(col: IColumn) {
-  if (TypeIsDecimal(col.type)) {
-    return `decimal`;
-  }
-  if (col.type === 'bigint') {
-    return `long`;
-  }
+  if (TypeIsDecimal(col.type)) return `decimal`;
+  if (TypeIsLong(col.type)) return `long`;
+  if (col.type === 'uuid') return 'Guid';
+  if (col.type === "time without time zone") return 'TimeSpan';
+
   if (col.type === 'smallint') {
     return `short`;
   }
@@ -20,6 +19,7 @@ function GetNetType(col: IColumn) {
   if (TypeIsString(col.type)) {
     return `string`;
   }
+
 
   return `string`;
 }
