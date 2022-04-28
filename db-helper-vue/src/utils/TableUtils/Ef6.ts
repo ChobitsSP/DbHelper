@@ -4,6 +4,7 @@ import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsDecimal, TypeIsLong } fro
 function GetNetType(col: IColumn) {
   if (TypeIsDecimal(col.type)) return `decimal`;
   if (TypeIsLong(col.type)) return `long`;
+  if (col.type === 'boolean') return 'bool';
   if (col.type === 'uuid') return 'Guid';
   if (col.type === "time without time zone") return 'TimeSpan';
 
