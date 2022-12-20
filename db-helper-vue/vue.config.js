@@ -1,32 +1,32 @@
 module.exports = {
-  assetsDir: "static",
+  assetsDir: 'static',
   productionSourceMap: false,
   runtimeCompiler: true,
   pages: {
     index: {
-      entry: "src/main.js",
-      title: "vue-sql"
-    }
+      entry: 'src/main.js',
+      title: 'vue-sql',
+    },
   },
   devServer: {
     proxy: {
-      ...GetList(["/(?:api)/"], "http://server3.hsort.com:8001")
-    }
+      ...GetList(['/(?:api)/'], 'http://server3.hsort.com:8001'),
+    },
   },
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config.externals({
-      jquery: "jQuery",
-      moment: "moment",
-      rxjs: "Rx",
-      lodash: "_",
-      vue: "Vue",
-      "vue-router": "VueRouter",
-      vuex: "Vuex",
-      "element-ui": "ELEMENT",
-      axios: "axios",
-      xlsx: "XLSX"
+      jquery: 'jQuery',
+      moment: 'moment',
+      rxjs: 'Rx',
+      lodash: '_',
+      vue: 'Vue',
+      'vue-router': 'VueRouter',
+      vuex: 'Vuex',
+      'element-ui': 'ELEMENT',
+      axios: 'axios',
+      xlsx: 'XLSX',
     });
-  }
+  },
 };
 
 /**
@@ -37,12 +37,12 @@ module.exports = {
  */
 function GetList(list, target) {
   return Object.assign(
-    ...list.map(t => ({
+    ...list.map((t) => ({
       [t]: {
         target: target,
         changeOrigin: true,
-        secure: false //true/false, if you want to verify the SSL Certs
-      }
+        secure: false, //true/false, if you want to verify the SSL Certs
+      },
     }))
   );
 }
