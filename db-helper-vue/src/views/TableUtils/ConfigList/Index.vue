@@ -36,7 +36,7 @@
         <el-row>
           <el-table :data="tableData"
                     border
-                    size="mini"
+                    size="small"
                     style="width: 100%">
             <el-table-column type="expand">
               <template slot-scope="props">
@@ -70,6 +70,9 @@
                     </el-dropdown-item>
                     <el-dropdown-item icon="el-icon-s-grid"
                                       command="exportDatas">导出数据
+                    </el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-s-grid"
+                                      command="exportMd">导出md
                     </el-dropdown-item>
                     <el-dropdown-item icon="el-icon-eleme"
                                       command="exportEf">ef
@@ -124,10 +127,19 @@
   import * as DbUtils from '@/utils/DbUtils.ts';
   import { ExportExcel } from "@/utils/CsvExport.ts";
   import XlsxUpload from "./components/XlsxUpload.vue";
-  import { ExportDbDatas } from "@/utils/ImportDataUtils.ts";
-  import Ef6Utils from "@/utils/TableUtils/Ef6.ts";
+  import { ExportDbDatas } from "@/utils/ImportDataUtils";
+  import Ef6Utils from "@/utils/TableUtils/Ef6";
+  import MarkdownUtils from "@/utils/TableUtils/Markdown";
   import JSZip from 'jszip';
   import FileSaver from 'file-saver';
+
+  function downloadFile(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], { type: contentType });
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+  }
 
   export default {
     components: {
@@ -235,16 +247,41 @@
 
         this.loading = false;
       },
-      exportConfig() {
-        function download(content, fileName, contentType) {
-          var a = document.createElement("a");
-          var file = new Blob([content], { type: contentType });
-          a.href = URL.createObjectURL(file);
-          a.download = fileName;
-          a.click();
+      async exportMd(item) {
+        this.loading = true;
+
+        /** @type{string[]} */
+        const names = (await axios.post('/api/sql/tablenames', item)).data;
+        const plist = names.map(table => axios.post('/api/sql/tablecolumns', Object.assign({ table }, item)));
+        const list = await Promise.all(plist);
+
+        const arr = [];
+
+        for (let i = 0; i < names.length; i++) {
+          const rsp = list[i];
+
+          if (rsp.code !== 0) {
+            continue;
+          }
+
+          const cols = rsp.data;
+          // 导出
+
+          cols.forEach((col, i) => {
+            col.id = i + 1;
+          });
+
+          const rowInfo = MarkdownUtils(names[i], cols);
+          arr.push(rowInfo);
         }
 
-        download(JSON.stringify(this.tableData), 'config.json', 'text/plain');
+        const fileName = ["dbinfo", item.name, moment().format("YYYYMMDDHHmmss")].join("_");
+        downloadFile(arr.join('\r\n'), fileName + '.md', 'text/plain');
+
+        this.loading = false;
+      },
+      exportConfig() {
+        downloadFile(JSON.stringify(this.tableData), 'config.json', 'text/plain');
       },
       importConfig(file) {
         const reader = new FileReader();
