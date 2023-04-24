@@ -15,6 +15,7 @@ import EfCore from "./EfCore";
 import JavaModel from "./JavaModel";
 import JavaMybatis from "./JavaMybatis";
 import JavaOldToNew from "./JavaOldToNew";
+import Markdown from "./Markdown";
 
 export {
   ASPxGridView,
@@ -34,4 +35,5 @@ export {
   JavaModel,
   JavaMybatis,
   JavaOldToNew,
+  Markdown,
 };
