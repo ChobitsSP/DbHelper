@@ -12,3 +12,10 @@ export function hump(name: string) {
     })
     .replace(/^[a-z]/g, (g) => g.toUpperCase());
 }
+
+export function hump2(name: string) {
+  return name
+    .replace(/_([a-z])/g, function (g) {
+      return g[1].toUpperCase();
+    });
+}

@@ -273,6 +273,7 @@
 
           const rowInfo = MarkdownUtils(names[i], cols);
           arr.push(rowInfo);
+          arr.push('');
         }
 
         const fileName = ["dbinfo", item.name, moment().format("YYYYMMDDHHmmss")].join("_");
