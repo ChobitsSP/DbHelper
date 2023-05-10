@@ -20,77 +20,101 @@
   </el-container>
 </template>
 
-<script>
+<script lang="ts">
+  import { defineComponent, ref, watch, onMounted } from 'vue';
+  import { Tree } from 'element-ui';
+  import { TreeNode } from 'element-ui/types/tree';
+
+  import router from '@/router/index';
   import * as DbUtils from '@/utils/DbUtils';
   import axios from '@/utils/AxiosUtils';
 
-  export default {
-    data() {
-      return {
-        props: {
-          label: 'label',
-          children: 'children',
-          isLeaf: 'isLeaf'
-        },
-        id: null,
-        showMenu: true,
-        filterText: '',
+  import filterBy from 'vue2-filters/src/array/filterBy';
+
+  interface TreeItem {
+    id: number;
+    label: string;
+    isLeaf: boolean;
+  }
+
+  export default defineComponent({
+    setup() {
+      const props = {
+        label: 'label',
+        children: 'children',
+        isLeaf: 'isLeaf'
       };
-    },
-    watch: {
-      filterText(val) {
-        this.$refs.tree.filter(val);
-      },
-      '$route': function (route) {
-        const id = route.params.id;
-        this.id = id ? parseInt(id, 10) : null;
-      }
-    },
-    methods: {
-      async GetTables(id) {
-        const row = await DbUtils.DbConfigGet(id);
-        const url = '/api/sql/tablenames';
-        const rsp = await axios.post(url, row);
-        if (rsp.code === 0) {
-          return rsp.data.map(t => ({ id, label: t, isLeaf: true }));
-        } else {
-          return [];
-        }
-      },
-      async loadNode(node, resolve) {
+      const id = ref<number>(null);
+      const filterText = ref('');
+      const treeRef = ref<Tree>();
+
+      const loadNode = async (node: TreeNode<number, TreeItem>, resolve: (data: any[]) => any) => {
         if (node.level === 0) {
           const list = await DbUtils.DbConfigList();
-
           return resolve(list.map(t => ({
             id: t.id,
             label: t.name,
             isLeaf: false,
           })));
-        }
-        else if (node.level === 1) {
-          const list = await this.GetTables(node.data.id);
+        } else if (node.level === 1) {
+          const list = await getTables(node.data.id);
           return resolve(list);
         }
-
         return resolve([]);
-      },
-      filterNode(value, data) {
-        if (this.id && this.id !== data.id) return false;
+      };
+
+      const filterNode = (value: string, data: TreeItem) => {
+        if (id.value && id.value !== data.id) return false;
         if (!value) return true;
-        return this.filterBy([data.label], value).length === 1;
-      },
-      async handleNodeClick(node) {
+        return filterBy([data.label], value).length === 1;
+      };
+
+      const handleNodeClick = (node: TreeItem) => {
         if (!node.isLeaf) return;
 
-        const params = {
+        const params: any = {
           id: node.id,
           name: node.label,
         };
 
-        this.id = node.id;
-        if (!this.filterText) this.filterText = node.label;
-        this.$router.push({ name: 'TableInfo2', params });
-      }
-    }
-  };
+        id.value = node.id;
+        if (!filterText.value) filterText.value = node.label;
+        router.push({ name: 'TableInfo2', params });
+      };
+
+      onMounted(() => {
+        watch(
+          () => router.currentRoute,
+          (route) => {
+            const idParam = route.params.id;
+            id.value = idParam ? parseInt(idParam, 10) : null;
+          }
+        );
+
+        watch(() => filterText.value, (val) => {
+          treeRef.value.filter(val);
+        });
+      });
+
+      const getTables = async (id: number) => {
+        const row = await DbUtils.DbConfigGet(id);
+        const url = '/api/sql/tablenames';
+        const rsp = await axios.post<string[]>(url, row);
+        if (rsp.code === 0) {
+          return rsp.data.map(t => ({ id, label: t, isLeaf: true }));
+        } else {
+          return [];
+        }
+      };
+
+      return {
+        props,
+        filterText,
+        loadNode,
+        filterNode,
+        handleNodeClick,
+        tree: treeRef,
+      };
+    },
+  });
 </script>
