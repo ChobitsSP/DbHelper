@@ -22,6 +22,9 @@
   import * as UTILS from '@/utils/TableUtils/Index';
   import ClipboardInput from './ClipboardInput.vue';
   import { useMainStore } from '@/store/main';
+  import { hump2 } from '@/filters/Index';
+
+  type Func = (name: string, cols: any) => string;
 
   export default defineComponent({
     components: {
@@ -31,8 +34,23 @@
       type: String
     },
     setup(props) {
-      const { columns, tableName } = useMainStore();
-      const value = computed<string>(() => UTILS[props.type](tableName.value, columns.value));
+      const { columns, tableName, isHump } = useMainStore();
+
+      const value = computed<string>(() => {
+        const func: Func = UTILS[props.type];
+
+        let cols = columns.value;
+
+        if (isHump.value) {
+          cols = _.cloneDeep(cols);
+          cols.forEach(t => {
+            t.name = hump2(t.name);
+          });
+        }
+
+        return func(tableName.value, cols);
+      });
+
       return {
         value,
       };
