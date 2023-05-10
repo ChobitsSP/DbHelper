@@ -124,7 +124,7 @@
   import axios from "axios";
   import configs from '@/data/configs';
   import ConAddModal from '@/components/ConAddModal.vue';
-  import * as DbUtils from '@/utils/DbUtils.ts';
+  import * as DbUtils from '@/utils/DbUtils';
   import { ExportExcel } from "@/utils/CsvExport.ts";
   import XlsxUpload from "./components/XlsxUpload.vue";
   import { ExportDbDatas } from "@/utils/ImportDataUtils";

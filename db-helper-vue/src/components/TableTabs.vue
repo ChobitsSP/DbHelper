@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import * as UTILS from '@/utils/TableUtils/Index.ts'
+  import * as UTILS from '@/utils/TableUtils/Index'
   import com1 from './TableAspxGridView.vue'
 
   export default {

@@ -43,7 +43,7 @@
 
 <script>
   import FormMixins from '@/mixins/FormMixins'
-  import * as DbUtils from '@/utils/DbUtils.ts';
+  import * as DbUtils from '@/utils/DbUtils';
 
   export default {
     mixins: [FormMixins],

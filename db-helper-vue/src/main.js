@@ -9,7 +9,7 @@ import App from './App';
 import store from './store';
 import router from './router';
 
-import * as filters from './filters/Index.ts';
+import * as filters from './filters/Index';
 import Vue2Filters from 'vue2-filters';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';

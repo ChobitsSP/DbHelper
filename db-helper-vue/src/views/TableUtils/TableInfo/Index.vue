@@ -4,7 +4,7 @@
 </template>
 
 <script>
-  import * as DbUtils from '@/utils/DbUtils.ts';
+  import * as DbUtils from '@/utils/DbUtils';
   import TableInfo from './TableInfo.vue';
 
   export default {

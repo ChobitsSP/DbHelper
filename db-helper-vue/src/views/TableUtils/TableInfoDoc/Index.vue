@@ -58,7 +58,7 @@
 <script>
   import TempEditor from '@/components/TempEditor/Index.vue'
   import TableTabs from './components/TableTabs.vue'
-  import * as SheetClip from './utils/sheetclip.ts';
+  import * as SheetClip from './utils/sheetclip';
 
   export default {
     components: {

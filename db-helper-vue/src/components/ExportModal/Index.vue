@@ -27,9 +27,9 @@
 
 <script>
   import axios from 'axios';
-  import { FormModel } from './models/Index.ts'
+  import { FormModel } from './models/Index'
   import FormMixins from '@/mixins/FormMixins'
-  import CsvExport from '@/utils/CsvExport.ts'
+  import CsvExport from '@/utils/CsvExport'
 
   function ExportJson(filename, fileData) {
     //Get the file contents

@@ -63,9 +63,9 @@
   import ExportModal from '@/components/ExportModal/Index.vue'
   import TempEditor from '@/components/TempEditor/Index.vue'
   import XlsxUpload from './components/XlsxUpload.vue'
-  import CsvExport from '@/utils/CsvExport.ts';
+  import CsvExport from '@/utils/CsvExport';
   import axios from 'axios';
-  import { RowTypeTrans } from '@/utils/ImportDataUtils.ts';
+  import { RowTypeTrans } from '@/utils/ImportDataUtils';
 
   export default {
     components: {

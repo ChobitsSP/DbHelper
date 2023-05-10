@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import * as UTILS from '@/utils/TableUtils/Index.ts'
+  import * as UTILS from '@/utils/TableUtils/Index'
   import ClipboardInput from './ClipboardInput.vue'
 
   export default {

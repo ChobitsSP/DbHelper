@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import * as DbUtils from '@/utils/DbUtils.ts';
+  import * as DbUtils from '@/utils/DbUtils';
   import axios from 'axios';
 
   export default {
