@@ -8,12 +8,14 @@ import axios from '@/utils/AxiosUtils';
 interface MyState {
   table: string;
   columns: IColumn[];
+  isHump: boolean;
 }
 
 // initial state
 const state: MyState = {
   table: '',
   columns: [],
+  isHump: false,
 };
 
 // getters
@@ -35,14 +37,16 @@ const actions: ActionTree<MyState, any> = {
 };
 
 // mutations
-let mutations: MutationTree<MyState> = {};
-
-mutations[types.SET_TABLE_NAME] = function (state, r: string) {
-  state.table = r;
-};
-
-mutations[types.SET_COLUMNS] = function (state, r: any[]) {
-  state.columns = r;
+const mutations: MutationTree<MyState> = {
+  [types.SET_TABLE_NAME](state, r: string) {
+    state.table = r;
+  },
+  [types.SET_COLUMNS](state, r: IColumn[]) {
+    state.columns = r;
+  },
+  [types.SET_IS_HUMP](state, r: boolean) {
+    state.isHump = r;
+  },
 };
 
 export default {
