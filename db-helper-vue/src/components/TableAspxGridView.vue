@@ -41,6 +41,8 @@
 
         let cols = columns.value;
 
+        if (cols.length === 0) return '';
+
         if (isHump.value) {
           cols = _.cloneDeep(cols);
           cols.forEach(t => {
