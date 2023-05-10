@@ -1,4 +1,4 @@
-import axios from '@/utils/AxiosUtils';
+import axios from 'axios';
 import store from '@/store';
 
 // Add a request interceptor
