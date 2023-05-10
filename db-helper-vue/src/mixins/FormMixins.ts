@@ -9,7 +9,7 @@ function FormValidate(form: IForm) {
   return new Promise((resolve, reject) => {
     form.validate(async valid => {
       if (valid) {
-        resolve()
+        resolve(valid)
       } else {
         const err = await GetFirstError(form)
         reject(err)

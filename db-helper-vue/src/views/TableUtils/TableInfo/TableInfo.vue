@@ -1,7 +1,8 @@
 <template>
   <div>
     <el-row>
-      <el-form inline>
+      <el-form inline
+               size="small">
         <el-form-item>
           <el-button type="primary"
                      @click="$emit('refresh')">刷新</el-button>
@@ -22,7 +23,7 @@
       <el-table v-loading="loading"
                 :data="tableData"
                 border
-                size="mini"
+                size="small"
                 ref="table"
                 style="width: 100%"
                 :default-sort="{ prop: 'id', order: 'ascending' }">
@@ -58,7 +59,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+  import { defineComponent, ref, computed } from 'vue';
+  import router from '@/router/index';
+  import { useMainStore } from '@/store/main';
+
   import TableTabs from '@/components/TableTabs.vue'
   import ExportModal from '@/components/ExportModal/Index.vue'
   import TempEditor from '@/components/TempEditor/Index.vue'
@@ -67,7 +72,7 @@
   import axios from 'axios';
   import { RowTypeTrans } from '@/utils/ImportDataUtils';
 
-  export default {
+  export default defineComponent({
     components: {
       TableTabs,
       ExportModal,
@@ -77,53 +82,66 @@
     props: {
       tableName: String,
     },
-    data() {
-      return {
-        loading: false
-      }
-    },
-    computed: {
-      coninfo() {
-        return this.$store.state.user.coninfo;
-      },
-      tableData() {
-        return this.$store.state.table.columns
-      }
-    },
-    methods: {
-      change(val) {
-        this.$router.push({ name: this.$route.name, params: { table: val } })
-      },
-      ExportTable() {
-        const columns = this.$refs.table.$children.filter(t => t.prop != null)
-        CsvExport(this.tableData, columns)
-      },
-      ExportList() {
-        this.$refs.ExportModal.open();
-      },
-      async ImportData(rows) {
+    setup(props, context) {
+      const { coninfo, columns: tableData } = useMainStore();
+
+      // data
+      const loading = ref(false);
+      const table = ref();
+      const ExportModal = ref();
+
+      // methods
+      const change = (val: string) => {
+        const route = router.currentRoute;
+        router.push({ name: route.name, params: { table: val } });
+      };
+
+      const ExportTable = () => {
+        const columns = table.value.$children.filter((t: any) => t.prop != null);
+        CsvExport(tableData.value, columns);
+      };
+
+      const ExportList = () => {
+        ExportModal.value.open();
+      };
+
+      const ImportData = async (rows: any[]) => {
         if (rows.length === 0) return;
-        let list = RowTypeTrans(rows, this.tableData);
+        let list = RowTypeTrans(rows, tableData.value);
 
         const url = '/api/sql/TableDataAdd';
 
         const params = {
-          ...this.coninfo,
-          table: this.tableName,
+          ...coninfo.value,
+          table: props.tableName,
           import_cols: Object.keys(list[0]),
           import_datas: list,
         };
 
-        this.loading = true;
+        loading.value = true;
 
-        const rsp = await axios.post(url, params);
+        const rsp: any = await axios.post(url, params);
 
         if (rsp.code !== 0) {
           alert(rsp.msg);
         }
 
-        this.loading = false;
-      }
-    }
-  }
+        loading.value = false;
+      };
+
+      return {
+        loading,
+        coninfo,
+        tableData,
+
+        table,
+        ExportModal,
+
+        change,
+        ExportTable,
+        ExportList,
+        ImportData,
+      };
+    },
+  });
 </script>
