@@ -22,7 +22,7 @@
 
 <script>
   import * as DbUtils from '@/utils/DbUtils';
-  import axios from 'axios';
+  import axios from '@/utils/AxiosUtils';
 
   export default {
     data() {

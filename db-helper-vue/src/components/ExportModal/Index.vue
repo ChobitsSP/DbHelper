@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import axios from '@/utils/AxiosUtils';
   import { FormModel } from './models/Index'
   import FormMixins from '@/mixins/FormMixins'
   import CsvExport from '@/utils/CsvExport'

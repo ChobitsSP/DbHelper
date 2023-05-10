@@ -69,7 +69,7 @@
   import TempEditor from '@/components/TempEditor/Index.vue'
   import XlsxUpload from './components/XlsxUpload.vue'
   import CsvExport from '@/utils/CsvExport';
-  import axios from 'axios';
+  import axios from '@/utils/AxiosUtils';
   import { RowTypeTrans } from '@/utils/ImportDataUtils';
 
   export default defineComponent({
@@ -120,7 +120,7 @@
 
         loading.value = true;
 
-        const rsp: any = await axios.post(url, params);
+        const rsp = await axios.post(url, params);
 
         if (rsp.code !== 0) {
           alert(rsp.msg);
