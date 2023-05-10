@@ -14,6 +14,9 @@
                       style="margin-left:10px;"
                       @input="ImportData"></XlsxUpload>
         </el-form-item>
+        <el-form-item>
+          <el-checkbox v-model="isHump">isHump</el-checkbox>
+        </el-form-item>
       </el-form>
     </el-row>
     <el-row>
@@ -83,7 +86,7 @@
       tableName: String,
     },
     setup(props, context) {
-      const { coninfo, columns: tableData } = useMainStore();
+      const { coninfo, columns: tableData, isHump } = useMainStore();
 
       // data
       const loading = ref(false);
@@ -133,6 +136,7 @@
         loading,
         coninfo,
         tableData,
+        isHump,
 
         table,
         ExportModal,
