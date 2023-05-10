@@ -12,9 +12,12 @@ export function useMainStore() {
   /** 表名称 */
   const tableName = computed<string>(() => store.state.table.table);
 
+  const isHump = computed<boolean>(() => store.state.table.isHump);
+
   return {
     coninfo,
     columns,
     tableName,
+    isHump,
   };
 }
