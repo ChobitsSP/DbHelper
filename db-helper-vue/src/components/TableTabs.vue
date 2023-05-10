@@ -5,28 +5,29 @@
                  :key="name"
                  :name="name">
     </el-tab-pane>
-    <com1 v-if="activeName != null"
-          :type="activeName"></com1>
+    <TableAutoUtilCom v-if="activeName != null"
+                      :type="activeName">
+    </TableAutoUtilCom>
   </el-tabs>
 </template>
 
-<script>
+<script lang="ts">
+  import { defineComponent, ref } from 'vue';
   import * as UTILS from '@/utils/TableUtils/Index'
-  import com1 from './TableAspxGridView.vue'
+  import TableAutoUtilCom from './TableAspxGridView.vue'
 
-  export default {
+  export default defineComponent({
     components: {
-      com1
+      TableAutoUtilCom,
     },
-    data() {
+    setup() {
+      const names = ref(Object.keys(UTILS));
+      const activeName = ref(names.value[0]);
+
       return {
-        activeName: null,
-        names: [],
-      }
+        activeName,
+        names,
+      };
     },
-    created() {
-      this.names = Object.keys(UTILS)
-      this.activeName = this.names[0]
-    }
-  }
+  });
 </script>

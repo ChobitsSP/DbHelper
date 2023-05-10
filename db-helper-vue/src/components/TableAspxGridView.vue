@@ -15,24 +15,27 @@
   </el-form>
 </template>
 
-<script>
-  import * as UTILS from '@/utils/TableUtils/Index'
-  import ClipboardInput from './ClipboardInput.vue'
+<script lang="ts">
+  import { defineComponent, computed } from 'vue';
+  import _ from 'lodash';
 
-  export default {
+  import * as UTILS from '@/utils/TableUtils/Index';
+  import ClipboardInput from './ClipboardInput.vue';
+  import { useMainStore } from '@/store/main';
+
+  export default defineComponent({
     components: {
       ClipboardInput
     },
     props: {
       type: String
     },
-    computed: {
-      value() {
-        const cols = this.$store.state.table.columns
-        const table = this.$store.state.table.table
-        if (cols.length > 0) return UTILS[this.type](table, cols)
-        return ''
-      }
-    }
-  }
+    setup(props) {
+      const { columns, tableName } = useMainStore();
+      const value = computed<string>(() => UTILS[props.type](tableName.value, columns.value));
+      return {
+        value,
+      };
+    },
+  });
 </script>

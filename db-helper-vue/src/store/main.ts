@@ -9,8 +9,12 @@ export function useMainStore() {
   /** 数据库连接信息 */
   const coninfo = computed(() => store.state.user.coninfo);
 
+  /** 表名称 */
+  const tableName = computed<string>(() => store.state.table.table);
+
   return {
     coninfo,
     columns,
+    tableName,
   };
 }
