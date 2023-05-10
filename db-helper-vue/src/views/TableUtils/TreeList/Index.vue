@@ -1,29 +1,23 @@
 <template>
-  <div>
-    <el-checkbox v-model="showMenu"
-                 label="显示树"
-                 border></el-checkbox>
-    <el-row :gutter="20">
-      <el-col :span="4"
-              v-show="showMenu">
-        <el-input placeholder="表名搜索"
-                  clearable
-                  v-model.trim="filterText">
-        </el-input>
-        <el-tree ref="tree"
-                 :props="props"
-                 :load="loadNode"
-                 :filter-node-method="filterNode"
-                 @node-click="handleNodeClick"
-                 accordion
-                 lazy>
-        </el-tree>
-      </el-col>
-      <el-col :span="showMenu ? 20 : 24">
-        <router-view></router-view>
-      </el-col>
-    </el-row>
-  </div>
+  <el-container>
+    <el-aside width="300px">
+      <el-input placeholder="表名搜索"
+                clearable
+                v-model.trim="filterText">
+      </el-input>
+      <el-tree ref="tree"
+               :props="props"
+               :load="loadNode"
+               :filter-node-method="filterNode"
+               @node-click="handleNodeClick"
+               accordion
+               lazy>
+      </el-tree>
+    </el-aside>
+    <el-container style="margin-left:10px;">
+      <router-view></router-view>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
