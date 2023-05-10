@@ -22,7 +22,7 @@ module.exports = {
       vue: 'Vue',
       'vue-router': 'VueRouter',
       vuex: 'Vuex',
-      'element-ui': 'ELEMENT',
+      // 'element-ui': 'ELEMENT',
       axios: 'axios',
       xlsx: 'XLSX',
     });
