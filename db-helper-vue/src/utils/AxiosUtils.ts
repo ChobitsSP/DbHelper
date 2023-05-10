@@ -23,5 +23,5 @@ export default class AxiosUtils {
 interface TopResult<T = any> {
   code: number;
   msg?: string;
-  result?: T;
+  data?: T;
 }
