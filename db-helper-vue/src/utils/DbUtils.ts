@@ -1,4 +1,5 @@
 import Dexie from "dexie";
+import _ from 'lodash';
 
 export class MyModel {
   id?: number;
@@ -46,10 +47,13 @@ function init() {
 
 init();
 
-export function DbConfigUpdate(item: MyModel) {
+export async function DbConfigUpdate(item: MyModel) {
   if (item.id) {
     return db.DbConfig.update(item.id, item);
   } else {
+    const list = await DbConfigList();
+    const lastId = _.chain(list).map(t => t.id).max().value() || 0;
+    item.id = lastId + 1;
     return db.DbConfig.add(item);
   }
 }
