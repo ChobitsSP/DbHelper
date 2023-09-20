@@ -16,6 +16,7 @@ import JavaModel from "./JavaModel";
 import JavaMybatis from "./JavaMybatis";
 import JavaOldToNew from "./JavaOldToNew";
 import Markdown from "./Markdown";
+import VxeTable from "./VxeTable";
 
 export {
   ASPxGridView,
@@ -36,4 +37,5 @@ export {
   JavaMybatis,
   JavaOldToNew,
   Markdown,
+  VxeTable,
 };
