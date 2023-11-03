@@ -16,7 +16,7 @@ const strlist = [
 ];
 
 export function TypeIsDecimal(type: string) {
-  return ["decimal", "numeric"].some(t => t === type);
+  return ["decimal", "numeric", "money"].some(t => t === type);
 }
 
 export function TypeIsLong(type: string) {
