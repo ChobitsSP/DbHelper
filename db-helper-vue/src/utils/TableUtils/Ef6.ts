@@ -4,8 +4,9 @@ import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsDecimal, TypeIsLong } fro
 function GetNetType(col: IColumn) {
   if (TypeIsDecimal(col.type)) return `decimal`;
   if (TypeIsLong(col.type)) return `long`;
-  if (col.type === 'boolean') return 'bool';
+  if (['bit', 'boolean'].includes(col.type)) return 'bool';
   if (['uuid', 'uniqueidentifier'].includes(col.type)) return 'Guid';
+  if (['uuid', 'uniqueidentifier'].includes(col.type)) return 'double';
   if (col.type === "time without time zone") return 'TimeSpan';
 
   if (col.type === 'smallint') {

@@ -1,6 +1,6 @@
 const numberlist = ["NUMBER", "integer", "smallint", "int", "numeric", "bigint"];
 
-const datelist = ["DATE", "Date", "timestamp without time zone", "timestamp with time zone", "date", "datetime"];
+const datelist = ["DATE", "Date", "timestamp without time zone", "timestamp with time zone", "date", "datetime", "smalldatetime"];
 
 const strlist = [
   "character varying",
