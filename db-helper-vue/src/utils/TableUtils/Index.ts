@@ -19,17 +19,18 @@ import Markdown from "./Markdown";
 import VxeTable from "./VxeTable";
 
 export {
+  TsClass,
+  VxeTable,
+  ElementForm,
+  EfCore,
+  Ef6,
+  ElementRule,
   ASPxGridView,
   ASPxPivotGrid,
-  ElementForm,
-  ElementRule,
   ElTable,
   Ng1Form,
-  TsClass,
   DevExtreme,
   OracleSeq,
-  Ef6,
-  EfCore,
   GolangStruct,
   GolangCurd,
   GinApi,
@@ -37,5 +38,4 @@ export {
   JavaMybatis,
   JavaOldToNew,
   Markdown,
-  VxeTable,
 };
