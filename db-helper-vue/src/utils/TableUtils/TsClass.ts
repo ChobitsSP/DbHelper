@@ -2,19 +2,19 @@ import { IColumn } from "../../models/Index";
 import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsJs } from "../TableUtils";
 
 function GetTsProp(col: IColumn) {
-  if (TypeIsJs(col.type)) return `${col.name}${col.null_able ? "?" : ""}: ${col.type};`;
+  if (TypeIsJs(col.type)) return `${col.name}${col.null_able ? "?" : ""}: ${col.type}`;
 
   if (TypeIsNumber(col.type)) {
-    return `${col.name}${col.null_able ? "?" : ""}: number;`;
+    return `${col.name}${col.null_able ? "?" : ""}: number`;
   }
   if (TypeIsDate(col.type)) {
-    return `${col.name}${col.null_able ? "?" : ""}: Date | string;`;
+    return `${col.name}${col.null_able ? "?" : ""}: string`;
   }
   if (TypeIsString(col.type)) {
-    return `${col.name}${col.null_able ? "?" : ""}: string;`;
+    return `${col.name}${col.null_able ? "?" : ""}: string`;
   }
 
-  return `${col.name}${col.null_able ? "?" : ""}: any;`;
+  return `${col.name}${col.null_able ? "?" : ""}: any`;
 }
 
 function GetTsComment(comment?: string) {
@@ -40,7 +40,7 @@ export default function (tableName: string, cols: IColumn[]) {
 
   cols.forEach(col => {
     arr.push(GetTsComment(col.comments));
-    arr.push(GetTsProp(col));
+    arr.push(GetTsProp(col) + ' = null;');
   });
 
   arr.push(`}`);
