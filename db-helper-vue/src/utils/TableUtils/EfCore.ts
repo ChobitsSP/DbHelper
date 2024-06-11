@@ -11,6 +11,9 @@ function GetNetType(col: IColumn) {
   if (col.type === 'smallint') {
     return `short`;
   }
+  if (col.type === 'tinyint') {
+    return `byte`;
+  }
   if (TypeIsNumber(col.type)) {
     return `int`;
   }
