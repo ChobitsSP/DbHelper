@@ -2,6 +2,9 @@ import { IColumn } from "../../models/Index";
 import { TypeIsNumber, TypeIsDate, TypeIsString, TypeIsDecimal } from "../TableUtils";
 
 function GetNetType(col: IColumn) {
+  if (['bit', 'boolean'].includes(col.type)) return 'bool';
+  if (['uuid', 'uniqueidentifier'].includes(col.type)) return 'Guid';
+
   if (TypeIsDecimal(col.type)) {
     return `decimal`;
   }
