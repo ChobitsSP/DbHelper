@@ -6,7 +6,6 @@ function GetNetType(col: IColumn) {
   if (TypeIsLong(col.type)) return `long`;
   if (['bit', 'boolean'].includes(col.type)) return 'bool';
   if (['uuid', 'uniqueidentifier'].includes(col.type)) return 'Guid';
-  if (['uuid', 'uniqueidentifier'].includes(col.type)) return 'double';
   if (col.type === "time without time zone") return 'TimeSpan';
 
   if (col.type === 'smallint') {
