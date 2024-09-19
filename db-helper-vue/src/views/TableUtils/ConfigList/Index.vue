@@ -17,8 +17,8 @@
       </el-form>
     </el-row>
     <el-row>
-      <vxe-table size="small" resizable :row-config="{ keyField: 'id' }" stripe show-overflow="tooltip"
-        :data="tableData" border style="width: 100%">
+      <vxe-table size="mini" resizable :row-config="{ keyField: 'id' }" stripe show-overflow="tooltip" :data="tableData"
+        border style="width: 100%">
         <vxe-column field="id" title="id" width="60">
         </vxe-column>
         <vxe-column field="name" title="name" width="200">
