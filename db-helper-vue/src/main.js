@@ -32,7 +32,6 @@ Object.keys(filters).forEach((key) => {
 import 'xe-utils';
 import VXETable from 'vxe-table';
 import 'vxe-table/lib/style.css';
-import '/src/assets/print.css';
 Vue.use(VXETable);
 
 /* eslint-disable no-new */

@@ -16,4 +16,10 @@ export interface IColumn {
    * @memberof IColumn
    */
   comments?: string;
+
+  character_maximum_length?: number;
+  numeric_precision?: number;
+  numeric_scale?: number;
+
+  table?: string;
 }
