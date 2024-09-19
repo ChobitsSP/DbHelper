@@ -13,5 +13,8 @@ namespace DbUtils
         public string type { get; set; }
         public bool null_able { get; set; }
         public string comments { get; set; }
+        public int? character_maximum_length { get; set; }
+        public int? numeric_precision { get; set; }
+        public int? numeric_scale { get; set; }
     }
 }

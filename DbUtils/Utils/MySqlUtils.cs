@@ -27,6 +27,9 @@ namespace DbUtils.Utils
             public string IS_NULLABLE { get; set; }
             public string COLUMN_TYPE { get; set; }
             public string COLUMN_COMMENT { get; set; }
+            public int? CHARACTER_MAXIMUM_LENGTH { get; set; }
+            public int? NUMERIC_PRECISION { get; set; }
+            public int? NUMERIC_SCALE { get; set; }
         }
 
         public IEnumerable<TableColumn> GetColumns(string table)
@@ -40,6 +43,9 @@ COLUMN_DEFAULT,
 IS_NULLABLE,
 DATA_TYPE,
 COLUMN_TYPE,
+CHARACTER_MAXIMUM_LENGTH,
+NUMERIC_PRECISION,
+NUMERIC_SCALE,
 COLUMN_COMMENT
 
 FROM INFORMATION_SCHEMA.COLUMNS 
@@ -63,6 +69,9 @@ ORDER BY ORDINAL_POSITION;";
                 comments = t.COLUMN_COMMENT,
                 null_able = t.IS_NULLABLE == "YES",
                 type = t.DATA_TYPE,
+                character_maximum_length = t.CHARACTER_MAXIMUM_LENGTH,
+                numeric_precision = t.NUMERIC_PRECISION,
+                numeric_scale = t.NUMERIC_SCALE,
             });
 
             return result;
