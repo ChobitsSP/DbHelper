@@ -29,8 +29,6 @@ namespace DbUtils.Utils
 
         public IEnumerable<TableColumn> GetColumns(string table)
         {
-            table = DbHelper.SafeTableName(table);
-
             string fields = @"
 1 as COLUMN_ID, 
 t2.COLUMN_NAME, 
@@ -44,7 +42,14 @@ AND c.relname = t2.table_name) as COMMENTS";
 
             fields = string.Format(fields, table);
 
-            string sql = "select {0} from information_schema.tables t1 inner join information_schema.columns t2 on t1.TABLE_NAME = t2.TABLE_NAME where t1.table_schema ='public' and t1.table_name = @table";
+            string sql = "select {0} from information_schema.tables t1 inner join information_schema.columns t2 on t1.TABLE_NAME = t2.TABLE_NAME where t1.table_schema ='public'";
+
+            if(!string.IsNullOrEmpty(table))
+            {
+                sql += " and t1.table_name = @table ";
+            }
+
+            sql += " order by t1.table_name, COLUMN_ID";
 
             sql = string.Format(sql, fields);
 
