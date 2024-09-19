@@ -30,13 +30,13 @@ namespace DbUtils.Utils
             public ulong? CHARACTER_MAXIMUM_LENGTH { get; set; }
             public int? NUMERIC_PRECISION { get; set; }
             public int? NUMERIC_SCALE { get; set; }
+            public string table_name { get; set; }
         }
 
         public IEnumerable<TableColumn> GetColumns(string table)
         {
-            table = DbHelper.SafeTableName(table);
-
-            const string sql = @"SELECT
+            var sql = @"SELECT
+table_name,
 ORDINAL_POSITION,
 COLUMN_NAME,
 COLUMN_DEFAULT,
@@ -47,11 +47,16 @@ CHARACTER_MAXIMUM_LENGTH,
 NUMERIC_PRECISION,
 NUMERIC_SCALE,
 COLUMN_COMMENT
-
 FROM INFORMATION_SCHEMA.COLUMNS 
-  WHERE table_name = ?table
-and table_schema = ?table_schema
-ORDER BY ORDINAL_POSITION;";
+  WHERE 1=1
+and table_schema = ?table_schema";
+
+            if (!string.IsNullOrEmpty(table))
+            {
+                sql += " and table_name = ?table";
+            }
+
+            sql += " ORDER BY table_name, ORDINAL_POSITION;";
 
             List<TableColumnsItem> list;
 
@@ -72,6 +77,7 @@ ORDER BY ORDINAL_POSITION;";
                 character_maximum_length = t.CHARACTER_MAXIMUM_LENGTH,
                 numeric_precision = t.NUMERIC_PRECISION,
                 numeric_scale = t.NUMERIC_SCALE,
+                table = t.table_name,
             });
 
             return result;

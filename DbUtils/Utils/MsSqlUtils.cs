@@ -25,25 +25,32 @@ namespace DbUtils.Utils
             const string sql = "SELECT ORDINAL_POSITION,COLUMN_NAME,DATA_TYPE,IS_NULLABLE FROM INFORMATION_SCHEMA.columns WHERE TABLE_NAME= @table";
 
 
-            const string sql1 = @"
+           var sql1 = @"
 SELECT
-        id=a.colorder,
-        name=a.name,
-        type=b.name,
-        a.length,
-		a.prec,
-		a.scale,
+        id = a.colorder,
+        name = a.name,
+        type = b.name,
+        [table] = d.name,
+        character_maximum_length = a.length,
+		numeric_precision = a.prec,
+		numeric_scale = a.scale,
         null_able = a.isnullable,
-        comments=isnull(g.[value],'')
+        comments= isnull(g.[value],'')
         FROM   syscolumns   a
         left   join   systypes   b   on   a.xusertype=b.xusertype
         inner   join   sysobjects   d   on   a.id=d.id     and   d.xtype='U'   and     d.name<>'dtproperties'
         left   join   syscomments   e   on   a.cdefault=e.id
         left   join   sys.extended_properties   g   on   a.id=g.major_id   and   a.colid=g.minor_id
         left   join   sys.extended_properties   f   on   d.id=f.major_id   and   f.minor_id=0
-        where   d.name= @table
-        order   by   a.id,a.colorder
+        where 1=1
 ";
+
+            if (!string.IsNullOrEmpty(table))
+            {
+                sql1 += " and d.name = @table ";
+            }
+
+            sql1 += " order by d.name, a.id, a.colorder";
 
             using (var db = new SqlConnection(connstr))
             {
@@ -119,7 +126,7 @@ SELECT
                 catch
                 {
                     db.Execute("sys.sp_addextendedproperty", p, commandType: CommandType.StoredProcedure);
-                }            
+                }
 
                 //if (!hasDesc)
                 //{
@@ -144,11 +151,11 @@ SELECT
             public string COLUMN_DEFAULT { get; set; }
             public string IS_NULLABLE { get; set; }
             public string DATA_TYPE { get; set; }
-            public object CHARACTER_MAXIMUM_LENGTH { get; set; }
+            public ulong? CHARACTER_MAXIMUM_LENGTH { get; set; }
             public object CHARACTER_OCTET_LENGTH { get; set; }
-            public object NUMERIC_PRECISION { get; set; }
+            public int? NUMERIC_PRECISION { get; set; }
             public object NUMERIC_PRECISION_RADIX { get; set; }
-            public object NUMERIC_SCALE { get; set; }
+            public int? NUMERIC_SCALE { get; set; }
             public object DATETIME_PRECISION { get; set; }
             public string CHARACTER_SET_CATALOG { get; set; }
             public string CHARACTER_SET_SCHEMA { get; set; }

@@ -16,5 +16,6 @@ namespace DbUtils
         public ulong? character_maximum_length { get; set; }
         public int? numeric_precision { get; set; }
         public int? numeric_scale { get; set; }
+        public string table { get; set; }
     }
 }
