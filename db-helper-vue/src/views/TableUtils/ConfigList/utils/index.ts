@@ -7,7 +7,6 @@ import { IColumn } from '@/models/Index';
 
 import * as FileUtils from '@/utils/FileUtils';
 import http from '@/utils/AxiosUtils';
-import { ExportExcel } from "@/utils/CsvExport";
 
 import { ExportDbDatas } from "@/utils/ImportDataUtils";
 import Ef6Utils from "@/utils/TableUtils/Ef6";
@@ -65,28 +64,9 @@ export function useSetup(item: TableConfig) {
 
   async function exportAll(item: TableConfig) {
     loading.value = true;
-
-    const exportDic = {
-      "id": "id",
-      "table": "表名",
-      "name": "列名",
-      "type": "类型",
-      "null_able": "可空",
-      "comments": "备注",
-      "character_maximum_length": "最大长度",
-      "numeric_precision": "数字长度",
-      "numeric_scale": "小数位数",
-    };
-
     try {
       const list = await GetTableColumns(item);
-      const row1 = Object.keys(exportDic).map(key => exportDic[key]);
-      const rows = _.chain(list)
-        .map(col => {
-          return Object.keys(exportDic).map(key => col[key]);
-        })
-        .value();
-      ExportExcel([row1, ...rows], ["dbinfo", item.name, moment().format("YYYYMMDDHHmmss")].join("_"));
+      FileUtils.ColumnsExport(list, item.name);
     } catch (err: any) {
       Message.error(err.message);
       console.error(err);
