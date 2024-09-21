@@ -46,3 +46,57 @@ export async function ColumnsExport(columns: IColumn[], fileName: string) {
     });
   ExportExcel([row1, ...rows], ["dbinfo", fileName, moment().format("YYYYMMDDHHmmss")].join("_"));
 }
+
+interface PickerOptions {
+  types?: {
+    description: string;
+    accept: Record<string, string[]>;
+  }[];
+  excludeAcceptAllOption?: boolean;
+  multiple?: boolean;
+}
+
+/**
+ * 选择文件
+ * @param pickerOpts
+ * @returns
+ */
+export async function SelectFiles(pickerOpts: PickerOptions) {
+  const fileHandles: { getFile: () => Promise<File> }[] = await window[
+    'showOpenFilePicker'
+  ](pickerOpts);
+  try {
+    const files = await Promise.all(fileHandles.map((t) => t.getFile()));
+    return files;
+  } catch {
+    throw new Error('取消选择');
+  }
+}
+
+/**
+ * excel
+ * @returns
+ */
+export async function SingleExcelSelect() {
+  let file: File;
+  try {
+    const pickerOpts = {
+      types: [
+        {
+          description: 'excel',
+          accept: {
+            'application/msexcel': ['.xls', '.xlsx'],
+          },
+        },
+      ],
+      excludeAcceptAllOption: true,
+      multiple: false,
+    };
+    const files = await SelectFiles(pickerOpts);
+    file = files[0];
+    return file;
+  } catch (err: any) {
+    if (err.name === 'AbortError') return null;
+    throw err;
+  }
+}
