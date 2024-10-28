@@ -37,14 +37,18 @@ t2.DATA_TYPE,
 t2.is_nullable as NULLABLE,
 
 (SELECT pg_catalog.col_description(c.oid, t2.ordinal_position::int) FROM pg_catalog.pg_class c 
-WHERE c.oid = (SELECT '{0}'::regclass::oid)
-AND c.relname = t2.table_name) as COMMENTS";
+WHERE c.relname = t2.table_name) as COMMENTS";
+
+            if (!string.IsNullOrEmpty(table))
+            {
+                fields += $" and c.oid = (SELECT '{table}'::regclass::oid)";
+            }
 
             fields = string.Format(fields, table);
 
             string sql = "select {0} from information_schema.tables t1 inner join information_schema.columns t2 on t1.TABLE_NAME = t2.TABLE_NAME where t1.table_schema ='public'";
 
-            if(!string.IsNullOrEmpty(table))
+            if (!string.IsNullOrEmpty(table))
             {
                 sql += " and t1.table_name = @table ";
             }
