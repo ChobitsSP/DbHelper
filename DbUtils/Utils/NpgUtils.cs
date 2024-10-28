@@ -20,6 +20,7 @@ namespace DbUtils.Utils
 
         public class TableColumnsItem
         {
+            public string TABLE_NAME { get; set; }
             public int COLUMN_ID { get; set; }
             public string COLUMN_NAME { get; set; }
             public string COMMENTS { get; set; }
@@ -30,30 +31,27 @@ namespace DbUtils.Utils
         public IEnumerable<TableColumn> GetColumns(string table)
         {
             string fields = @"
+t1.TABLE_NAME,
 1 as COLUMN_ID, 
 t2.COLUMN_NAME, 
 t2.DATA_TYPE, 
 1 as DATA_LENGTH, 
 t2.is_nullable as NULLABLE,
+pg_catalog.col_description(c.oid, t2.ordinal_position::int) as COMMENTS";
 
-(SELECT pg_catalog.col_description(c.oid, t2.ordinal_position::int) FROM pg_catalog.pg_class c 
-WHERE c.relname = t2.table_name) as COMMENTS";
-
-            if (!string.IsNullOrEmpty(table))
-            {
-                fields += $" and c.oid = (SELECT '{table}'::regclass::oid)";
-            }
-
-            fields = string.Format(fields, table);
-
-            string sql = "select {0} from information_schema.tables t1 inner join information_schema.columns t2 on t1.TABLE_NAME = t2.TABLE_NAME where t1.table_schema ='public'";
+            string sql = @"
+SELECT {0}
+FROM information_schema.tables t1
+INNER JOIN information_schema.columns t2 ON t1.TABLE_NAME = t2.TABLE_NAME
+INNER JOIN pg_catalog.pg_class c ON c.relname = t1.TABLE_NAME
+WHERE t1.table_schema = 'public'";
 
             if (!string.IsNullOrEmpty(table))
             {
-                sql += " and t1.table_name = @table ";
+                sql += " AND t1.table_name = @table";
             }
 
-            sql += " order by t1.table_name, COLUMN_ID";
+            sql += " ORDER BY t1.table_name, t2.ordinal_position";
 
             sql = string.Format(sql, fields);
 
@@ -66,6 +64,7 @@ WHERE c.relname = t2.table_name) as COMMENTS";
 
             var result = list.Select(t => new TableColumn()
             {
+                table = t.TABLE_NAME,
                 id = t.COLUMN_ID,
                 name = t.COLUMN_NAME,
                 comments = t.COMMENTS,
