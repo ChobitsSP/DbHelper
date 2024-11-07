@@ -103,7 +103,7 @@ export function useSetup(item: TableConfig) {
 
       const files = _.chain(list).groupBy(t => t.table).map((v, k) => ({
         name: k + '.cs',
-        text: ['namespace Models', '{', Ef6Utils(k, list), '}'].join('\r\n'),
+        text: ['namespace Models', '{', Ef6Utils(k, v), '}'].join('\r\n'),
       })).value();
       const names = _.chain(list).map(t => t.table).uniq().value();
 
