@@ -50,6 +50,7 @@ namespace DbUtils
 
         public static string SafeTableName(string name)
         {
+            if (string.IsNullOrEmpty(name)) return name;
             return Regex.Match(name, @"[a-z0-9_]+", RegexOptions.IgnoreCase).Value;
         }
 

@@ -22,10 +22,9 @@ namespace DbUtils.Utils
         {
             table = DbHelper.SafeTableName(table);
 
-            const string sql = "SELECT ORDINAL_POSITION,COLUMN_NAME,DATA_TYPE,IS_NULLABLE FROM INFORMATION_SCHEMA.columns WHERE TABLE_NAME= @table";
+            // const string sql = "SELECT ORDINAL_POSITION,COLUMN_NAME,DATA_TYPE,IS_NULLABLE FROM INFORMATION_SCHEMA.columns WHERE TABLE_NAME= @table";
 
-
-           var sql1 = @"
+            var sql1 = @"
 SELECT
         id = a.colorder,
         name = a.name,
