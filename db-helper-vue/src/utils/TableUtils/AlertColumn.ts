@@ -41,7 +41,7 @@ function GetMsSqlAlertSql(tableName: string, column: IColumn): string {
     sql += `; EXEC sp_addextendedproperty 'MS_Description', N'${column.comments}', 'SCHEMA', 'dbo', 'TABLE', '${tableName}', 'COLUMN', '${column.name}'`;
   }
 
-  return sql;
+  return sql + ';';
 }
 
 function GetMySqlAlertSql(tableName: string, column: IColumn): string {
@@ -61,7 +61,7 @@ function GetMySqlAlertSql(tableName: string, column: IColumn): string {
     sql += ` COMMENT '${column.comments}'`;
   }
 
-  return sql;
+  return sql + ';';
 }
 
 function GetNpgsqlAlertSql(tableName: string, column: IColumn): string {
@@ -81,7 +81,7 @@ function GetNpgsqlAlertSql(tableName: string, column: IColumn): string {
     sql += `; COMMENT ON COLUMN ${tableName}.${column.name} IS '${column.comments}'`;
   }
 
-  return sql;
+  return sql + ';';
 }
 
 function GetOracleAlertSql(tableName: string, column: IColumn): string {
@@ -101,5 +101,5 @@ function GetOracleAlertSql(tableName: string, column: IColumn): string {
     sql += `; COMMENT ON COLUMN ${tableName}.${column.name} IS '${column.comments}'`;
   }
 
-  return sql;
+  return sql + ';';
 }
