@@ -4,7 +4,7 @@ module.exports = {
   runtimeCompiler: true,
   pages: {
     index: {
-      entry: 'src/main.js',
+      entry: 'src/main.ts',
       title: 'vue-sql',
     },
   },
@@ -16,15 +16,6 @@ module.exports = {
   chainWebpack: (config) => {
     config.externals({
       jquery: 'jQuery',
-      moment: 'moment',
-      rxjs: 'Rx',
-      lodash: '_',
-      vue: 'Vue',
-      'vue-router': 'VueRouter',
-      vuex: 'Vuex',
-      // 'element-ui': 'ELEMENT',
-      axios: 'axios',
-      xlsx: 'XLSX',
     });
   },
 };

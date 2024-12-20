@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vite",
     "dev": "vue-cli-service serve --open",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build --no-module"
   },
   "dependencies": {
     "axios": "^0.21.1",
     "clipboard": "^1.7.1",
     "dexie": "^2.0.4",
-    "element-ui": "^2.15.13",
+    "element-ui": "^2.15.14",
     "file-saver": "^2.0.5",
     "jszip": "^3.7.1",
     "lodash": "^4.17.11",
@@ -24,21 +24,18 @@
     "vue-rx": "^5.0.0",
     "vue2-filters": "^0.2.2",
     "vuex": "^3.6.2",
-    "vxe-table": "^3.7.8",
-    "vxe-table-plugin-element": "^1.13.0",
-    "xe-utils": "^3.5.4",
+    "vxe-pc-ui": "^3.3.32",
+    "vxe-table": "^3.11.29",
     "xlsx": "^0.14.1"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.14",
     "@types/lodash": "^4.14.121",
     "@vitejs/plugin-vue2": "^1.1.2",
-    "@vue/cli-plugin-babel": "^4.5.18",
-    "@vue/cli-plugin-typescript": "^4.5.18",
-    "@vue/cli-service": "^4.5.18",
-    "gulp": "^4.0.0",
-    "gulplog": "^1.0.0",
-    "require-dir": "^1.2.0",
-    "typescript": "^4.1.5"
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-typescript": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "typescript": "^5.6.2",
+    "vite": "^6.0.4"
   }
 }
