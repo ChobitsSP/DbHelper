@@ -21,6 +21,13 @@
     },
   },
   {
+    path: 'Table/DbCompare',
+    component: () => import('./DbCompare/index.vue'),
+    meta: {
+      title: '数据库差异对比',
+    },
+  },
+  {
     path: 'Table/TableInfo',
     component: () => import('./TreeList/Index.vue'),
     meta: {
