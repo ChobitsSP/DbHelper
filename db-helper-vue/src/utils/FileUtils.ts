@@ -119,3 +119,21 @@ export function ExportJson(fileData: any, filename: string) {
 
   document.body.removeChild(element);
 }
+
+async function LoadJson<T = any>(file: File) {
+  return new Promise<T>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const data = JSON.parse(event.target.result as string);
+        resolve(data);
+      } catch (err) {
+        reject(err);
+      }
+    }
+    reader.onerror = (event) => {
+      reject(event);
+    }
+    reader.readAsText(file);
+  });
+}
