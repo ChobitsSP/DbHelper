@@ -7,10 +7,6 @@ import store from './store';
 import router from './router';
 import './utils/axios';
 
-import Rx from 'rxjs';
-import VueRx from 'vue-rx';
-Vue.use(VueRx, Rx);
-
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI, { size: 'samll' });

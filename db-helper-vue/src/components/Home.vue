@@ -1,46 +1,58 @@
 <template>
   <el-container>
-    <el-header :height="height">
+    <el-header :height="height + 'px'">
       <NavHeader ref="NavHeader"></NavHeader>
     </el-header>
-    <el-main>
+    <el-main :style="{ height: `calc(100vh - ${height}px)` }">
       <router-view />
     </el-main>
   </el-container>
 </template>
 
-<script>
-  import { Observable } from 'rxjs'
-  import NavHeader from './NavHeader.vue'
-  import TableNames from './TableNames.vue'
+<script lang="ts">
+  import { defineComponent, ref, onMounted, nextTick } from 'vue';
+  import { Observable } from 'rxjs';
+  import NavHeader from './NavHeader.vue';
+  import TableNames from './TableNames.vue';
+  import { useRx } from '@/mixins/RxBusMixins';
 
-  export default {
+  export default defineComponent({
     name: 'Home',
     components: {
       NavHeader,
       TableNames,
     },
-    data() {
-      return {
-        height: null
+    setup() {
+      const rxHub = useRx();
+      const height = ref<number>(50);
+
+      const NavHeader = ref();
+
+      function GetNavHeight(): number {
+        return NavHeader.value?.$el?.clientHeight || 0;
       }
-    },
-    mounted() {
+
       const source = Observable
         .merge(Observable.fromEvent(window, 'resize'), Observable.interval(100))
-        .map(() => this.$refs.NavHeader.$el.clientHeight)
+        .map(() => GetNavHeight())
+        .filter((value) => value > 0)
         .distinctUntilChanged()
+        .subscribe((value) => {
+          height.value = value;
+        });
 
-      this.$subscribeTo(source, this.ready)
+      rxHub.add(source);
 
-      this.$nextTick(() => {
-        this.ready(this.$refs.NavHeader.$el.clientHeight)
-      })
+      onMounted(() => {
+        nextTick(() => {
+          height.value = GetNavHeight();
+        });
+      });
+
+      return {
+        height,
+        NavHeader,
+      };
     },
-    methods: {
-      ready(h) {
-        this.height = h + 'px'
-      }
-    }
-  }
+  });
 </script>

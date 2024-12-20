@@ -1,3 +1,7 @@
+body {
+  height: 100vh;
+}
+
 .el-header {
   padding: 0;
 }
@@ -10,6 +14,6 @@
   border-radius: 4px;
 }
 
-.el-upload input[type="file"] {
+.el-upload input[type='file'] {
   display: none !important;
 }
