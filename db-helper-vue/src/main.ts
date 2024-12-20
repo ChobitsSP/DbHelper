@@ -13,7 +13,7 @@ Vue.use(VueRx, Rx);
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI);
+Vue.use(ElementUI, { size: 'samll' });
 
 import * as filters from './filters/Index';
 
