@@ -1,4 +1,4 @@
-const list = [
+export default [
   {
     name: 'changsha',
     providerName: 'Oracle.ManagedDataAccess.Client',
@@ -9,6 +9,4 @@ const list = [
     providerName: 'Npgsql',
     connectionString: 'Host=server3.hsort.com;Username=postgres;Password=123;Application Name=ndc;Database=point',
   },
-]
-
-export default list
+];
