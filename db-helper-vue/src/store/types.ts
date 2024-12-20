@@ -1,4 +1,4 @@
-import { IColumn } from '@/models/Index';
+import { IColumn, TableConfig } from '@/models/Index';
 
 export interface TableState {
   table: string;
@@ -7,7 +7,7 @@ export interface TableState {
 }
 
 export interface UserState {
-  coninfo: any;
+  coninfo: TableConfig;
 }
 
 export interface RootState {

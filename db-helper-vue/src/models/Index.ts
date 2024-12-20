@@ -23,3 +23,10 @@ export interface IColumn {
 
   table?: string;
 }
+
+export interface TableConfig {
+  id?: number;
+  name?: string;
+  providerName?: string;
+  connectionString?: string;
+}
