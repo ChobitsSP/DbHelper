@@ -29,9 +29,8 @@
     </el-row>
     <el-row>
       <vxe-table :row-config="{ keyField: 'id' }"
-                 show-overflow="tooltip"
                  :data="tableData"
-                 style="width: 100%">
+                 class="my-table">
         <vxe-column field="id"
                     title="id"
                     width="60">
@@ -45,11 +44,12 @@
           </template>
         </vxe-column>
         <vxe-column field="providerName"
-                    title="provider"
-                    width="220">
+                    title="类型"
+                    :formatter="providerNameFormatter"
+                    width="80">
         </vxe-column>
         <vxe-column field="connectionString"
-                    title="provider"
+                    title="连接"
                     min-width="220">
         </vxe-column>
         <vxe-column title="操作"
@@ -98,10 +98,10 @@
   import { defineComponent, ref } from 'vue';
   import { MessageBox } from 'element-ui';
 
-  import _ from "lodash";
   import ConAddModal from '@/components/ConAddModal.vue';
   import * as DbUtils from '@/utils/DbUtils';
   import XlsxUpload from "./components/XlsxUpload.vue";
+  import { DbTypes } from '@/data';
 
   import { useSetup } from './utils/index';
   import store from '@/store';
@@ -146,6 +146,10 @@
         return refresh();
       }
 
+      function providerNameFormatter({ cellValue }) {
+        return DbTypes.find(t => t.value === cellValue)?.label;
+      }
+
       return {
         ...setup,
         tableData,
@@ -161,7 +165,15 @@
           });
         },
         importConfig,
+
+        providerNameFormatter,
       };
     },
   });
 </script>
+
+<style scoped>
+  .my-table {
+    margin-top: 10px;
+  }
+</style>

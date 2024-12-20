@@ -30,6 +30,7 @@
                     prop="connectionString">
         <el-input v-model="item.connectionString"
                   placeholder="请输入数据库连接字符串"
+                  :rows="6"
                   type="textarea">
         </el-input>
         <a href="https://www.connectionstrings.com"
