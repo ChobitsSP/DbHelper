@@ -4,24 +4,25 @@ import * as Data from '@/data';
 
 export default function (tableName: string, cols: IColumn[]) {
   const providerName = store.state.user.coninfo.providerName;
+  return cols.map(t => GetAlertSql(providerName, tableName, t)).join("\r\n");
+}
+
+export function GetAlertSql(providerName: string, tableName: string, column: IColumn): string {
+  let sql = '';
   const dbType = Data.DbTypes.find(t => t.value === providerName).label;
-
-  let list: string[] = [];
-
   if (dbType === Data.DbTypeMySql) {
-    list = cols.map(t => GetMySqlAlertSql(tableName, t));
+    sql = GetMySqlAlertSql(tableName, column);
   }
   else if (dbType === Data.DbTypeMsSql) {
-    list = cols.map(t => GetMsSqlAlertSql(tableName, t));
+    sql = GetMsSqlAlertSql(tableName, column);
   }
   else if (dbType === Data.DbTypeNpgsql) {
-    list = cols.map(t => GetNpgsqlAlertSql(tableName, t));
+    sql = GetNpgsqlAlertSql(tableName, column);
   }
   else if (dbType === Data.DbTypeOracle) {
-    list = cols.map(t => GetOracleAlertSql(tableName, t));
+    sql = GetOracleAlertSql(tableName, column);
   }
-
-  return list.join("\r\n");
+  return sql;
 }
 
 function GetMsSqlAlertSql(tableName: string, column: IColumn): string {
