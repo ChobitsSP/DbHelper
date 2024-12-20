@@ -5,7 +5,7 @@ import Vue from 'vue';
 
 Vue.config.devtools = process.env.NODE_ENV !== 'production';
 
-import App from './App';
+import App from './App.vue';
 import store from './store';
 import router from './router';
 
@@ -29,16 +29,19 @@ Object.keys(filters).forEach((key) => {
   Vue.filter(key, filters[key]);
 });
 
-import 'xe-utils';
-import VXETable from 'vxe-table';
+import VxeUI from 'vxe-pc-ui';
+import 'vxe-pc-ui/lib/style.css';
+import VxeUITable from 'vxe-table';
 import 'vxe-table/lib/style.css';
-Vue.use(VXETable);
+import { InitVxeConfig } from './mixins/VxeTableConfig';
+Vue.use(VxeUI);
+Vue.use(VxeUITable);
+InitVxeConfig();
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
-  template: '<App/>',
-  components: { App },
+  render: (h) => h(App),
 });

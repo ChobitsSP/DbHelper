@@ -1,5 +1,8 @@
 import { defineConfig } from 'vite';
 import createVuePlugin from '@vitejs/plugin-vue2';
+import path from 'path';
+
+const projectRootDir = path.resolve(__dirname);
 
 export default defineConfig({
   base: '/',
