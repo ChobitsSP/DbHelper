@@ -120,7 +120,7 @@ export function ExportJson(fileData: any, filename: string) {
   document.body.removeChild(element);
 }
 
-async function LoadJson<T = any>(file: File) {
+export function LoadJson<T = any>(file: File) {
   return new Promise<T>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
