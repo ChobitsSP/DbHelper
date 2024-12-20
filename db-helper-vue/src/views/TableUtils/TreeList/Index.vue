@@ -3,9 +3,11 @@
     <el-aside width="300px">
       <el-input placeholder="表名搜索"
                 clearable
+                size="small"
                 v-model.trim="filterText">
       </el-input>
       <el-tree ref="tree"
+               size="small"
                :props="props"
                :load="loadNode"
                :filter-node-method="filterNode"
