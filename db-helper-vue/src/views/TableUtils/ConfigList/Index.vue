@@ -18,6 +18,7 @@
         </el-form-item>
         <el-form-item>
           <el-upload accept=".json"
+                     action=""
                      :before-upload="importConfig">
             <el-button circle
                        icon="el-icon-upload"
@@ -90,7 +91,7 @@
         </vxe-column>
       </vxe-table>
     </el-row>
-    <ConAddModal></ConAddModal>
+    <ConfigEditDialog></ConfigEditDialog>
   </div>
 </template>
 
@@ -98,7 +99,7 @@
   import { defineComponent, ref } from 'vue';
   import { MessageBox } from 'element-ui';
 
-  import ConAddModal from '@/components/ConAddModal.vue';
+  import ConfigEditDialog from '@/components/ConfigEditDialog.vue';
   import * as DbUtils from '@/utils/DbUtils';
   import XlsxUpload from "./components/XlsxUpload.vue";
   import { DbTypes } from '@/data';
@@ -110,7 +111,7 @@
 
   export default defineComponent({
     components: {
-      ConAddModal,
+      ConfigEditDialog,
       XlsxUpload,
     },
     setup() {
