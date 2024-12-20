@@ -29,7 +29,7 @@
   import * as DbUtils from '@/utils/DbUtils';
   import axios from '@/utils/AxiosUtils';
 
-  import filterBy from 'vue2-filters/src/array/filterBy';
+  import filterBy from '@/filters/filterBy';
 
   interface TreeItem {
     id: number;

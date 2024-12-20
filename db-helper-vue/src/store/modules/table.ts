@@ -1,15 +1,9 @@
-import * as types from '../mutation-types';
-
-import { ActionTree, MutationTree } from 'vuex';
-import { IColumn } from '@/models/Index';
+import { ActionTree, MutationTree, Module } from 'vuex';
 
 import axios from '@/utils/AxiosUtils';
-
-interface MyState {
-  table: string;
-  columns: IColumn[];
-  isHump: boolean;
-}
+import { IColumn } from '@/models/Index';
+import * as types from '../mutation-types';
+import { TableState as MyState } from '../types';
 
 // initial state
 const state: MyState = {
@@ -18,20 +12,17 @@ const state: MyState = {
   isHump: false,
 };
 
-// getters
-const getters = {};
-
 // actions
 const actions: ActionTree<MyState, any> = {
-  getColumns: async function (t, data) {
+  getColumns: async function (store, data) {
     const rsp = await axios.post<IColumn[]>('/api/sql/tablecolumns', data);
     if (rsp.code === 0) {
       const list = rsp.data;
       list.forEach((col, i) => {
         col.id = i + 1;
       });
-      t.commit('SET_COLUMNS', list);
-      t.commit('SET_TABLE_NAME', data.table);
+      store.commit('SET_COLUMNS', list);
+      store.commit('SET_TABLE_NAME', data.table);
     }
   },
 };
@@ -51,7 +42,6 @@ const mutations: MutationTree<MyState> = {
 
 export default {
   state,
-  getters,
   actions,
   mutations,
-};
+} as Module<MyState, any>;

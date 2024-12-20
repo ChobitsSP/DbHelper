@@ -2,9 +2,9 @@
 import Router from 'vue-router';
 
 //import Table from "../views/Table/router";
-import BtTable from '../views/BtTable/router.js';
-import TableUtils from '../views/TableUtils/router.js';
-import OtherUtils from '../views/OtherUtils/router.js';
+import BtTable from '../views/BtTable/router';
+import TableUtils from '../views/TableUtils/router';
+import OtherUtils from '../views/OtherUtils/router';
 
 Vue.use(Router);
 

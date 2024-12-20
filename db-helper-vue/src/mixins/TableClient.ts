@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import CsvExport from '../utils/CsvExport'
+import filterBy from '../filters/filterBy'
 
 function getPaginatedItems(items: any[], page: number, per_page: number) {
   const offset = (page - 1) * per_page
@@ -51,7 +52,7 @@ export default {
       return this.filterItems.length
     },
     filterItems() {
-      return this.filterBy(this.tableData, this.q)
+      return filterBy(this.tableData, this.q)
     },
     items() {
       let items = this.filterItems

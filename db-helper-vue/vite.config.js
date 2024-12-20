@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import createVuePlugin from '@vitejs/plugin-vue2';
 import path from 'path';
 
+const resolveExternalsPlugin = require('vite-plugin-resolve-externals');
 const projectRootDir = path.resolve(__dirname);
 
 export default defineConfig({
@@ -16,6 +17,9 @@ export default defineConfig({
           whitespace: 'condense',
         },
       },
+    }),
+    resolveExternalsPlugin({
+      jquery: 'jQuery',
     }),
   ],
   resolve: {

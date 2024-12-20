@@ -1,6 +1,3 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-
 import Vue from 'vue';
 
 Vue.config.devtools = process.env.NODE_ENV !== 'production';
@@ -8,21 +5,17 @@ Vue.config.devtools = process.env.NODE_ENV !== 'production';
 import App from './App.vue';
 import store from './store';
 import router from './router';
-
-import * as filters from './filters/Index';
-import Vue2Filters from 'vue2-filters';
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-
-import './assets/app.css';
 import './utils/axios';
 
 import Rx from 'rxjs';
 import VueRx from 'vue-rx';
-
-Vue.use(ElementUI);
-Vue.use(Vue2Filters);
 Vue.use(VueRx, Rx);
+
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(ElementUI);
+
+import * as filters from './filters/Index';
 
 // register global utility filters.
 Object.keys(filters).forEach((key) => {
@@ -38,10 +31,11 @@ Vue.use(VxeUI);
 Vue.use(VxeUITable);
 InitVxeConfig();
 
+import './assets/app.css';
+
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
   router,
   store,
   render: (h) => h(App),
-});
+}).$mount('#app');
