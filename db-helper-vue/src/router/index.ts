@@ -44,4 +44,12 @@ router.beforeEach((route, redirect, next) => {
   next();
 });
 
+export function useRoute() { 
+  return router.currentRoute;
+}
+
+export function useRouter() { 
+  return router;
+}
+
 export default router;

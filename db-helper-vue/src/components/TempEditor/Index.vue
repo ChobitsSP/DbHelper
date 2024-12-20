@@ -8,6 +8,9 @@
 </template>
 
 <script>
+  import Vue from 'vue';
+  import { defineComponent } from 'vue';
+
   export default {
     props: {
       tablename: String

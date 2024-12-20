@@ -2,6 +2,7 @@
   <el-upload class="upload-demo"
              :limit="1"
              auto-upload
+             action=""
              :http-request="ReadXlsx"
              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
              :file-list="fileList">
