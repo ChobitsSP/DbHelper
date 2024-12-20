@@ -1,19 +1,23 @@
+export const DbTypeOracle = 'Oracle';
+export const DbTypeMySql = 'MySql';
+export const DbTypeMsSql = 'MsSql';
+export const DbTypeNpgsql = 'Npgsql';
 
 export const DbTypes = [
   {
-    label: 'Oracle',
+    label: DbTypeOracle,
     value: 'Oracle.ManagedDataAccess.Client',
   },
   {
-    label: 'Npgsql',
+    label: DbTypeNpgsql,
     value: 'Npgsql',
   },
   {
-    label: 'MSSQL',
+    label: DbTypeMsSql,
     value: 'System.Data.SqlClient',
   },
   {
-    label: 'MySql',
+    label: DbTypeMySql,
     value: 'MySql.Data.MySqlClient',
   },
 ];
