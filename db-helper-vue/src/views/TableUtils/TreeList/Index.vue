@@ -14,9 +14,9 @@
                lazy>
       </el-tree>
     </el-aside>
-    <el-container style="margin-left:10px;">
+    <el-main>
       <router-view></router-view>
-    </el-container>
+    </el-main>
   </el-container>
 </template>
 

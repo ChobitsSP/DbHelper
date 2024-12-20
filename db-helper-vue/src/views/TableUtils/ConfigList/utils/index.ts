@@ -28,7 +28,7 @@ async function GetTableColumns(config: TableConfig, table: string = null) {
   return rsp.data;
 }
 
-export function useSetup(item: TableConfig) {
+export function useSetup(item?: TableConfig) {
   const loading = ref(false);
 
   async function exportDatas(item: TableConfig) {

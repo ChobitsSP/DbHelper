@@ -24,14 +24,9 @@
     </el-row>
     <el-row>
       <vxe-table class="my-table"
-                 size="mini"
                  :loading="loading"
-                 resizable
                  :row-config="{ keyField: 'id' }"
-                 stripe
-                 show-overflow="tooltip"
                  :data="tableData"
-                 border
                  style="width: 100%">
         <vxe-column field="id"
                     title="id"
