@@ -16,68 +16,48 @@
   </div>
 </template>
 
-<script>
-  import { CSVToArray } from "./utils/Index.ts";
+<script lang="ts">
+  import { defineComponent, ref, computed } from 'vue';
+  import { CSVToArray } from './utils/Index';
 
-  export default {
-    data() {
-      return {
-        csvstr: null,
-      }
-    },
-    methods: {
-      get_type(type, nullable) {
-        switch (type) {
-          case 'VARCHAR2':
-            return 'string'
-          case 'INTEGER':
-            return 'int' + (nullable ? '?' : '')
-          case 'DATE':
-            return 'int' + (nullable ? '?' : '')
-          case 'NUMBER':
-            return 'int' + (nullable ? '?' : '')
-          default:
-            return 'string'
-        }
-      }
-    },
-    computed: {
-      fields() {
-        let result = []
+  function GetObjectList(csvString: string) {
+    const result: Record<string, any>[] = [];
+    const arr = CSVToArray(csvString, '\t');
 
-        let arr = CSVToArray(this.csvstr, '\t')
+    if (arr.length > 0) {
+      const columns = arr[0]
 
-        if (arr.length > 0) {
-          let columns = arr[0]
+      for (let i = 1; i < arr.length; i++) {
+        const row = arr[i];
+        const field: Record<string, any> = {};
 
-          for (let i = 1; i < arr.length; i++) {
-            let row = arr[i]
+        for (let j = 0; j < columns.length; j++) {
+          let column = columns[j]
+          let val = row[j]
 
-            let field = {}
-
-            for (let j = 0; j < columns.length; j++) {
-              let column = columns[j]
-              let val = row[j]
-
-              if (/^\d+$/.test(val)) {
-                val = Number(val)
-              }
-
-              field[column] = val
-            }
-
-            result.push(field)
+          if (/^\d+$/.test(val)) {
+            val = Number(val)
           }
+
+          field[column] = val;
         }
 
-        return result
-      },
-      json() {
-        return JSON.stringify(this.fields)
+        result.push(field)
       }
     }
-  }
-</script>
 
-<style>
-</style>
+    return result;
+  }
+
+  export default defineComponent({
+    setup() {
+      const csvString = ref('');
+      const json = computed(() => JSON.stringify(GetObjectList(csvString.value)));
+
+      return {
+        csvstr: csvString,
+        json,
+      };
+    },
+  });
+</script>
