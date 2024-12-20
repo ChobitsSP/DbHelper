@@ -100,3 +100,22 @@ export async function SingleExcelSelect() {
     throw err;
   }
 }
+
+export function ExportJson(fileData: any, filename: string) {
+  //Get the file contents
+  var txtFile = filename + ".json";
+  // var file = new File(txtFile);
+  var jsonStr = JSON.stringify(fileData);
+
+  //Write it as the href for the link
+  let element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
+  element.setAttribute('download', txtFile);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}

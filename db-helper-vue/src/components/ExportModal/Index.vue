@@ -1,10 +1,9 @@
 <template>
   <el-dialog title="导出"
-             :visible.sync="dialogVisible"
-             width="60%">
+             :close-on-click-modal="false"
+             :width="width"
+             :visible.sync="show">
     <el-form :model="item"
-             :rules="rules"
-             ref="form"
              label-width="120px">
       <el-form-item label="skip">
         <el-input-number :min="0"
@@ -17,78 +16,63 @@
     </el-form>
     <span slot="footer"
           class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button @click="onClose">取 消</el-button>
       <el-button type="primary"
                  :loading="loading"
-                 @click="submit">确 定</el-button>
+                 @click="onSubmit">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
-<script>
+<script lang="ts">
+  import { defineComponent, ref } from 'vue';
+  import { Message } from 'element-ui';
+
   import axios from '@/utils/AxiosUtils';
-  import { FormModel } from './models/Index'
-  import FormMixins from '@/mixins/FormMixins'
-  import CsvExport from '@/utils/CsvExport'
+  import { ExportJson } from '@/utils/FileUtils';
 
-  function ExportJson(filename, fileData) {
-    //Get the file contents
-    var txtFile = filename + ".json";
-    // var file = new File(txtFile);
-    var jsonStr = JSON.stringify(fileData);
+  import { FormModel } from './models/Index';
 
-    //Write it as the href for the link
-    let element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
-    element.setAttribute('download', txtFile);
+  import store from '@/store/index';
+  import { useDialog } from '@/mixins/Dialog';
+  import { useRoute } from '@/router';
 
-    element.style.display = 'none';
-    document.body.appendChild(element);
+  export default defineComponent({
+    setup() {
+      const route = useRoute();
+      const model = ref(new FormModel);
+      const loading = ref(false);
 
-    element.click();
+      const dialogSetup = useDialog({
+        maxWidth: 640,
+        async init() {
+          model.value = new FormModel;
+          model.value.table = route.params.table;
+          dialogSetup.show.value = true;
+        },
+        async submit() {
+          const req = Object.assign({ table: '' }, model.value, store.state.user.coninfo);
+          req.table = store.state.table.table;
 
-    document.body.removeChild(element);
-  }
+          loading.value = true;
+          try {
+            const rsp = await axios.post('/api/sql/listget', req);
+            if (rsp.code !== 0) throw new Error(rsp.msg);
+            ExportJson(req.table, rsp.data);
+          } catch (err: any) {
+            console.error(err);
+            Message.error(err.message);
+          } finally {
+            loading.value = false;
+          }
+        },
+      });
 
-  export default {
-    mixins: [FormMixins],
-    computed: {
-      rules() {
-        return this.item.GetRules(this)
-      }
-    },
-    data() {
       return {
-        dialogVisible: false,
-        item: new FormModel(),
-        loading: false,
-      }
+        ...dialogSetup,
+        loading,
+        item: model,
+      };
     },
-    computed: {
-      tableInfo() {
-        return this.$store.state.table;
-      },
-      coninfo() {
-        return this.$store.state.user.coninfo;
-      }
-    },
-    methods: {
-      open(item) {
-        this.item = new FormModel();
-        this.item.table = this.$route.params.table;
-        this.resetForm();
-        this.dialogVisible = true;
-      },
-      async submit() {
-        const data = Object.assign({ table: '' }, this.item, this.coninfo);
-        data.table = this.tableInfo.table;
-        const rsp = await axios.post('/api/sql/listget', data);
-        if (rsp.code === 0) {
-          const clist = this.tableInfo.columns.map(t => ({ label: t.name, prop: t.name }));
-          ExportJson(data.table, rsp.data);
-          // CsvExport(rsp.data, clist, data.table);
-        }
-      }
-    }
-  }
+  });
 </script>
