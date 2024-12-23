@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import { ExportExcel } from "@/utils/CsvExport";
 import { IColumn } from '@/models/Index';
+import { ExportColumnInfos } from '@/data/index';
 
 export function downloadFile(content: any, fileName: string, contentType: string = 'text/plain') {
   const a = document.createElement("a");
@@ -27,22 +28,10 @@ export async function ExportEfCode(list: { name: string, text: string }[], names
 }
 
 export async function ColumnsExport(columns: IColumn[], fileName: string) {
-  const exportDic = {
-    "id": "id",
-    "table": "表名",
-    "name": "列名",
-    "type": "类型",
-    "null_able": "可空",
-    "comments": "备注",
-    "character_maximum_length": "最大长度",
-    "numeric_precision": "数字长度",
-    "numeric_scale": "小数位数",
-  };
-
-  const row1 = Object.keys(exportDic).map(key => exportDic[key]);
+  const row1 = ExportColumnInfos.map(col => col.label);
   const rows = columns
     .map(col => {
-      return Object.keys(exportDic).map(key => col[key]);
+      return ExportColumnInfos.map(col => col.prop).map(key => col[key]);
     });
   ExportExcel([row1, ...rows], ["dbinfo", fileName, moment().format("YYYYMMDDHHmmss")].join("_"));
 }

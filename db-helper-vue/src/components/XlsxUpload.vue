@@ -12,10 +12,14 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
   import { LoadRows } from '@/mixins/XlsxImport';
+  import { ExportColumnInfos } from '@/data/index';
 
   export default defineComponent({
     props: {
-      columns: Array,
+      columns: {
+        type: Array,
+        default: () => ExportColumnInfos,
+      },
     },
     emits: ['input'],
     setup(props, context) {
