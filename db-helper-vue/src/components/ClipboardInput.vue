@@ -1,48 +1,56 @@
 <template>
-  <el-input :value="value" :readonly="true" @click.native="selectAll">
-    <el-button ref="btn" slot="append" icon="document">复制</el-button>
+  <el-input :value="value"
+            readonly
+            @click.native="selectAll">
+    <el-button ref="btn"
+               slot="append"
+               icon="document">复制</el-button>
   </el-input>
 </template>
 
-<script>
-  import Clipboard from 'clipboard'
+<script lang="ts">
+  import { defineComponent, ref, onMounted, nextTick, onUnmounted } from 'vue';
+  import Clipboard from 'clipboard';
+  import { Message as ElMessage } from 'element-ui';
 
-  export default {
+  export default defineComponent({
     props: {
       value: String
     },
-    mounted() {
-      this.$nextTick(() => {
+    setup(props) {
+      const btn = ref();
 
-        this.clipboard = new Clipboard(this.$refs.btn.$el, {
-          text: (trigger) => {
-            return this.value
+      let clipboard = null;
+
+      onMounted(async () => {
+        await nextTick();
+
+        clipboard = new Clipboard(btn.value.$el, {
+          text: (_trigger) => {
+            return props.value;
           }
-        })
+        });
 
-        this.clipboard.on('success', (e) => {
-          this.$message({
-            type: 'success',
-            showClose: true,
-            message: '复制成功'
-          })
+        clipboard.on('success', (_e) => {
+          ElMessage.success('复制成功');
+        });
+      });
 
-          //this.$emit('success', e)
-        })
+      onUnmounted(() => {
+        clipboard && clipboard.destroy();
+      });
 
-        //this.clipboard.on('error', (e) => this.$emit('error', e))
-      })
-    },
-    methods: {
-      selectAll() {
-        const input = this.$children[0].$el.querySelector('input')
-        input.select()
+      function selectAll(e: PointerEvent) {
+        const input = e.target as any;
+        if (input.select) {
+          input.select();
+        }
       }
+
+      return {
+        btn,
+        selectAll,
+      };
     },
-    beforeDestroy() {
-      if (this.clipboard) {
-        this.clipboard.destroy()
-      }
-    }
-  }
+  });
 </script>
