@@ -1,14 +1,14 @@
 export default [
   {
     path: '/OtherUtils/Json2Ts',
-    component: (resolve) => require(['./Json2Ts/Index.vue'], resolve),
+    component: () => import('./Json2Ts/Index.vue'),
     meta: {
       title: 'Json2Ts',
     },
   },
   {
     path: '/OtherUtils/Csv2Json',
-    component: (resolve) => require(['./Csv2Json/Index.vue'], resolve),
+    component: () => import('./Csv2Json/Index.vue'),
     meta: {
       title: 'Csv2Json',
     },
