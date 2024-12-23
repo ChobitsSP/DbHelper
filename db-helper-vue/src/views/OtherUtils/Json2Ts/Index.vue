@@ -4,12 +4,14 @@
       <el-col :span="12">
         <el-input type="textarea"
                   :rows="30"
+                  placeholder="Input JSON string"
                   v-model="txt"></el-input>
       </el-col>
       <el-col :span="12">
         <el-input type="textarea"
                   readonly
                   :rows="30"
+                  placeholder="Output TypeScript interface"
                   :value="result"></el-input>
       </el-col>
     </el-row>

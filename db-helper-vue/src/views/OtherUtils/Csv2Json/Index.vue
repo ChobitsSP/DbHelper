@@ -4,12 +4,14 @@
       <el-col :span="12">
         <el-input type="textarea"
                   :rows="rows"
+                  placeholder="Input CSV string"
                   v-model="csvstr"></el-input>
       </el-col>
       <el-col :span="12">
         <el-input type="textarea"
                   readonly
                   :rows="rows"
+                  placeholder="Output JSON string"
                   :value="json"></el-input>
       </el-col>
     </el-row>

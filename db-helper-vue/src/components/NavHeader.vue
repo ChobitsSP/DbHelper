@@ -67,6 +67,20 @@
       ],
     },
     {
+      name: '数据库',
+      url: '/Table/ConfigList',
+      children: [
+        {
+          name: '配置',
+          url: '/Table/ConfigList',
+        },
+        {
+          name: '对比',
+          url: '/Table/DbCompare',
+        },
+      ],
+    },
+    {
       name: '工具',
       children: [
         {
@@ -82,10 +96,6 @@
           url: '/Table/TableInfoDoc',
         },
       ],
-    },
-    {
-      name: '数据库配置',
-      url: '/Table/ConfigList',
     },
   ];
 
