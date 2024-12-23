@@ -17,8 +17,7 @@
       <TableTabs></TableTabs>
     </el-row>
     <el-row>
-      <el-table v-loading="loading"
-                :data="tableData"
+      <el-table :data="tableData"
                 border
                 size="mini"
                 ref="table"
