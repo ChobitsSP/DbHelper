@@ -91,9 +91,13 @@
           name: 'Csv2Json',
           url: '/OtherUtils/Csv2Json',
         },
+        // {
+        //   name: '动态生成',
+        //   url: '/Table/TableInfoDoc',
+        // },
         {
-          name: '动态生成',
-          url: '/Table/TableInfoDoc',
+          name: 'Jar2Pom',
+          url: '/OtherUtils/Jar2Pom',
         },
       ],
     },

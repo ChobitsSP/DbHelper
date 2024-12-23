@@ -13,4 +13,11 @@ export default [
       title: 'Convert Csv to Json',
     },
   },
+  {
+    path: '/OtherUtils/Jar2Pom',
+    component: () => import('./Jar2Pom/index.vue'),
+    meta: {
+      title: 'Jar2Pom',
+    },
+  },
 ];
