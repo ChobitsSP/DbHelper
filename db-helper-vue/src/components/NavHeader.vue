@@ -1,119 +1,108 @@
 <template>
-  <nav class="navbar navbar-inverse navbar-fixed-top"
-       role="navigation">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button"
-                class="navbar-toggle"
-                data-toggle="collapse"
-                data-target=".navbar-ex1-collapse">
-          <span class="sr-only">内容</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <router-link to="/"
-                     class="navbar-brand">
-          <span style="color: white;">首页</span>
-        </router-link>
-      </div>
-      <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
-          <li>
-            <a class="dropdown-toggle"
-               style="cursor: pointer;"
-               data-toggle="dropdown">
-              文档
-              <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="dropdown-header">Table</li>
-              <li>
-                <a target="_blank"
-                   class="dropdown-toggle"
-                   href="//server3.hsort.com:8035/bootstrap-table.wenzhixin.net.cn/zh-cn/documentation/index.html">
-                  bootstrap-table
-                </a>
-              </li>
-              <li>
-                <router-link class="dropdown-toggle"
-                             to="/BtTable/Dom2Config">
-                  bootstrap-table config
-                </router-link>
-              </li>
-              <li>
-                <a target="_blank"
-                   class="dropdown-toggle"
-                   href="//server3.hsort.com:8082/angular-ui.github.io/bootstrap/index.html">
-                  angular-ui
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a class="dropdown-toggle"
-               style="cursor: pointer;"
-               data-toggle="dropdown">
-              工具
-              <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-              <!-- <li class="dropdown-header">Table</li> -->
-              <li>
-                <router-link class="dropdown-toggle"
-                             to="/OtherUtils/Json2Ts">
-                  Json2Ts
-                </router-link>
-              </li>
-              <li>
-                <router-link class="dropdown-toggle"
-                             to="/OtherUtils/Csv2Json">
-                  Csv2Json
-                </router-link>
-              </li>
-              <li>
-                <router-link class="dropdown-toggle"
-                             to="/Table/TableInfoDoc">
-                  动态生成
-                </router-link>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a target="_blank"
-               href="https://github.com/ChobitsSP/vue-cli3-demo">
-              vue-template
-            </a>
-          </li>
-          <li>
-            <router-link class="dropdown-toggle"
-                         to="/Table/ConfigList">
-              数据库配置
-            </router-link>
-          </li>
-        </ul>
-        <!--<ul class="nav navbar-nav navbar-right">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle ng-binding" data-toggle="dropdown">
-              <span class="glyphicon glyphicon-user"></span>&nbsp;
-              {{ user.username }}
-            </a>
-            <ul class="dropdown-menu">
-              <li @click="logout">
-                <a style="cursor:pointer;">
-                  <span class="glyphicon glyphicon-off"></span>&nbsp; 退出
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>-->
-      </div>
-    </div>
-  </nav>
+  <el-menu class="el-menu-demo"
+           mode="horizontal"
+           :default-active="defaultActive"
+           background-color="#304156"
+           text-color="#bfcbd9"
+           active-text-color="#409EFF"
+           router>
+
+    <template v-for="menu in menus">
+      <el-submenu v-if="menu.children"
+                  :key="menu.name"
+                  :index="menu.name">
+        <template slot="title">{{ menu.name }}</template>
+        <el-menu-item v-for="child in menu.children"
+                      :index="child.url"
+                      :key="child.name">
+          {{ child.name }}
+        </el-menu-item>
+      </el-submenu>
+      <el-menu-item v-else
+                    :key="menu.name"
+                    :index="menu.url">
+        {{ menu.name }}
+      </el-menu-item>
+    </template>
+
+  </el-menu>
 </template>
 
-<script>
-  export default {
-    name: 'NavHeader'
+<script lang="ts">
+  import { defineComponent, computed } from 'vue';
+  import { useRoute } from '@/router/index';
+
+  interface Menu {
+    name: string;
+    url?: string;
+    hide?: boolean;
+    children?: Menu[];
   }
+
+  const MenuList: Menu[] = [
+    {
+      name: '首页',
+      url: '/',
+    },
+    {
+      name: '文档',
+      hide: true,
+      children: [
+        {
+          name: 'Table',
+          children: [
+            {
+              name: 'bootstrap-table',
+              url: '//server3.hsort.com:8035/bootstrap-table.wenzhixin.net.cn/zh-cn/documentation/index.html',
+            },
+            {
+              name: 'bootstrap-table config',
+              url: '/BtTable/Dom2Config',
+            },
+            {
+              name: 'angular-ui',
+              url: '//server3.hsort.com:8082/angular-ui.github.io/bootstrap/index.html',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: '工具',
+      children: [
+        {
+          name: 'Json2Ts',
+          url: '/OtherUtils/Json2Ts',
+        },
+        {
+          name: 'Csv2Json',
+          url: '/OtherUtils/Csv2Json',
+        },
+        {
+          name: '动态生成',
+          url: '/Table/TableInfoDoc',
+        },
+      ],
+    },
+    {
+      name: '数据库配置',
+      url: '/Table/ConfigList',
+    },
+  ];
+
+  export default defineComponent({
+    setup() {
+      const route = useRoute();
+      const defaultActive = route.path;
+
+      const menus = computed(() => {
+        return MenuList.filter(t => !t.hide);
+      });
+
+      return {
+        defaultActive,
+        menus,
+      };
+    },
+  });
 </script>
