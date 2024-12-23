@@ -28,3 +28,13 @@ export async function getColumns(config: DbConfig, table?: string) {
   return list;
 }
 
+/**
+ * 获取数据库表名
+ * @param config 
+ * @returns 
+ */
+export async function getTables(config: DbConfig) {
+  const rsp = await http.post<string[]>('/api/sql/tablenames', config);
+  if (rsp.code !== 0) throw new Error(rsp.msg);
+  return rsp.data;
+}
