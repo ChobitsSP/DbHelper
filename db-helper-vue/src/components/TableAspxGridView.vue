@@ -19,7 +19,7 @@
   import { defineComponent, computed } from 'vue';
   import _ from 'lodash';
 
-  import * as UTILS from '@/utils/TableUtils/Index';
+  import { AllFunctions } from '@/utils/TableUtils/Index';
   import ClipboardInput from './ClipboardInput.vue';
   import { useMainStore } from '@/store/main';
   import { hump2 } from '@/filters/Index';
@@ -37,7 +37,7 @@
       const { columns, tableName, isHump } = useMainStore();
 
       const value = computed<string>(() => {
-        const func: Func = UTILS[props.type];
+        const func = AllFunctions.find(t => t.label === props.type).value;
 
         let cols = columns.value;
 

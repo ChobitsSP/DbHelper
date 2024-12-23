@@ -3,10 +3,9 @@
            mode="horizontal"
            :default-active="defaultActive"
            background-color="#304156"
-           text-color="#bfcbd9"
+           text-color="#fff"
            active-text-color="#409EFF"
            router>
-
     <template v-for="menu in menus">
       <el-submenu v-if="menu.children"
                   :key="menu.name"

@@ -13,7 +13,7 @@
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  import * as UTILS from '@/utils/TableUtils/Index'
+  import { AllFunctions } from '@/utils/TableUtils/Index'
   import TableAutoUtilCom from './TableAspxGridView.vue'
 
   export default defineComponent({
@@ -21,8 +21,8 @@
       TableAutoUtilCom,
     },
     setup() {
-      const names = ref(Object.keys(UTILS));
-      const activeName = ref(names.value[0]);
+      const names = AllFunctions.map(t => t.label);
+      const activeName = ref(names[0]);
 
       return {
         activeName,

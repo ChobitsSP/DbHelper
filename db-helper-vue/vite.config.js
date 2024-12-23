@@ -19,7 +19,7 @@ export default defineConfig({
       },
     }),
     resolveExternalsPlugin({
-      jquery: 'jQuery',
+      // jquery: 'jQuery',
     }),
   ],
   resolve: {

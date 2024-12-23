@@ -10,23 +10,22 @@
   </el-tabs>
 </template>
 
-<script>
-  import * as UTILS from '@/utils/TableUtils/Index'
+<script lang="ts">
+  import { defineComponent, ref } from 'vue';
+  import { AllFunctions } from '@/utils/TableUtils/Index'
   import com1 from '@/components/TableAspxGridView.vue'
 
-  export default {
+  export default defineComponent({
     components: {
       com1
     },
-    data() {
+    setup() {
+      const names = AllFunctions.map(t => t.label);
+      const activeName = ref(names[0]);
       return {
-        activeName: null,
-        names: [],
-      }
+        activeName,
+        names,
+      };
     },
-    created() {
-      this.names = Object.keys(UTILS)
-      this.activeName = this.names[0]
-    }
-  }
+  });
 </script>
