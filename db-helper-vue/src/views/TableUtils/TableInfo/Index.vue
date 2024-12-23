@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container class="my-container">
     <el-aside width="300px">
       <LeftTree v-loading="loading"
                 @change="onChange"></LeftTree>
@@ -12,6 +12,12 @@
     </el-main>
   </el-container>
 </template>
+
+<style scoped>
+  .my-container {
+    height: calc(100vh - 100px);
+  }
+</style>
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';

@@ -86,12 +86,8 @@
 
       const handleNodeClick = (node: TreeItem) => {
         if (!node.isLeaf) return;
-        const params = {
-          id: node.id.toString(),
-          name: node.label,
-        };
         tableId.value = node.id;
-        if (!filterText.value) filterText.value = node.label;
+        // if (!filterText.value) filterText.value = node.label;
         emit('change', {
           id: node.id,
           name: node.label,
