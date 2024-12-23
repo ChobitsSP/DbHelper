@@ -21,29 +21,6 @@ import Markdown from "./Markdown";
 import VxeTable from "./VxeTable";
 import AlertColumn from './AlertColumn';
 
-export {
-  TsClass,
-  VxeTable,
-  ElementForm,
-  EfCore,
-  AlertColumn,
-  // Ef6,
-  ElementRule,
-  ASPxGridView,
-  ASPxPivotGrid,
-  ElTable,
-  Ng1Form,
-  DevExtreme,
-  OracleSeq,
-  GolangStruct,
-  GolangCurd,
-  GinApi,
-  JavaModel,
-  JavaMybatis,
-  JavaOldToNew,
-  Markdown,
-};
-
 interface FunctionItem {
   label: string;
   value: (tableName: string, cols: IColumn[]) => string;
