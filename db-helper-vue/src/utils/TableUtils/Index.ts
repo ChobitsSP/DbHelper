@@ -1,3 +1,5 @@
+import { IColumn } from '@/models/Index';
+
 import ASPxGridView from "./ASPxGridView";
 import ASPxPivotGrid from "./ASPxPivotGrid";
 import ElementForm from "./ElementForm";
@@ -41,3 +43,31 @@ export {
   JavaOldToNew,
   Markdown,
 };
+
+interface FunctionItem {
+  label: string;
+  value: (tableName: string, cols: IColumn[]) => string;
+}
+
+export const AllFunctions: FunctionItem[] = [
+  { label: 'TsClass', value: TsClass },
+  { label: 'VxeTable', value: VxeTable },
+  { label: 'ElementForm', value: ElementForm },
+  { label: 'EfCore', value: EfCore },
+  { label: 'AlertColumn', value: AlertColumn },
+  // { label: 'Ef6', value: Ef6 },
+  { label: 'ElementRule', value: ElementRule },
+  { label: 'ASPxGridView', value: ASPxGridView },
+  { label: 'ASPxPivotGrid', value: ASPxPivotGrid },
+  { label: 'ElTable', value: ElTable },
+  { label: 'Ng1Form', value: Ng1Form },
+  { label: 'DevExtreme', value: DevExtreme },
+  { label: 'OracleSeq', value: OracleSeq },
+  { label: 'GolangStruct', value: GolangStruct },
+  { label: 'GolangCurd', value: GolangCurd },
+  { label: 'GinApi', value: GinApi },
+  { label: 'JavaModel', value: JavaModel },
+  { label: 'JavaMybatis', value: JavaMybatis },
+  { label: 'JavaOldToNew', value: JavaOldToNew },
+  { label: 'Markdown', value: Markdown },
+];
