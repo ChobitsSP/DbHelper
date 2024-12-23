@@ -20,4 +20,11 @@ export default [
       title: 'Jar2Pom',
     },
   },
+  {
+    path: '/OtherUtils/PasswordGenerator',
+    component: () => import('./PasswordGenerator/index.vue'),
+    meta: {
+      title: 'PasswordGenerator',
+    },
+  },
 ];

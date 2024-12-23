@@ -99,6 +99,10 @@
           name: 'Jar2Pom',
           url: '/OtherUtils/Jar2Pom',
         },
+        {
+          name: '密码生成',
+          url: '/OtherUtils/PasswordGenerator',
+        },
       ],
     },
   ];
