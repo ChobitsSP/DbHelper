@@ -44,7 +44,8 @@
 
   import { useRoute } from '@/router/index';
   import * as DbUtils from '@/utils/DbUtils';
-  import axios from '@/utils/AxiosUtils';
+
+  import * as api from '@/api';
 
   import filterBy from '@/filters/filterBy';
 
@@ -105,14 +106,8 @@
       // );
 
       const getTables = async (id: number) => {
-        const row = await DbUtils.DbConfigGet(id);
-        const url = '/api/sql/tablenames';
-        const rsp = await axios.post<string[]>(url, row);
-        if (rsp.code === 0) {
-          return rsp.data.map(t => ({ id, label: t, isLeaf: true }));
-        } else {
-          return [];
-        }
+        const config = await DbUtils.DbConfigGet(id);
+        return api.getTables(config);
       };
 
       watch(() => filterText.value, (val) => {

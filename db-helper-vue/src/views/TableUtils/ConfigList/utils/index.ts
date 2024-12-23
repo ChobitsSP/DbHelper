@@ -3,7 +3,7 @@ import { Message } from 'element-ui';
 import moment from 'moment';
 import _ from 'lodash';
 
-import { IColumn } from '@/models/Index';
+import { IColumn, TableConfig } from '@/models/Index';
 
 import * as FileUtils from '@/utils/FileUtils';
 import http from '@/utils/AxiosUtils';
@@ -12,15 +12,7 @@ import { ExportDbDatas } from "@/utils/ImportDataUtils";
 import Ef6Utils from "@/utils/TableUtils/Ef6";
 import MarkdownUtils from "@/utils/TableUtils/Markdown";
 
-interface TableConfig {
-  name: string;
-}
-
-async function GetTableNames(config: TableConfig) {
-  const rsp = await http.post<string[]>('/api/sql/tablenames', config);
-  if (rsp.code !== 0) throw new Error(rsp.msg);
-  return rsp.data;
-}
+import { getTables } from '@/api';
 
 async function GetTableColumns(config: TableConfig, table: string = null) {
   const rsp = await http.post<IColumn[]>('/api/sql/tablecolumns', Object.assign({ table }, config));
@@ -28,14 +20,14 @@ async function GetTableColumns(config: TableConfig, table: string = null) {
   return rsp.data;
 }
 
-export function useSetup(item?: TableConfig) {
+export function useSetup() {
   const loading = ref(false);
 
   async function exportDatas(item: TableConfig) {
     loading.value = true;
 
     try {
-      const names = await GetTableNames(item);
+      const names = await getTables(item);
       await ExportDbDatas(item, names);
     } catch (err: any) {
       Message.error(err.message);

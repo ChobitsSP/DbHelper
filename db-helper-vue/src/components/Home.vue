@@ -12,13 +12,11 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
   import NavHeader from './NavHeader.vue';
-  import TableNames from './TableNames.vue';
 
   export default defineComponent({
     name: 'Home',
     components: {
       NavHeader,
-      TableNames,
     },
   });
 </script>
