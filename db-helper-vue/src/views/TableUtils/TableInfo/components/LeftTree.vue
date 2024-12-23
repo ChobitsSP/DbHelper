@@ -8,6 +8,7 @@
     </el-input>
     <el-tree ref="tree"
              size="small"
+             :props="{ label: 'label', children: 'children', isLeaf: 'isLeaf' }"
              :load="loadNode"
              :filter-node-method="filterNode"
              @node-click="handleNodeClick"
