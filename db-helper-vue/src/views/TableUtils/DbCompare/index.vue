@@ -17,7 +17,8 @@
         <XlsxUpload @input="onUpload"></XlsxUpload>
       </el-form-item>
     </el-form>
-    <ShowDiff :loading="loading"
+    <ShowDiff v-if="dbId"
+              :loading="loading"
               :dbType="dbType"
               :missingTables="missingTables"
               :missingColumns="missingColumns"

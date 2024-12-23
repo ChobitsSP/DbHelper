@@ -5,7 +5,6 @@
         <h4>缺少的表:</h4>
         <el-input type="textarea"
                   :rows="4"
-                  placeholder="请输入SQL语句"
                   :value="tableNames"
                   readonly
                   class="sql-textarea"></el-input>
