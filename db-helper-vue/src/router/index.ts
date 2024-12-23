@@ -39,16 +39,16 @@ const router = new Router({
   },
 });
 
-router.beforeEach((route, redirect, next) => {
-  document.title = route.meta.title || 'element-demo';
+router.beforeEach((route, _redirect, next) => {
+  document.title = route.meta.title || 'DbTools';
   next();
 });
 
-export function useRoute() { 
+export function useRoute() {
   return router.currentRoute;
 }
 
-export function useRouter() { 
+export function useRouter() {
   return router;
 }
 
