@@ -1,16 +1,20 @@
 <template>
-  <div>
+  <div class="excel-uploader">
     <input type="file"
            ref="fileInput"
-           class="file-input"
+           class="excel-uploader__input"
            accept=".xlsx"
            @change="handleFileChange" />
-
+    <el-button class="excel-uploader__button"
+               type="primary"
+               @click="triggerFileInput">
+      上传Excel
+    </el-button>
   </div>
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import { LoadRows } from '@/mixins/XlsxImport';
   import { ExportColumnInfos } from '@/data/index';
 
@@ -23,6 +27,8 @@
     },
     emits: ['input'],
     setup(props, context) {
+      const fileInput = ref<HTMLInputElement>();
+
       async function handleFileChange(event: Event) {
         const target = event.target as HTMLInputElement;
         if (target.files && target.files.length > 0) {
@@ -32,18 +38,27 @@
         }
       }
       return {
+        fileInput,
         handleFileChange,
+        triggerFileInput() {
+          fileInput.value.click();
+        },
       };
     },
   });
 </script>
 
-<style scoped>
-  .file-input {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
+<style lang="scss" scoped>
+  .excel-uploader {
+    display: inline-block;
+
+    &__input {
+      display: none;
+    }
+
+    &__button {
+      font-size: 14px;
+      padding: 10px 20px;
+    }
   }
 </style>

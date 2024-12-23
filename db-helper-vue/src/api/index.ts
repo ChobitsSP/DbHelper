@@ -2,8 +2,8 @@ import http from '@/utils/AxiosUtils';
 import { IColumn } from '@/models/Index';
 
 interface DbConfig {
-  providerName: string;
-  connectionString: string;
+  providerName?: string;
+  connectionString?: string;
 }
 
 /**

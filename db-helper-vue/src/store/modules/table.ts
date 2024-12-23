@@ -1,9 +1,10 @@
 import { ActionTree, MutationTree, Module } from 'vuex';
 
-import axios from '@/utils/AxiosUtils';
 import { IColumn } from '@/models/Index';
 import * as types from '../mutation-types';
 import { TableState as MyState } from '../types';
+
+import { getColumns } from '@/api';
 
 // initial state
 const state: MyState = {
@@ -15,15 +16,9 @@ const state: MyState = {
 // actions
 const actions: ActionTree<MyState, any> = {
   getColumns: async function (store, data) {
-    const rsp = await axios.post<IColumn[]>('/api/sql/tablecolumns', data);
-    if (rsp.code === 0) {
-      const list = rsp.data;
-      list.forEach((col, i) => {
-        col.id = i + 1;
-      });
-      store.commit('SET_COLUMNS', list);
-      store.commit('SET_TABLE_NAME', data.table);
-    }
+    const list = await getColumns(data, data.table);
+    store.commit('SET_COLUMNS', list);
+    store.commit('SET_TABLE_NAME', data.table);
   },
 };
 
