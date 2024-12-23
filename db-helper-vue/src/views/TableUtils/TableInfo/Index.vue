@@ -1,12 +1,14 @@
 <template>
   <el-container>
     <el-aside width="300px">
-      <LeftTree @change="onChange"></LeftTree>
+      <LeftTree v-loading="loading"
+                @change="onChange"></LeftTree>
     </el-aside>
     <el-main>
       <TableInfo v-if="tableName"
+                 v-loading="loading"
                  :table-name="tableName"
-                 @refresh="init"></TableInfo>
+                 @refresh="refresh"></TableInfo>
     </el-main>
   </el-container>
 </template>
@@ -27,21 +29,44 @@
     },
     setup() {
       const tableName = ref('');
+      const loading = ref(false);
+
+      interface NodeInfo {
+        id: number;
+        name: string;
+      }
+
+      let node: NodeInfo = null;
+
+      async function refresh() {
+        if (node == null) return;
+
+        loading.value = true;
+
+        try {
+          const config = await DbUtils.DbConfigGet(node.id);
+          store.commit('SET_CONINFO', config);
+          const data = Object.assign({ table: node.name }, config);
+          await store.dispatch('getColumns', data);
+          tableName.value = node.name;
+
+        } catch (err: any) {
+          console.error(err);
+        } finally {
+          loading.value = false;
+        }
+      }
 
       async function onChange(obj) {
-        const config = await DbUtils.DbConfigGet(obj.id);
-        store.commit('SET_CONINFO', config);
-        const data = Object.assign({ table: obj.name }, config);
-        await store.dispatch('getColumns', data);
-        tableName.value = obj.name;
+        node = obj;
+        await refresh();
       }
 
       return {
-        init() {
-          // ::todo
-        },
+        refresh,
         onChange,
         tableName,
+        loading,
       };
     },
   });

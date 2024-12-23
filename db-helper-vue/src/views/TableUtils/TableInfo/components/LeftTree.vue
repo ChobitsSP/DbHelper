@@ -42,7 +42,7 @@
   import { defineComponent, ref, watch } from 'vue';
   import { TreeNode } from 'element-ui/types/tree';
 
-  import { useRoute, useRouter } from '@/router/index';
+  import { useRoute } from '@/router/index';
   import * as DbUtils from '@/utils/DbUtils';
   import axios from '@/utils/AxiosUtils';
 
@@ -55,9 +55,8 @@
   }
 
   export default defineComponent({
-    setup(props, { emit }) {
+    setup(_props, { emit }) {
       const route = useRoute();
-      const router = useRouter();
 
       const tableId = ref<number>();
       const filterText = ref('');
@@ -98,12 +97,12 @@
         });
       };
 
-      watch(() => route.params,
-        (params) => {
-          const idParam = params.id;
-          tableId.value = idParam ? parseInt(idParam, 10) : null;
-        }
-      );
+      // watch(() => route.params,
+      //   (params) => {
+      //     const idParam = params.id;
+      //     tableId.value = idParam ? parseInt(idParam, 10) : null;
+      //   }
+      // );
 
       const getTables = async (id: number) => {
         const row = await DbUtils.DbConfigGet(id);
