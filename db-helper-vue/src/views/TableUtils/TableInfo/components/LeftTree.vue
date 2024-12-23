@@ -107,7 +107,8 @@
 
       const getTables = async (id: number) => {
         const config = await DbUtils.DbConfigGet(id);
-        return api.getTables(config);
+        const list = await api.getTables(config);
+        return list.map(t => ({ id, label: t, isLeaf: true }));
       };
 
       watch(() => filterText.value, (val) => {
