@@ -75,7 +75,7 @@
             const config = await DbUtils.DbConfigGet(dbId.value);
             dbType.value = config.providerName;
             const list2 = await getColumns(config);
-            const result = GetDataBaseDiff(list1, list2);
+            const result = GetDataBaseDiff(list2, list1);
             missingTables.value = result.missingTables;
             typeMismatchColumns.value = result.typeMismatchColumns;
             missingColumns.value = result.missingColumns;
