@@ -3,7 +3,7 @@ import { useWindowSize } from '@/utils/WindowUtils';
 import { useRx } from './RxBusMixins';
 
 interface Config {
-  callback: Function;
+  callback?: Function;
 }
 
 interface MyProps<T> {
