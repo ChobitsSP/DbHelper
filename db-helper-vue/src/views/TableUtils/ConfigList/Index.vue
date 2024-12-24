@@ -43,6 +43,10 @@
       <vxe-column field="connectionString"
                   title="connectionString"
                   min-width="220">
+        <template #default="{ row }">
+          <span class="span-link"
+                v-copy="row.connectionString">{{ row.connectionString }}</span>
+        </template>
       </vxe-column>
       <vxe-column title="action"
                   width="220"
@@ -162,3 +166,10 @@
     },
   });
 </script>
+
+<style scoped>
+  .span-link {
+    cursor: pointer;
+    color: #409eff;
+  }
+</style>

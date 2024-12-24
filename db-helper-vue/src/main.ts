@@ -12,10 +12,14 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI, { size: 'small' });
 
 import * as filters from './filters/Index';
-
 // register global utility filters.
 Object.keys(filters).forEach((key) => {
   Vue.filter(key, filters[key]);
+});
+
+import * as directives from './directives';
+Object.keys(directives).forEach((key) => {
+  Vue.directive(key, directives[key]);
 });
 
 import VxeUI from 'vxe-pc-ui';
