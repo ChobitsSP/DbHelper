@@ -4,6 +4,7 @@
              :disabled="loading">
       <el-form-item label="数据库1">
         <el-select v-model="model.dbId1"
+                   filterable
                    placeholder="请选择数据库">
           <el-option v-for="option in dbList"
                      :key="option.id"
@@ -18,6 +19,7 @@
         <div class="comparison-options">
           <div class="comparison-option database-select">
             <el-select v-model="model.dbId2"
+                       filterable
                        placeholder="请选择数据库"
                        class="db-select">
               <el-option v-for="option in dbList"
