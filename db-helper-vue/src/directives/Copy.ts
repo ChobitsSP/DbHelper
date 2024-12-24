@@ -1,3 +1,4 @@
+import { ObjectDirective } from 'vue';
 import Clipboard from 'clipboard';
 import { Message } from 'element-ui';
 
@@ -7,23 +8,22 @@ function GetString(value) {
 }
 
 export default {
-  bind: function (el, binding, vnode) {
+  bind(el, binding, _vnode) {
     el.clipboard = new Clipboard(el, {
       text: (trigger) => {
         return GetString(binding.value);
       }
     });
-
     el.clipboard.on('success', (e) => {
       Message.success('复制成功');
     });
   },
-  update: function (el, binding, vnode) {
+  update(el, binding, _vnode) {
     el.clipboard.text = () => {
       return GetString(binding.value);
     };
   },
-  unbind: function (el, binding, vnode) {
+  unbind(el) {
     el.clipboard.destroy();
   },
-}
+} as ObjectDirective;
