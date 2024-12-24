@@ -60,19 +60,3 @@ export async function ClearValidate(form: IForm) {
   await Delay();
   form?.clearValidate();
 }
-
-export default {
-  methods: {
-    submitForm(formName: string = 'form') {
-      return FormValidate(this.$refs[formName])
-    },
-    resetForm(formName: string = 'form') {
-      try {
-        this.$refs[formName].resetFields()
-      }
-      catch (ex) {
-        //console.error(ex);
-      }
-    }
-  }
-}
