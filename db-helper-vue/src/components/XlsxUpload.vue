@@ -7,6 +7,7 @@
            @change="handleFileChange" />
     <el-button class="excel-uploader__button"
                type="primary"
+               :loading="loading"
                @click="triggerFileInput">
       上传Excel
     </el-button>
@@ -23,6 +24,10 @@
       columns: {
         type: Array,
         default: () => ExportColumnInfos,
+      },
+      loading: {
+        type: Boolean,
+        default: false,
       },
     },
     emits: ['input'],

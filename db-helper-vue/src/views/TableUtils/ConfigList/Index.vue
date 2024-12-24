@@ -95,7 +95,7 @@
 
   import ConfigEditDialog from '@/components/ConfigEditDialog.vue';
   import * as DbUtils from '@/utils/DbUtils';
-  import XlsxUpload from "./components/XlsxUpload.vue";
+  import XlsxUpload from "@/components/XlsxUpload.vue";
   import { DbTypes } from '@/data';
 
   import { useSetup } from './utils/index';

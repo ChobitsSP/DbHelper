@@ -37,15 +37,22 @@ export function useSetup() {
     }
   }
 
-  async function importColComment(list: any[], row: TableConfig) {
+  async function importColComment(list: IColumn[], config: TableConfig) {
     loading.value = true;
 
     for (let i = 0; i < list.length; i++) {
-      const item = Object.assign({}, list[i], row);
-      const rsp = await http.post("/api/sql/UpdateColumnComment", item);
+      const row = list[i];
+      const req = {
+        table: row.table,
+        column: row.name,
+        comment: row.comments,
+        providerName: config.providerName,
+        connectionString: config.connectionString,
+      };
+      const rsp = await http.post('/api/sql/UpdateColumnComment', req);
       if (rsp.code !== 0) {
         console.error({
-          item,
+          row,
           error: rsp.msg,
         });
       }
