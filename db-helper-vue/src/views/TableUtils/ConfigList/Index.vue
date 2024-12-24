@@ -31,8 +31,8 @@
                   title="name"
                   width="200">
         <template #default="{ row }">
-          <el-link size="small"
-                   @click="edit(row)">{{ row.name }}</el-link>
+          <span class="span-link"
+                @click="edit(row)">{{ row.name }}</span>
         </template>
       </vxe-column>
       <vxe-column field="providerName"
