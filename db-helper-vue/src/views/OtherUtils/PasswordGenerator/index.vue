@@ -42,7 +42,7 @@
       const includeUpper = ref(true)
       const includeLower = ref(true)
       const includeNumbers = ref(true)
-      const includeSymbols = ref(true)
+      const includeSymbols = ref(false)
       const generatedPassword = ref('')
 
       const generatePassword = () => {
