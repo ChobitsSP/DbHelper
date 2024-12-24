@@ -80,6 +80,10 @@
         ]
       };
 
+      function FormatConstr(str: string) {
+        return str.split(/[\r\n]+/).filter(t => !!t).map(t => t.replace(/;+$/g, '')).join(';');
+      }
+
       const dialogSetup = useDialog<OpenConfig>({
         openEventName: 'ShowEditDialog',
         maxWidth: 640,
@@ -95,6 +99,8 @@
         },
         async submit(config) {
           await FormValidate(form.value);
+          // 替换连接字符串中的换行符
+          model.value.connectionString = FormatConstr(model.value.connectionString);
           await DbUtils.DbConfigUpdate(model.value);
           config.callback();
           dialogSetup.show.value = false;
