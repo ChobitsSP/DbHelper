@@ -128,7 +128,7 @@
             getInfoById(model.value.dbId2),
           ]);
           getCompareResult(info1.columns, info2.columns);
-          dbType.value = info1.config.providerName;
+          dbType.value = info2.config.providerName;
         } catch (err: any) {
           console.error(err);
         } finally {
