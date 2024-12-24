@@ -5,12 +5,11 @@ module.exports = {
   pages: {
     index: {
       entry: 'src/main.ts',
-      title: 'vue-sql',
     },
   },
   devServer: {
     proxy: {
-      ...GetList(['/(?:api)/'], 'http://server3.hsort.com:8001'),
+      ...GetList(['/(?:api)/'], 'http://localhost:8001'),
     },
   },
   chainWebpack: (config) => {
