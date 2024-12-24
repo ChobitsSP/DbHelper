@@ -250,6 +250,3 @@ ModelManifest.xml
 /NpgsqlHelper/Properties/PublishProfiles
 /NpgsqlHelper/bin
 /NpgsqlHelper/obj
-/vue-sql/package-lock.json
-dist
-package-lock.json
