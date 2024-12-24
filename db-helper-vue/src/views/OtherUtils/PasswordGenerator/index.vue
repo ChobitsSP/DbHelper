@@ -66,6 +66,8 @@
         generatedPassword.value = password
       }
 
+      generatePassword();
+
       return {
         passwordLength,
         includeUpper,
