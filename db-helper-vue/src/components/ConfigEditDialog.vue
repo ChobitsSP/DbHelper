@@ -53,6 +53,7 @@
 
 <script lang="ts">
   import { defineComponent, ref, nextTick } from 'vue';
+  import _ from 'lodash';
 
   import * as DbUtils from '@/utils/DbUtils';
   import { DbTypes } from '@/data';
@@ -90,6 +91,9 @@
         async init(config) {
           if (config.item) {
             model.value = Object.assign(new DbUtils.MyModel, config.item);
+            if (model.value.connectionString) {
+              model.value.connectionString = model.value.connectionString.split(';').join(';\n');
+            }
           } else {
             model.value = new DbUtils.MyModel;
           }
@@ -99,10 +103,10 @@
         },
         async submit(config) {
           await FormValidate(form.value);
-          // 替换连接字符串中的换行符
-          model.value.connectionString = FormatConstr(model.value.connectionString);
-          await DbUtils.DbConfigUpdate(model.value);
-          config.callback();
+          const item = _.cloneDeep(model.value);
+          item.connectionString = FormatConstr(item.connectionString);
+          await DbUtils.DbConfigUpdate(item);
+          config.callback(item);
           dialogSetup.show.value = false;
         },
       });
