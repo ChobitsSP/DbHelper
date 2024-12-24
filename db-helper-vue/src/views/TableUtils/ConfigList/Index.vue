@@ -38,6 +38,7 @@
       <vxe-column field="providerName"
                   title="type"
                   :formatter="providerNameFormatter"
+                  :filters="DbTypes"
                   width="80">
       </vxe-column>
       <vxe-column field="connectionString"
@@ -161,6 +162,7 @@
         },
         importConfig,
 
+        DbTypes,
         providerNameFormatter,
       };
     },
