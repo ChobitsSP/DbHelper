@@ -12,6 +12,7 @@
                      @click="ExportList">导出数据</el-button>
           <XlsxUpload :loading="loading"
                       style="margin-left:10px;"
+                      label="导入"
                       @input="ImportData"></XlsxUpload>
         </el-form-item>
         <el-form-item>
@@ -68,29 +69,30 @@
     <el-row>
       <TempEditor :tablename="$route.params.table"></TempEditor>
     </el-row>
-    <ExportModal ref="ExportModal"></ExportModal>
+    <ExportDataDialog></ExportDataDialog>
   </div>
 </template>
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  import router from '@/router/index';
+  import { Message } from 'element-ui';
+
   import { useMainStore } from '@/store/main';
-  import { useRoute } from '@/router/index';
 
   import TableTabs from '@/components/TableTabs.vue'
-  import ExportModal from '@/components/ExportModal/Index.vue'
+  import ExportDataDialog from '@/components/ExportModal/Index.vue'
   import TempEditor from '@/components/TempEditor/Index.vue'
-  import XlsxUpload from './components/XlsxUpload.vue'
+  import XlsxUpload from '@/components/XlsxUpload.vue'
   import axios from '@/utils/AxiosUtils';
   import { RowTypeTrans } from '@/utils/ImportDataUtils';
 
   import { ColumnsExport } from '@/utils/FileUtils';
+  import { useRx } from '@/mixins/RxBusMixins';
 
   export default defineComponent({
     components: {
       TableTabs,
-      ExportModal,
+      ExportDataDialog,
       TempEditor,
       XlsxUpload,
     },
@@ -98,33 +100,25 @@
       tableName: String,
     },
     setup(props) {
+      const rxHub = useRx();
       const { coninfo, columns: tableData, isHump } = useMainStore();
 
-      const route = useRoute();
-
-      // data
       const loading = ref(false);
-      const ExportModal = ref();
-
-      // methods
-      const change = (val: string) => {
-        const route = router.currentRoute;
-        router.push({ name: route.name, params: { table: val } });
-      };
 
       const ExportTable = () => {
         ColumnsExport(tableData.value, props.tableName);
       };
 
       const ExportList = () => {
-        ExportModal.value.open();
+        rxHub.emit('ShowExportDataDialog', {
+          table: props.tableName,
+          config: coninfo.value,
+        });
       };
 
       const ImportData = async (rows: any[]) => {
         if (rows.length === 0) return;
-        let list = RowTypeTrans(rows, tableData.value);
-
-        const url = '/api/sql/TableDataAdd';
+        const list = RowTypeTrans(rows, tableData.value);
 
         const params = {
           ...coninfo.value,
@@ -135,13 +129,15 @@
 
         loading.value = true;
 
-        const rsp = await axios.post(url, params);
-
-        if (rsp.code !== 0) {
-          alert(rsp.msg);
+        try {
+          const rsp = await axios.post('/api/sql/TableDataAdd', params);
+          if (rsp.code !== 0) throw new Error(rsp.msg);
+        } catch (err: any) {
+          Message.error(err.message);
         }
-
-        loading.value = false;
+        finally {
+          loading.value = false;
+        }
       };
 
       return {
@@ -150,9 +146,6 @@
         tableData,
         isHump,
 
-        ExportModal,
-
-        change,
         ExportTable,
         ExportList,
         ImportData,

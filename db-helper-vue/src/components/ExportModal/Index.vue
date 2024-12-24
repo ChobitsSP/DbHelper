@@ -30,35 +30,34 @@
 
   import axios from '@/utils/AxiosUtils';
   import { ExportJson } from '@/utils/FileUtils';
-
   import { FormModel } from './models/Index';
-
-  import store from '@/store/index';
   import { useDialog } from '@/mixins/Dialog';
-  import { useRoute } from '@/router';
+
+  interface OpenConfig {
+    table: string;
+    config: any;
+  }
 
   export default defineComponent({
     setup() {
-      const route = useRoute();
       const model = ref(new FormModel);
       const loading = ref(false);
 
-      const dialogSetup = useDialog({
+      const dialogSetup = useDialog<OpenConfig>({
+        openEventName: 'ShowExportDataDialog',
         maxWidth: 640,
-        async init() {
+        async init(config) {
           model.value = new FormModel;
-          model.value.table = route.params.table;
+          model.value.table = config.table;
           dialogSetup.show.value = true;
         },
-        async submit() {
-          const req = Object.assign({ table: '' }, model.value, store.state.user.coninfo);
-          req.table = store.state.table.table;
-
+        async submit(config) {
+          const req = Object.assign({}, model.value, config.config);
           loading.value = true;
           try {
             const rsp = await axios.post('/api/sql/listget', req);
             if (rsp.code !== 0) throw new Error(rsp.msg);
-            ExportJson(req.table, rsp.data);
+            ExportJson(rsp.data, config.table);
           } catch (err: any) {
             console.error(err);
             Message.error(err.message);

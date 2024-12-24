@@ -4,7 +4,7 @@ import moment from "moment";
 import _ from "lodash";
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
-import axios from "axios";
+import axios from '@/utils/AxiosUtils';
 
 function IsEmpty(value: string) {
   return value == null || value == "";
@@ -35,12 +35,9 @@ export function RowTypeTrans(rows: { [key: string]: any }[], columns: IColumn[])
   }).value();
 }
 
-
 async function AppendTableData(zip: JSZip, config, table: string) {
-  const url = "/api/sql/listget";
   const params = Object.assign({ take: 5e4, table, }, config);
-  const rsp: any = await axios.post(url, params);
-
+  const rsp = await axios.post("/api/sql/listget", params);
   if (rsp.code === 0) {
     zip.file(table + ".json", JSON.stringify(rsp.data));
   }
