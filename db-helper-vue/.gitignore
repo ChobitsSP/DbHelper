@@ -21,3 +21,4 @@ yarn-error.log*
 *.sw?
 .history
 package-lock.json
+gulpfile.js
