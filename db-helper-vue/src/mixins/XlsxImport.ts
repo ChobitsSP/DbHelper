@@ -2,8 +2,7 @@ import { ref } from 'vue';
 import { read, WorkBook, utils } from 'xlsx';
 import moment from 'moment';
 import { Message } from 'element-ui';
-
-import { date as dateFilter } from '@/filters/Index';
+import _ from 'lodash';
 
 export interface ColumnInfo {
   label: string;
@@ -11,26 +10,36 @@ export interface ColumnInfo {
   formatter?: (row: Record<string, any>, column: ColumnInfo, val: any) => any;
 }
 
-function GetVal(value: any) {
+function GetTrimVal(value: any) {
   if (typeof value !== "string") return value;
   value = value.trim();
   return value;
 }
 
-function GetRow<T = any>(obj: Record<string, any>, dic: ColumnInfo[]) {
+function GetRow<T = any>(obj: Record<string, any>, dic?: ColumnInfo[]) {
   const item: Record<string, any> = {};
-  dic.forEach(kv => {
-    let val = GetVal(obj[kv.label]);
-    if (kv.formatter != null) {
-      val = kv.formatter(obj, kv, val);
-    }
 
-    if (val instanceof Date) {
-      val = moment(val).format('YYYY-MM-DD HH:mm:ss');
+  if (dic?.length > 0) {
+    dic.forEach(kv => {
+      let val = GetTrimVal(obj[kv.label]);
+      if (kv.formatter != null) {
+        val = kv.formatter(obj, kv, val);
+      }
+      if (val instanceof Date) {
+        val = moment(val).format('YYYY-MM-DD HH:mm:ss');
+      }
+      item[kv.prop] = val;
+    });
+  }
+  else {
+    for (const key in obj) {
+      let val = GetTrimVal(_.get(obj, key));
+      if (val instanceof Date) {
+        val = moment(val).format('YYYY-MM-DD HH:mm:ss');
+      }
+      item[key] = val;
     }
-
-    item[kv.prop] = val;
-  });
+  }
   return item as T;
 }
 
@@ -96,18 +105,18 @@ function ReadXlsx(file: File) {
 /**
  * 从excel文件中加载行
  * @param file 
- * @param dic 
+ * @param columns 
  * @param sheetName 
  * @returns 
  */
-export async function LoadRows<T = any>(file: File, dic: ColumnInfo[], sheetName?: string) {
+export async function LoadRows<T = any>(file: File, columns?: ColumnInfo[], sheetName?: string) {
   const workBook = await ReadXlsx(file);
   if (sheetName == null) {
     sheetName = workBook.SheetNames[0];
   }
   const sheet = workBook.Sheets[sheetName];
   if (sheet == null) throw new Error('找不到sheet: ' + sheetName);
-  return utils.sheet_to_json(sheet).map((t) => GetRow<T>(t, dic));
+  return utils.sheet_to_json(sheet).map((t) => GetRow<T>(t, columns));
 }
 
 interface RowModel {
