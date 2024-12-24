@@ -8,8 +8,9 @@
     <el-button class="excel-uploader__button"
                type="primary"
                :loading="loading"
+               :size="size"
                @click="triggerFileInput">
-      上传Excel
+      {{ label }}
     </el-button>
   </div>
 </template>
@@ -28,6 +29,14 @@
       loading: {
         type: Boolean,
         default: false,
+      },
+      size: {
+        type: String,
+        default: 'small',
+      },
+      label: {
+        type: String,
+        default: '上传Excel',
       },
     },
     emits: ['input'],
@@ -59,11 +68,6 @@
 
     &__input {
       display: none;
-    }
-
-    &__button {
-      font-size: 14px;
-      padding: 10px 20px;
     }
   }
 </style>

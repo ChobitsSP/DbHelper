@@ -1,26 +1,22 @@
 ﻿<template>
   <div>
-    <el-form size="small"
-             inline>
+    <el-form inline>
       <el-form-item>
         <el-button @click="edit(null)"
                    icon="el-icon-plus"
-                   circle
-                   type="success"></el-button>
+                   type="success">Add</el-button>
       </el-form-item>
       <el-form-item>
         <el-button @click="exportConfig(tableData)"
-                   circle
                    icon="el-icon-download"
-                   type="info"></el-button>
+                   type="info">Export</el-button>
       </el-form-item>
       <el-form-item>
         <el-upload accept=".json"
                    action=""
                    :before-upload="importConfig">
-          <el-button circle
-                     icon="el-icon-upload"
-                     type="primary"></el-button>
+          <el-button icon="el-icon-upload"
+                     type="primary">Import</el-button>
         </el-upload>
       </el-form-item>
     </el-form>
@@ -40,16 +36,16 @@
         </template>
       </vxe-column>
       <vxe-column field="providerName"
-                  title="类型"
+                  title="type"
                   :formatter="providerNameFormatter"
                   width="80">
       </vxe-column>
       <vxe-column field="connectionString"
-                  title="连接"
+                  title="connectionString"
                   min-width="220">
       </vxe-column>
-      <vxe-column title="操作"
-                  width="240"
+      <vxe-column title="action"
+                  width="220"
                   fixed="right">
         <template #default="{ row }">
           <vxe-button size="mini"
@@ -80,6 +76,8 @@
           </vxe-button>
           <XlsxUpload :loading="loading"
                       style="margin-left:10px;"
+                      label="导入列注释"
+                      size="mini"
                       @input="arr => importColComment(arr, row)">
           </XlsxUpload>
         </template>
