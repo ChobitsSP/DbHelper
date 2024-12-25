@@ -28,9 +28,16 @@
     },
   },
   {
-    name: 'TableInfo',
-    path: 'Table/TableInfo',
+    path: '',
     component: () => import('./TableInfo/Index.vue'),
+    meta: {
+      title: '数据库表详情',
+    },
+  },
+  {
+    path: 'Table/TableInfo/:dbId([0-9]+)?',
+    component: () => import('./TableInfo/Index.vue'),
+    props: (route) => ({ dbId: parseInt(route.params.dbId || '0', 10) }),
     meta: {
       title: '数据库表详情',
     },

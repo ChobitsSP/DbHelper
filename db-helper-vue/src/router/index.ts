@@ -1,7 +1,6 @@
 ﻿import Vue from 'vue';
 import Router from 'vue-router';
 
-//import Table from "../views/Table/router";
 import BtTable from '../views/BtTable/router';
 import TableUtils from '../views/TableUtils/router';
 import OtherUtils from '../views/OtherUtils/router';
@@ -13,18 +12,8 @@ const routes = [
     path: '/',
     component: () => import('../components/Home.vue'),
     children: [
-      {
-        path: '',
-        name: 'index',
-        redirect: '/Table/TableInfo',
-        // component: () => import("../views/Index.vue"),
-        // meta: {
-        //   noauth: true
-        // }
-      },
-      ...BtTable,
-      //...Table,
       ...TableUtils,
+      ...BtTable,
       ...OtherUtils,
     ],
   },

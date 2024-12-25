@@ -42,7 +42,6 @@
   import { defineComponent, ref, watch } from 'vue';
   import { TreeNode } from 'element-ui/types/tree';
 
-  import { useRoute } from '@/router/index';
   import * as DbUtils from '@/utils/DbUtils';
 
   import * as api from '@/api';
@@ -56,24 +55,37 @@
   }
 
   export default defineComponent({
-    setup(_props, { emit }) {
-      const route = useRoute();
-
+    props: {
+      dbId: Number,
+    },
+    setup(props, { emit }) {
       const tableId = ref<number>();
       const filterText = ref('');
       const treeRef = ref();
 
       const loadNode = async (node: TreeNode<number, TreeItem>, resolve: (data: any[]) => any) => {
-        if (node.level === 0) {
-          const list = await DbUtils.DbConfigList();
-          return resolve(list.map(t => ({
-            id: t.id,
-            label: t.name,
-            isLeaf: false,
-          })));
-        } else if (node.level === 1) {
-          const list = await getTables(node.data.id);
-          return resolve(list);
+        if (props.dbId) {
+          if (node.level === 0) {
+            const list = await getTables(props.dbId);
+            return resolve(list.map(t => ({
+              id: t.id,
+              label: t.label,
+              isLeaf: true,
+            })));
+          }
+        }
+        else {
+          if (node.level === 0) {
+            const list = await DbUtils.DbConfigList();
+            return resolve(list.map(t => ({
+              id: t.id,
+              label: t.name,
+              isLeaf: false,
+            })));
+          } else if (node.level === 1) {
+            const list = await getTables(node.data.id);
+            return resolve(list);
+          }
         }
         return resolve([]);
       };

@@ -2,6 +2,7 @@
   <el-container class="my-container">
     <el-aside width="300px">
       <LeftTree v-loading="loading"
+                :dbId="dbId"
                 @change="onChange"></LeftTree>
     </el-aside>
     <el-main>
@@ -32,6 +33,9 @@
     components: {
       LeftTree,
       TableInfo,
+    },
+    props: {
+      dbId: Number,
     },
     setup() {
       const tableName = ref('');
