@@ -69,3 +69,17 @@ export function DbConfigRemove(id: number) {
 export function DbConfigGet(id: number) {
   return db.DbConfig.get(id);
 }
+
+export async function DbConfigDrag(id1: number, id2: number) {
+  const row1 = await db.DbConfig.get(id1);
+  const row2 = await db.DbConfig.get(id2);
+
+  if (row1 && row2) {
+    const temp = row1.id;
+    row1.id = row2.id;
+    row2.id = temp;
+    
+    await db.DbConfig.update(id2, row1);
+    await db.DbConfig.update(id1, row2);
+  }
+}

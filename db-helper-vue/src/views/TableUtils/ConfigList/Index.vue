@@ -20,8 +20,10 @@
         </el-upload>
       </el-form-item>
     </el-form>
-    <vxe-table :row-config="{ keyField: 'id', drag: true }"
+    <vxe-table ref="tableRef"
+               :row-config="{ keyField: 'id', drag: true }"
                :data="tableData"
+               @row-dragend="rowDragendEvent"
                class="my-table">
       <vxe-column field="id"
                   title="id"
@@ -29,6 +31,7 @@
       </vxe-column>
       <vxe-column field="name"
                   title="name"
+                  drag-sort
                   width="200">
         <template #default="{ row }">
           <span class="span-link"
@@ -118,6 +121,7 @@
       const rxHub = useRx();
       const setup = useSetup();
 
+      const tableRef = ref();
       const tableData = ref([]);
 
       async function refresh() {
@@ -146,9 +150,17 @@
         return DbTypes.find(t => t.value === cellValue)?.label;
       }
 
+      async function rowDragendEvent({ newRow, oldRow }) {
+        await DbUtils.DbConfigDrag(oldRow.id, newRow.id);
+        return refresh();
+      }
+
       return {
         ...setup,
+
+        tableRef,
         tableData,
+
         remove,
         link(row) {
           store.commit('SET_CONINFO', row)
@@ -164,6 +176,8 @@
 
         DbTypes,
         providerNameFormatter,
+
+        rowDragendEvent,
       };
     },
   });
