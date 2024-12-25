@@ -20,7 +20,7 @@
         </el-upload>
       </el-form-item>
     </el-form>
-    <vxe-table :row-config="{ keyField: 'id' }"
+    <vxe-table :row-config="{ keyField: 'id', drag: true }"
                :data="tableData"
                class="my-table">
       <vxe-column field="id"
