@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import BtTable from '../views/BtTable/router';
 import TableUtils from '../views/TableUtils/router';
 import OtherUtils from '../views/OtherUtils/router';
+import Database from '../views/Database/router';
 
 Vue.use(Router);
 
@@ -15,6 +16,7 @@ const routes = [
       ...TableUtils,
       ...BtTable,
       ...OtherUtils,
+      ...Database,
     ],
   },
 ];
