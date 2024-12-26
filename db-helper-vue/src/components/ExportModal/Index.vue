@@ -29,7 +29,7 @@
   import { Message } from 'element-ui';
 
   import axios from '@/utils/AxiosUtils';
-  import { ExportJson } from '@/utils/FileUtils';
+  import { exportToExcel } from '@/utils/XlsxExport';
   import { FormModel } from './models/Index';
   import { useDialog } from '@/mixins/Dialog';
 
@@ -57,7 +57,7 @@
           try {
             const rsp = await axios.post('/api/sql/listget', req);
             if (rsp.code !== 0) throw new Error(rsp.msg);
-            ExportJson(rsp.data, config.table);
+            exportToExcel(rsp.data, config.table);
           } catch (err: any) {
             console.error(err);
             Message.error(err.message);
