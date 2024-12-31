@@ -1,12 +1,14 @@
 <template>
   <vxe-grid v-bind="gridOptions"
             :max-height="height"
-            :loading="loading">
+            :loading="loading"
+            @cell-click="onCellClick">
   </vxe-grid>
 </template>
 
 <script lang="ts">
   import { defineComponent, ref, watchEffect } from 'vue';
+  import _ from 'lodash';
 
   export default defineComponent({
     props: {
@@ -49,6 +51,11 @@
 
       return {
         gridOptions,
+        onCellClick({ row, column }) {
+          const value = _.get(row, column.field);
+          if (!value) return;
+          // ::todo 复制到剪贴板
+        },
       };
     },
   });

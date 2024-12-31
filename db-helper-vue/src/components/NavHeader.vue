@@ -78,6 +78,10 @@
           name: '对比',
           url: '/Table/DbCompare',
         },
+        {
+          name: 'ExecuteSql',
+          url: '/Database/ExecuteSql',
+        },
       ],
     },
     {

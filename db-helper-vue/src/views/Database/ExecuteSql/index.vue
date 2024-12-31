@@ -35,7 +35,9 @@
               placeholder="请输入SQL语句"
               type="textarea"></el-input>
     <div class="result">
-      <DataTable :data="tableData"></DataTable>
+      <DataTable :loading="loading"
+                 :data="tableData">
+      </DataTable>
     </div>
   </div>
 </template>
