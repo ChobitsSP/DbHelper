@@ -19,6 +19,10 @@ namespace SqlWebApi
             var serializerSettings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
             var contractResolver = (Newtonsoft.Json.Serialization.DefaultContractResolver)serializerSettings.ContractResolver;
             contractResolver.IgnoreSerializableAttribute = true;
+
+            // 设置日期时间格式
+            serializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+            serializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Local;
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
