@@ -7,13 +7,13 @@
           <el-button type="primary"
                      @click="$emit('refresh')">刷新</el-button>
           <el-button type="success"
-                     @click="ExportTable">导出</el-button>
-          <el-button type="success"
+                     @click="ExportTable">导出结构</el-button>
+          <!-- <el-button type="success"
                      @click="ExportList">导出数据</el-button>
           <XlsxUpload :loading="loading"
                       style="margin-left:10px;"
                       label="导入"
-                      @input="ImportData"></XlsxUpload>
+                      @input="ImportData"></XlsxUpload> -->
         </el-form-item>
         <el-form-item>
           <el-checkbox v-model="isHump">isHump</el-checkbox>

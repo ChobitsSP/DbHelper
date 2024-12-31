@@ -38,3 +38,19 @@ export async function getTables(config: DbConfig) {
   if (rsp.code !== 0) throw new Error(rsp.msg);
   return rsp.data;
 }
+
+interface ListGetReq {
+  sql: string;
+  skip: number;
+  take: number;
+}
+
+export async function ListGet<T = any>(config: DbConfig, req: ListGetReq) {
+  const rsp = await http.post<T[]>('/api/sql/ListGet', {
+    providerName: config.providerName,
+    connectionString: config.connectionString,
+    ...req,
+  });
+  if (rsp.code !== 0) throw new Error(rsp.msg);
+  return rsp.data;
+}

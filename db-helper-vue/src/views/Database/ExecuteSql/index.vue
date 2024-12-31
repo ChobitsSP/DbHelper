@@ -1,76 +1,171 @@
 <template>
   <div class="sql-executor">
-    <el-select v-model="selectedDB"
-               placeholder="选择数据库">
-      <el-option v-for="db in databases"
-                 :key="db.value"
-                 :label="db.label"
-                 :value="db.value" />
-    </el-select>
-
-    <el-input type="textarea"
-              v-model="sqlQuery"
-              :rows="5"
-              placeholder="请输入SQL语句" />
-
-    <el-button type="primary"
-               @click="executeSQL">执行</el-button>
-    <el-button type="success"
-               @click="exportData">导出</el-button>
-
-    <el-table :data="tableData"
-              style="width: 100%">
-      <el-table-column v-for="(col, index) in tableColumns"
-                       :key="index"
-                       :prop="col"
-                       :label="col" />
-    </el-table>
+    <el-form size="small"
+             inline>
+      <el-form-item>
+        <el-select v-model="queryConfig.dbId"
+                   filterable
+                   placeholder="Select Database">
+          <el-option v-for="db in dbList"
+                     :key="db.id"
+                     :label="db.name"
+                     :value="db.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-select v-model="queryConfig.maxCount">
+          <el-option v-for="option in [10, 20, 50, 100, 500, 1000]"
+                     :key="option"
+                     :label="`Limit ${option} rows`"
+                     :value="option" />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="queryConfig.dbId">
+        <el-button type="primary"
+                   :loading="loading"
+                   @click="executeSQL">执行</el-button>
+        <el-button type="success"
+                   :loading="loading"
+                   @click="exportData">导出</el-button>
+      </el-form-item>
+    </el-form>
+    <el-input v-model="queryConfig.sql"
+              ref="sqlInput"
+              :rows="20"
+              placeholder="请输入SQL语句"
+              type="textarea"></el-input>
+    <div class="result">
+      <DataTable :data="tableData"></DataTable>
+    </div>
   </div>
 </template>
 
-<script setup>
-  import { ref } from 'vue'
-  import { ElMessage } from 'element-plus'
+<script lang="ts">
+  import { defineComponent, ref } from 'vue';
+  import { Message } from 'element-ui';
 
-  const selectedDB = ref('')
-  const sqlQuery = ref('')
-  const tableData = ref([])
-  const tableColumns = ref([])
+  import * as api from '@/api';
+  import * as DbUtils from '@/utils/DbUtils';
 
-  const databases = [
-    { value: 'mysql', label: 'MySQL' },
-    { value: 'postgresql', label: 'PostgreSQL' },
-    { value: 'oracle', label: 'Oracle' }
-  ]
+  import { exportToExcel } from '@/utils/XlsxExport';
 
-  const executeSQL = () => {
-    // 这里应该调用后端API执行SQL查询
-    // 为演示目的,我们使用模拟数据
-    tableColumns.value = ['id', 'name', 'age']
-    tableData.value = [
-      { id: 1, name: '张三', age: 25 },
-      { id: 2, name: '李四', age: 30 },
-      { id: 3, name: '王五', age: 35 }
-    ]
-    ElMessage.success('SQL执行成功')
+  import DataTable from './components/DataTable.vue';
+
+  class QueryConfig {
+    dbId: number = null;
+    maxCount = 20;
+    sql = '';
   }
 
-  const exportData = () => {
-    // 实现导出功能
-    ElMessage.info('导出功能待实现')
-  }
+  export default defineComponent({
+    components: {
+      DataTable,
+    },
+    setup() {
+      const sqlInput = ref();
+
+      const queryConfig = ref(new QueryConfig);
+
+      const tableData = ref([]);
+      const loading = ref(false);
+
+      const dbList = ref([]);
+      async function init() {
+        dbList.value = await DbUtils.DbConfigList();
+      }
+      init();
+
+      function getSql() {
+        const textarea: HTMLTextAreaElement = sqlInput.value.$el.querySelector('textarea');
+
+        let selectedText = '';
+
+        if (textarea.selectionStart !== textarea.selectionEnd) {
+          selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+        }
+        return selectedText || textarea.value;
+      }
+
+      async function executeSQL() {
+        const sql = getSql();
+        if (!sql) {
+          Message.error('请输入SQL语句');
+          return;
+        }
+
+        loading.value = true;
+
+        try {
+          const config = await DbUtils.DbConfigGet(queryConfig.value.dbId);
+          tableData.value = await api.ListGet(config, {
+            sql,
+            skip: 0,
+            take: queryConfig.value.maxCount,
+          });
+        } catch (err: any) {
+          console.error(err);
+          Message.error(err.message);
+        }
+        finally {
+          loading.value = false;
+        }
+      }
+
+      async function exportData() {
+        loading.value = true;
+
+        try {
+          const allList = await getAllList();
+          exportToExcel(allList);
+        } catch (err: any) {
+          console.error(err);
+          Message.error(err.message);
+        }
+        finally {
+          loading.value = false;
+        }
+      }
+
+      async function getAllList() {
+        const config = await DbUtils.DbConfigGet(queryConfig.value.dbId);
+        const sql = getSql();
+
+        const allList = [];
+
+        while (true) {
+          const list = await api.ListGet(config, {
+            sql,
+            skip: allList.length,
+            take: queryConfig.value.maxCount,
+          });
+
+          if (list.length === 0) {
+            break;
+          }
+
+          allList.push(...list);
+        }
+
+        return allList;
+      }
+
+      return {
+        dbList,
+        sqlInput,
+        queryConfig,
+
+        loading,
+        executeSQL,
+        exportData,
+
+        tableData,
+      };
+    },
+  });
 </script>
 
-<style scoped>
-  .sql-executor {
-    padding: 20px;
-  }
-  .el-select,
-  .el-input {
-    margin-bottom: 20px;
-  }
-  .el-button {
-    margin-right: 10px;
-    margin-bottom: 20px;
+<style lang="scss" scoped>
+  .result {
+    margin-top: 20px;
   }
 </style>
