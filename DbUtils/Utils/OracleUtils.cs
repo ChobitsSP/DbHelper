@@ -84,5 +84,15 @@ namespace DbUtils.Utils
         {
             throw new NotImplementedException();
         }
+
+        public string SqlPager(string sql, int skip, int take)
+        {
+            int endRow = skip + take;
+            return $@"SELECT * FROM (
+                SELECT subquery.*, ROWNUM rnum
+                FROM ({sql}) subquery
+                WHERE ROWNUM <= {endRow}
+            ) WHERE rnum > {skip}";
+        }
     }
 }

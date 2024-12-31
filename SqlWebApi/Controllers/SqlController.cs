@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace SqlWebApi.Controllers
@@ -20,9 +21,6 @@ namespace SqlWebApi.Controllers
             public string table { get; set; }
             public string comment { get; set; }
             public string column { get; set; }
-
-            public int skip { get; set; } = 0;
-            public int take { get; set; } = 5;
         }
 
         [HttpPost]
@@ -43,12 +41,19 @@ namespace SqlWebApi.Controllers
             return new ItemResult(list);
         }
 
+        public class ListGetReq : SqlRequest
+        {
+            public string sql { get; set; }
+            public int skip { get; set; } = 0;
+            public int take { get; set; } = 50;
+        }
+
         [HttpPost]
         [Route("ListGet")]
-        public ItemResult ListGet(SqlRequest req)
+        public async Task<ItemResult> ListGet(ListGetReq req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
-            var result = utils.ListGet(req.table, req.skip, req.take);
+            var result = await utils.ListGet(req.sql, req.skip, req.take);
             return new ItemResult(result);
         }
 

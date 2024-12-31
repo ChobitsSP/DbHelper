@@ -173,5 +173,10 @@ and table_name = ?table_name
                 db.Execute(sql, data);
             }
         }
+
+        public string SqlPager(string sql, int skip, int take)
+        {
+            return $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
+        }
     }
 }

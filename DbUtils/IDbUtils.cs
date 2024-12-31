@@ -22,6 +22,8 @@ namespace DbUtils
         IDbConnection GetDb();
 
         void TableDataAdd(string table, string[] columns, object data);
+
+        string SqlPager(string sql, int skip, int take);
     }
 
     public static class DbHelper
@@ -54,13 +56,15 @@ namespace DbUtils
             return Regex.Match(name, @"[a-z0-9_]+", RegexOptions.IgnoreCase).Value;
         }
 
-        public static IList ListGet(this IDbUtils dbu, string table, int skip, int take)
+        public static async Task<IList> ListGet(this IDbUtils dbu, string sql, int skip, int take)
         {
-            var sql = "select * from " + SafeTableName(table);
-
             using (var db = dbu.GetDb())
             {
-                return db.Query(sql).Skip(skip).Take(take).AsList();
+
+                sql = dbu.SqlPager(sql, skip, take);
+                var result = await db.QueryAsync(sql);
+                var list = result.AsList();
+                return list;
             }
         }
     }

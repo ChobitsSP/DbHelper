@@ -109,5 +109,10 @@ WHERE t1.table_schema = 'public'";
         {
             throw new NotImplementedException();
         }
+
+        public string SqlPager(string sql, int skip, int take)
+        {
+            return $"SELECT * FROM ({sql}) AS subquery LIMIT {take} OFFSET {skip}";
+        }
     }
 }

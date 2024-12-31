@@ -143,6 +143,11 @@ SELECT
             throw new NotImplementedException();
         }
 
+        public string SqlPager(string sql, int skip, int take)
+        {
+            return $"SELECT * FROM ({sql}) AS subquery ORDER BY (SELECT NULL) OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY";
+        }
+
         public class RootObject
         {
             public string COLUMN_NAME { get; set; }
