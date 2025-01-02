@@ -23,17 +23,25 @@ async function getIsNew() {
   const currentScripts = document.querySelectorAll('script[src]');
   const newScripts = doc.querySelectorAll('script[src]');
 
-  // ::todo 对比 chunk-vendors.[hash].js index.[hash].js
+  // 对比 chunk-vendors.[hash].js index.[hash].js
 
-  if (currentScripts.length !== newScripts.length) {
-    return false;
-  }
+  const names = ['chunk-vendors', 'index'];
 
-  for (let i = 0; i < currentScripts.length; i++) {
-    const currentSrc = currentScripts[i].getAttribute('src');
-    const newSrc = newScripts[i].getAttribute('src');
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i];
+    const reg = new RegExp(`\/${name}\.[^\.]+\.js`);
+
+    const currentScript = Array.from(currentScripts).find(script => reg.test(script.getAttribute('src')));
+    const newScript = Array.from(newScripts).find(script => reg.test(script.getAttribute('src')));
+
+    if (!currentScript || !newScript) continue;
+
+    const currentSrc = currentScript.getAttribute('src');
+    const newSrc = newScript.getAttribute('src');
 
     if (currentSrc !== newSrc) {
+      console.log('currentSrc:', currentSrc);
+      console.log('newSrc:', newSrc);
       return false;
     }
   }
