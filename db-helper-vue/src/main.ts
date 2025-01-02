@@ -39,3 +39,11 @@ new Vue({
   store,
   render: (h) => h(App),
 }).$mount('#app');
+
+(function () {
+  const buildTime: string = process.env.VUE_APP_BUILD_TIME;
+  if (buildTime) {
+    console.log('Build Time:', new Date(parseInt(buildTime, 10)).toLocaleString());
+    console.log('Version:', process.env.VUE_APP_VERSION);
+  }
+})();
