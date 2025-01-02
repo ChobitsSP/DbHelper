@@ -63,10 +63,14 @@
     components: {
       DataTable,
     },
-    setup() {
+    props: {
+      defaultDbId: Number,
+    },
+    setup(props) {
       const sqlInput = ref();
 
       const queryConfig = ref(new QueryConfig);
+      queryConfig.value.dbId = props.defaultDbId;
 
       const tableData = ref([]);
       const loading = ref(false);
