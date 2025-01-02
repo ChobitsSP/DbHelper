@@ -1,15 +1,22 @@
-import { MessageBox } from 'element-ui';
+import { Notification } from 'element-ui';
+
+let isNotified = false;
 
 export async function useVersionCheck() {
   const isNew = await getIsNew();
   if (isNew) return;
-  await MessageBox.confirm('检测到新版本，是否刷新页面？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    window.location.reload();
-  }).catch(() => { });
+
+  Notification({
+    title: '提示',
+    message: '页面已更新，请刷新页面',
+    type: 'warning',
+    position: 'bottom-right',
+    onClick() {
+      window.location.reload();
+    },
+  });
+
+  isNotified = true;
 }
 
 /**
