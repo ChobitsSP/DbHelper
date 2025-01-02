@@ -23,6 +23,8 @@ async function getIsNew() {
   const currentScripts = document.querySelectorAll('script[src]');
   const newScripts = doc.querySelectorAll('script[src]');
 
+  // ::todo 对比 chunk-vendors.[hash].js index.[hash].js
+
   if (currentScripts.length !== newScripts.length) {
     return false;
   }

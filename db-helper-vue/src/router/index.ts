@@ -1,6 +1,8 @@
 ﻿import Vue from 'vue';
 import Router from 'vue-router';
 
+import { useVersionCheck } from '../utils/VersionCheck';
+
 import BtTable from '../views/BtTable/router';
 import TableUtils from '../views/TableUtils/router';
 import OtherUtils from '../views/OtherUtils/router';
@@ -33,6 +35,7 @@ const router = new Router({
 router.beforeEach((route, _redirect, next) => {
   document.title = route.meta.title || 'DbTools';
   next();
+  useVersionCheck();
 });
 
 export function useRoute() {
