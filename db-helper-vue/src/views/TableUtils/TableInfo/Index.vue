@@ -14,9 +14,15 @@
   </el-container>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
   .my-container {
     height: calc(100vh - 100px);
+
+    :deep(.el-main) {
+      padding: 10px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
   }
 </style>
 

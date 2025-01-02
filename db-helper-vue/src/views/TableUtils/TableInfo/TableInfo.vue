@@ -1,6 +1,10 @@
 <template>
   <div>
-    <el-row>
+    <div>
+      <span class="table-name"
+            v-copy="tableName">{{ tableName }}</span>
+    </div>
+    <el-row style="margin-top: 10px;">
       <el-form inline
                size="small">
         <el-form-item>
@@ -153,3 +157,11 @@
     },
   });
 </script>
+
+<style scoped>
+  .table-name {
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
