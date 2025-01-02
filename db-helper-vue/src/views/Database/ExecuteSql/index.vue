@@ -1,173 +1,118 @@
 <template>
-  <div class="sql-executor">
-    <el-form size="small"
-             inline>
-      <el-form-item>
-        <el-select v-model="queryConfig.dbId"
-                   filterable
-                   placeholder="Select Database">
-          <el-option v-for="db in dbList"
-                     :key="db.id"
-                     :label="db.name"
-                     :value="db.id" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="queryConfig.maxCount">
-          <el-option v-for="option in [10, 20, 50, 100, 500, 1000]"
-                     :key="option"
-                     :label="`Limit ${option} rows`"
-                     :value="option" />
-        </el-select>
-      </el-form-item>
-      <el-form-item v-if="queryConfig.dbId">
-        <el-button type="primary"
-                   :loading="loading"
-                   @click="executeSQL">执行</el-button>
-        <el-button type="success"
-                   :loading="loading"
-                   @click="exportData">导出</el-button>
-      </el-form-item>
-    </el-form>
-    <el-input v-model="queryConfig.sql"
-              ref="sqlInput"
-              :rows="20"
-              placeholder="请输入SQL语句"
-              type="textarea"></el-input>
-    <div class="result">
-      <DataTable :loading="loading"
-                 :data="tableData">
-      </DataTable>
+  <div class="query-container">
+    <div class="tabs-header">
+      <div v-for="(queryTab, index) in queryTabs"
+           :key="queryTab.id"
+           :class="['query-tab', { active: activeTab === index }]"
+           @click="onTabClick(index)">
+        <span>Query {{ index + 1 }}</span>
+        <button class="close-btn"
+                @click.stop="onClose(index)">×</button>
+      </div>
+      <button class="add-btn"
+              @click="onAdd">+</button>
+    </div>
+    <div class="tab-content"
+         v-for="(queryTab, index) in queryTabs"
+         :key="queryTab.id"
+         :style="{ display: activeTab === index ? 'block' : 'none' }">
+      <QueryInfo />
     </div>
   </div>
 </template>
 
+<style lang="scss" scoped>
+  .query-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .tabs-header {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .query-tab {
+    padding: 10px 15px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    margin-right: 2px;
+    display: flex;
+    align-items: center;
+
+    &.active {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .close-btn {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .add-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    background: none;
+    border: 1px solid #ccc;
+    border-bottom: none;
+  }
+
+  .tab-content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+</style>
+
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  import { Message } from 'element-ui';
-
-  import * as api from '@/api';
-  import * as DbUtils from '@/utils/DbUtils';
-
-  import { exportToExcel } from '@/utils/XlsxExport';
-
-  import DataTable from './components/DataTable.vue';
+  import QueryInfo from './components/QueryInfo.vue';
 
   class QueryConfig {
-    dbId: number = null;
-    maxCount = 20;
-    sql = '';
+    id: string;
+    sql: string;
+
+    constructor() {
+      this.id = Date.now().toString(); // 使用时间戳作为唯一ID
+      this.sql = '';
+    }
   }
 
   export default defineComponent({
     components: {
-      DataTable,
+      QueryInfo,
     },
     setup() {
-      const sqlInput = ref();
+      const queryTabs = ref<QueryConfig[]>([new QueryConfig()]);
+      const activeTab = ref(0);
 
-      const queryConfig = ref(new QueryConfig);
-
-      const tableData = ref([]);
-      const loading = ref(false);
-
-      const dbList = ref([]);
-      async function init() {
-        dbList.value = await DbUtils.DbConfigList();
-      }
-      init();
-
-      function getSql() {
-        const textarea: HTMLTextAreaElement = sqlInput.value.$el.querySelector('textarea');
-
-        let selectedText = '';
-
-        if (textarea.selectionStart !== textarea.selectionEnd) {
-          selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-        }
-        return selectedText || textarea.value;
-      }
-
-      async function executeSQL() {
-        const sql = getSql();
-        if (!sql) {
-          Message.error('请输入SQL语句');
-          return;
-        }
-
-        loading.value = true;
-
-        try {
-          const config = await DbUtils.DbConfigGet(queryConfig.value.dbId);
-          tableData.value = await api.ListGet(config, {
-            sql,
-            skip: 0,
-            take: queryConfig.value.maxCount,
-          });
-        } catch (err: any) {
-          console.error(err);
-          Message.error(err.message);
-        }
-        finally {
-          loading.value = false;
+      function onClose(i: number) {
+        queryTabs.value.splice(i, 1);
+        if (activeTab.value >= queryTabs.value.length) {
+          activeTab.value = Math.max(queryTabs.value.length - 1, 0);
         }
       }
 
-      async function exportData() {
-        loading.value = true;
-
-        try {
-          const allList = await getAllList();
-          exportToExcel(allList);
-        } catch (err: any) {
-          console.error(err);
-          Message.error(err.message);
-        }
-        finally {
-          loading.value = false;
-        }
+      function onAdd() {
+        queryTabs.value.push(new QueryConfig());
+        activeTab.value = queryTabs.value.length - 1;
       }
 
-      async function getAllList() {
-        const config = await DbUtils.DbConfigGet(queryConfig.value.dbId);
-        const sql = getSql();
-
-        const allList = [];
-
-        while (true) {
-          const list = await api.ListGet(config, {
-            sql,
-            skip: allList.length,
-            take: queryConfig.value.maxCount,
-          });
-
-          if (list.length === 0) {
-            break;
-          }
-
-          allList.push(...list);
-        }
-
-        return allList;
+      function onTabClick(i: number) {
+        activeTab.value = i;
       }
 
       return {
-        dbList,
-        sqlInput,
-        queryConfig,
-
-        loading,
-        executeSQL,
-        exportData,
-
-        tableData,
+        queryTabs,
+        onAdd,
+        onClose,
+        activeTab,
+        onTabClick,
       };
     },
   });
 </script>
-
-<style lang="scss" scoped>
-  .result {
-    margin-top: 20px;
-  }
-</style>
