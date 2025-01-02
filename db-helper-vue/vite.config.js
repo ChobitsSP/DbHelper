@@ -51,5 +51,10 @@ export default defineConfig({
       },
     },
   },
-  define: {},
+  define: {
+    'process.env': {
+      VUE_APP_BUILD_TIME: Date.now().toString(),
+      VUE_APP_VERSION: '1.0.0',
+    },
+  },
 });
