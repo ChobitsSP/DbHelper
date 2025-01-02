@@ -2,7 +2,7 @@
   <div class="query-container">
     <div class="tabs-header">
       <div v-for="(queryTab, index) in queryTabs"
-           :key="queryTab.id"
+           :key="index"
            :class="['query-tab', { active: activeTab === index }]"
            @click="onTabClick(index)">
         <span>Query {{ index + 1 }}</span>
@@ -14,9 +14,10 @@
     </div>
     <div class="tab-content"
          v-for="(queryTab, index) in queryTabs"
-         :key="queryTab.id"
+         :key="index"
          :style="{ display: activeTab === index ? 'block' : 'none' }">
-      <QueryInfo />
+      <QueryInfo ref="queryInfos"
+                 :defaultDbId="lastDbId" />
     </div>
   </div>
 </template>
@@ -43,7 +44,8 @@
     align-items: center;
 
     &.active {
-      background-color: #f0f0f0;
+      background-color: #409eff;
+      color: #fff;
     }
   }
 
@@ -70,16 +72,12 @@
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
+  import _ from 'lodash';
+
   import QueryInfo from './components/QueryInfo.vue';
 
   class QueryConfig {
-    id: string;
-    sql: string;
 
-    constructor() {
-      this.id = Date.now().toString(); // 使用时间戳作为唯一ID
-      this.sql = '';
-    }
   }
 
   export default defineComponent({
@@ -100,11 +98,16 @@
       function onAdd() {
         queryTabs.value.push(new QueryConfig());
         activeTab.value = queryTabs.value.length - 1;
+        lastDbId.value = _.chain(queryInfos.value).map(({ queryConfig }) => queryConfig.dbId).filter(t => !!t).last().value();
       }
 
       function onTabClick(i: number) {
         activeTab.value = i;
       }
+
+      const queryInfos = ref<any[]>();
+
+      const lastDbId = ref();
 
       return {
         queryTabs,
@@ -112,6 +115,9 @@
         onClose,
         activeTab,
         onTabClick,
+
+        queryInfos,
+        lastDbId,
       };
     },
   });
