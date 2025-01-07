@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "clipboard": "^1.7.1",
+    "codemirror": "^6.0.1",
     "dexie": "^2.0.4",
     "element-ui": "^2.15.14",
     "exceljs": "^4.4.0",
