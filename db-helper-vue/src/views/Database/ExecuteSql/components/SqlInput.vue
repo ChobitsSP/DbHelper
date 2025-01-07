@@ -6,8 +6,11 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref, watchEffect } from 'vue';
+  import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
   import _ from 'lodash';
+
+  import { EditorView, basicSetup } from "codemirror"
+  import { sql } from "@codemirror/lang-sql"
 
   export default defineComponent({
     props: {
@@ -16,6 +19,20 @@
     emits: ['input'],
     setup(props) {
       const div = ref<HTMLDivElement>();
+
+      let view: EditorView;
+
+      onMounted(() => {
+        view = new EditorView({
+          parent: div.value,
+          doc: `select * from users where age > 20`,
+          extensions: [basicSetup, sql()]
+        });
+      });
+
+      onUnmounted(() => {
+        view.destroy();
+      });
 
       return {
         div,

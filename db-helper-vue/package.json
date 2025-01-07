@@ -8,6 +8,7 @@
     "build": "vue-cli-service build --no-module"
   },
   "dependencies": {
+    "@codemirror/lang-sql": "^6.8.0",
     "axios": "^0.21.1",
     "clipboard": "^1.7.1",
     "codemirror": "^6.0.1",
