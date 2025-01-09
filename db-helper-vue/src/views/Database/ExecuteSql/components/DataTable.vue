@@ -2,6 +2,7 @@
   <vxe-grid v-bind="gridOptions"
             :max-height="height"
             :loading="loading"
+            @header-cell-click="onHeaderCellClick"
             @cell-click="onCellClick">
   </vxe-grid>
 </template>
@@ -19,8 +20,8 @@
         default: false,
       },
       height: {
-        type: Number,
-        default: 400,
+        type: [Number, String],
+        default: 'auto',
       },
     },
     setup(props) {
@@ -58,6 +59,9 @@
           const value = _.get(row, column.field);
           if (!value) return;
           copy(value);
+        },
+        onHeaderCellClick({ column }) {
+          copy(column.title);
         },
       };
     },
