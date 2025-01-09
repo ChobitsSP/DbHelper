@@ -1,7 +1,8 @@
 <template>
   <div class="sql-executor">
     <el-form size="small"
-             inline>
+             inline
+             class="sql-form">
       <el-form-item>
         <el-select v-model="queryConfig.dbId"
                    filterable
@@ -20,7 +21,8 @@
                      :value="option" />
         </el-select>
       </el-form-item>
-      <el-form-item v-if="queryConfig.dbId">
+      <el-form-item v-if="queryConfig.dbId"
+                    class="action-buttons">
         <el-button type="primary"
                    :loading="loading"
                    @click="executeSQL">执行</el-button>
@@ -29,17 +31,20 @@
                    @click="exportData">导出</el-button>
       </el-form-item>
     </el-form>
-    <SqlInput v-model="queryConfig.sql"></SqlInput>
-    <div class="result">
+    <div class="sql-input-wrapper">
+      <SqlInput v-model="queryConfig.sql"
+                class="sql-input"></SqlInput>
+    </div>
+    <div class="sql-result-wrapper">
       <DataTable :loading="loading"
-                 :data="tableData">
-      </DataTable>
+                 :data="tableData"
+                 class="sql-result"></DataTable>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { computed, defineComponent, ref } from 'vue';
   import { Message } from 'element-ui';
 
   import * as api from '@/api';
@@ -163,7 +168,36 @@
 </script>
 
 <style lang="scss" scoped>
-  .result {
-    margin-top: 20px;
+  .sql-executor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .sql-form {
+      margin-bottom: 16px;
+
+      .action-buttons {
+        margin-left: auto;
+      }
+    }
+
+    .sql-input-wrapper {
+      flex: 0 0 auto;
+      margin-bottom: 16px;
+
+      .sql-input {
+        width: 100%;
+        height: 200px; // 可以根据需要调整高度
+      }
+    }
+
+    .sql-result-wrapper {
+      flex: 1 1 auto;
+      overflow: hidden;
+
+      .sql-result {
+        height: 100%;
+      }
+    }
   }
 </style>
