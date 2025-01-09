@@ -9,6 +9,7 @@
 <script lang="ts">
   import { defineComponent, ref, watchEffect } from 'vue';
   import _ from 'lodash';
+  import { useClipboard } from '@vueuse/core';
 
   export default defineComponent({
     props: {
@@ -23,6 +24,8 @@
       },
     },
     setup(props) {
+      const { copy } = useClipboard();
+
       const gridOptions = ref({
         columns: [],
         data: [],
@@ -54,7 +57,7 @@
         onCellClick({ row, column }) {
           const value = _.get(row, column.field);
           if (!value) return;
-          // ::todo 复制到剪贴板
+          copy(value);
         },
       };
     },
