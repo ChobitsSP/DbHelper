@@ -1,6 +1,5 @@
 <template>
-  <div contenteditable="true"
-       ref="div"
+  <div ref="div"
        class="sql-input">
   </div>
 </template>
@@ -9,15 +8,15 @@
   import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
   import _ from 'lodash';
 
-  import { EditorView, basicSetup } from "codemirror"
-  import { sql } from "@codemirror/lang-sql"
+  import { EditorView, basicSetup } from 'codemirror';
+  import { sql } from '@codemirror/lang-sql';
 
   export default defineComponent({
     props: {
       value: String,
     },
     emits: ['input'],
-    setup(props) {
+    setup(props, { emit }) {
       const div = ref<HTMLDivElement>();
 
       let view: EditorView;
@@ -25,8 +24,25 @@
       onMounted(() => {
         view = new EditorView({
           parent: div.value,
-          doc: `select * from users where age > 20`,
-          extensions: [basicSetup, sql()]
+          doc: props.value || '',
+          extensions: [
+            basicSetup,
+            sql(),
+            EditorView.updateListener.of((update) => {
+              if (update.selectionSet || update.docChanged) {
+                const selections = update.state.selection.ranges;
+                for (let selection of selections) {
+                  if (!selection.empty) {
+                    const selectedText = update.state.sliceDoc(selection.from, selection.to);
+                    emit('input', selectedText);
+                  }
+                  else {
+                    emit('input', update.state.doc.toString());
+                  }
+                }
+              }
+            }),
+          ],
         });
       });
 
@@ -40,15 +56,3 @@
     },
   });
 </script>
-
-<style scoped>
-  .sql-input {
-    height: 100%;
-    padding: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    overflow: auto;
-  }
-</style>

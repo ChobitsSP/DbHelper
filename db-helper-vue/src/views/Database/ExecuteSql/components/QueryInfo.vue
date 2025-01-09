@@ -29,11 +29,7 @@
                    @click="exportData">导出</el-button>
       </el-form-item>
     </el-form>
-    <el-input v-model="queryConfig.sql"
-              ref="sqlInput"
-              :rows="20"
-              placeholder="请输入SQL语句"
-              type="textarea"></el-input>
+    <SqlInput v-model="queryConfig.sql"></SqlInput>
     <div class="result">
       <DataTable :loading="loading"
                  :data="tableData">
@@ -52,23 +48,27 @@
   import { exportToExcel } from '@/utils/XlsxExport';
 
   import DataTable from './DataTable.vue';
+  import SqlInput from './SqlInput.vue';
 
   class QueryConfig {
     dbId: number = null;
     maxCount = 20;
-    sql = '';
+    sql = [
+      'select * from table1',
+      'where 1=1',
+      ...Array(8).fill(''),
+    ].join('\n');
   }
 
   export default defineComponent({
     components: {
       DataTable,
+      SqlInput,
     },
     props: {
       defaultDbId: Number,
     },
     setup(props) {
-      const sqlInput = ref();
-
       const queryConfig = ref(new QueryConfig);
       queryConfig.value.dbId = props.defaultDbId;
 
@@ -82,14 +82,7 @@
       init();
 
       function getSql() {
-        const textarea: HTMLTextAreaElement = sqlInput.value.$el.querySelector('textarea');
-
-        let selectedText = '';
-
-        if (textarea.selectionStart !== textarea.selectionEnd) {
-          selectedText = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-        }
-        return selectedText || textarea.value;
+        return queryConfig.value.sql.trim();
       }
 
       async function executeSQL() {
@@ -157,7 +150,6 @@
 
       return {
         dbList,
-        sqlInput,
         queryConfig,
 
         loading,
