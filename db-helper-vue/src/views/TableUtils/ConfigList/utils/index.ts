@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { Message } from 'element-ui';
+import { Message, MessageBox } from 'element-ui';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -7,12 +7,14 @@ import { IColumn, TableConfig } from '@/models/Index';
 
 import * as FileUtils from '@/utils/FileUtils';
 import http from '@/utils/AxiosUtils';
+import * as DbUtils from '@/utils/DbUtils';
 
 import { ExportDbDatas } from "@/utils/ImportDataUtils";
 import Ef6Utils from "@/utils/TableUtils/Ef6";
 import MarkdownUtils from "@/utils/TableUtils/Markdown";
 
 import { getTables } from '@/api';
+import { useRx } from '@/mixins/RxBusMixins';
 
 async function GetTableColumns(config: TableConfig, table: string = null) {
   const rsp = await http.post<IColumn[]>('/api/sql/tablecolumns', Object.assign({ table }, config));
@@ -20,8 +22,9 @@ async function GetTableColumns(config: TableConfig, table: string = null) {
   return rsp.data;
 }
 
-export function useSetup() {
+export function useSetup(props) {
   const loading = ref(false);
+  const rxHub = useRx();
 
   async function exportDatas(item: TableConfig) {
     loading.value = true;
@@ -61,11 +64,11 @@ export function useSetup() {
     loading.value = false;
   }
 
-  async function exportAll(item: TableConfig) {
+  async function exportStruct(item: TableConfig) {
     loading.value = true;
     try {
       const list = await GetTableColumns(item);
-      FileUtils.ColumnsExport(list, item.name);
+      await FileUtils.ColumnsExport(list, item.name);
     } catch (err: any) {
       Message.error(err.message);
       console.error(err);
@@ -115,17 +118,64 @@ export function useSetup() {
     }
   }
 
+  const menuConfig = {
+    body: {
+      options: [
+        [
+          { code: 'edit', name: '编辑' },
+          { code: 'export_struct', name: '导出结构' },
+          { code: 'export_ef', name: '导出ef' },
+          { code: 'export_md', name: '导出md' },
+          // { code: 'export_data', name: '导出数据' },
+          { code: 'remove', name: '删除', prefixConfig: { icon: 'vxe-icon-delete-fill', className: 'color-red' } },
+        ]
+      ]
+    }
+  }
+
+  function edit(item) {
+    rxHub.emit('ShowEditDialog', {
+      item,
+      callback: props.refresh,
+    });
+  }
+
+  function contextMenuClickEvent({ menu, row }) {
+    if (loading.value) return;
+
+    if (menu.code === 'export_struct') {
+      return exportStruct(row);
+    }
+    if (menu.code === 'export_ef') {
+      return exportEf(row);
+    }
+    if (menu.code === 'export_md') {
+      return exportMd(row);
+    }
+    if (menu.code === 'remove') {
+      return remove(row);
+    }
+    if (menu.code === 'edit') {
+      return edit(row);
+    }
+    if (menu.code === 'export_data') {
+      return exportDatas(row);
+    }
+  }
+
+  async function remove(row) {
+    await MessageBox.confirm('是否删除?');
+    await DbUtils.DbConfigRemove(row.id);
+    return props.refresh();
+  }
+
   return {
     loading,
 
-    exportDatas,
     importColComment,
-    exportAll,
-    exportMd,
-    exportEf,
 
-    exportConfig(list: any[]) {
-      FileUtils.downloadFile(JSON.stringify(list), 'config.json');
-    },
+    edit,
+    menuConfig,
+    contextMenuClickEvent,
   };
 }

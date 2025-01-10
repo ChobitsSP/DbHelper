@@ -20,10 +20,13 @@
         </el-upload>
       </el-form-item>
     </el-form>
-    <vxe-table ref="tableRef"
-               :row-config="{ keyField: 'id', drag: true }"
+    <vxe-table :row-config="{ keyField: 'id', drag: true }"
                :data="tableData"
                @row-dragend="rowDragendEvent"
+               :min-height="400"
+               :menu-config="menuConfig"
+               @menu-click="contextMenuClickEvent"
+               :loading="loading"
                class="my-table">
       <vxe-column field="id"
                   title="id"
@@ -53,37 +56,9 @@
         </template>
       </vxe-column>
       <vxe-column title="action"
-                  width="220"
-                  fixed="right">
+                  width="150">
         <template #default="{ row }">
-          <vxe-button size="mini"
-                      :loading="loading"
-                      transfer>
-            <template #default>操作</template>
-            <template #dropdowns>
-              <vxe-button mode="text"
-                          content="编辑"
-                          @click="edit(row)"></vxe-button>
-              <vxe-button mode="text"
-                          content="导出结构"
-                          @click="exportAll(row)"></vxe-button>
-              <vxe-button mode="text"
-                          content="导出数据"
-                          @click="exportDatas(row)"></vxe-button>
-              <vxe-button mode="text"
-                          content="导出md"
-                          @click="exportMd(row)"></vxe-button>
-              <vxe-button mode="text"
-                          content="导出ef"
-                          @click="exportEf(row)"></vxe-button>
-              <vxe-button mode="text"
-                          status="danger"
-                          content="删除"
-                          @click="remove(row)"></vxe-button>
-            </template>
-          </vxe-button>
-          <XlsxUpload :loading="loading"
-                      style="margin-left:10px;"
+          <XlsxUpload style="margin-left:10px;"
                       label="导入列注释"
                       size="mini"
                       @input="arr => importColComment(arr, row)">
@@ -97,7 +72,6 @@
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
-  import { MessageBox } from 'element-ui';
 
   import ConfigEditDialog from '@/components/ConfigEditDialog.vue';
   import * as DbUtils from '@/utils/DbUtils';
@@ -105,11 +79,7 @@
   import { DbTypes } from '@/data';
 
   import { useSetup } from './utils/index';
-  import store from '@/store';
-  import { useRouter } from '@/router';
-  import { useRx } from '@/mixins/RxBusMixins';
-
-  import { LoadJson } from '@/utils/FileUtils';
+  import { useConfigData } from './utils/ConfigData';
 
   export default defineComponent({
     components: {
@@ -117,34 +87,18 @@
       XlsxUpload,
     },
     setup() {
-      const router = useRouter();
-      const rxHub = useRx();
-      const setup = useSetup();
+      const setup = useSetup({
+        refresh,
+      });
+      const setupConfigData = useConfigData({
+        refresh,
+      });
 
-      const tableRef = ref();
       const tableData = ref([]);
-
       async function refresh() {
         tableData.value = await DbUtils.DbConfigList();
       }
       refresh();
-
-      async function importConfig(file) {
-        const list = await LoadJson<any[]>(file);
-        const plist = list.map(item => {
-          delete item.id;
-          return DbUtils.DbConfigUpdate(item);
-        });
-        await Promise.all(plist);
-        await refresh();
-        return false;
-      }
-
-      async function remove(row) {
-        await MessageBox.confirm('是否删除?');
-        await DbUtils.DbConfigRemove(row.id);
-        return refresh();
-      }
 
       function providerNameFormatter({ cellValue }) {
         return DbTypes.find(t => t.value === cellValue)?.label;
@@ -157,26 +111,12 @@
 
       return {
         ...setup,
+        ...setupConfigData,
 
-        tableRef,
         tableData,
-
-        remove,
-        link(row) {
-          store.commit('SET_CONINFO', row)
-          router.push({ name: 'TableList' })
-        },
-        edit(item) {
-          rxHub.emit('ShowEditDialog', {
-            item,
-            callback: refresh,
-          });
-        },
-        importConfig,
 
         DbTypes,
         providerNameFormatter,
-
         rowDragendEvent,
       };
     },
