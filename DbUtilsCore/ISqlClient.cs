@@ -4,6 +4,7 @@ using MySqlConnector;
 using Microsoft.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
+using Newtonsoft.Json;
 
 namespace DbUtilsCore
 {
@@ -29,9 +30,23 @@ namespace DbUtilsCore
             throw new NotImplementedException();
         }
 
-        public Task<List<T>> QueryAsync<T>(string sql, object param = null)
+        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
         {
-            throw new NotImplementedException();
+            var urlPath = this.endpoint;
+
+            var dic = new Dictionary<string, string>();
+            if (param != null)
+            {
+                dic["param"] = JsonConvert.SerializeObject(param);
+            }
+            dic["sql"] = sql;
+            dic["timestamp"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            dic["sign"] = TopUtils.SignTopRequest(dic, this.secret, true);
+
+            var rsp = await TopUtils.PostForm(this.endpoint, dic);
+            if (rsp.code != 0) throw new Exception(rsp.msg);
+
+            return rsp.result.ToObject<List<T>>();
         }
     }
 
