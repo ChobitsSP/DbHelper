@@ -18,18 +18,18 @@ namespace SqlApiCore.Controllers
         }
 
         [HttpPost("TableNames")]
-        public ItemResult TableNames(SqlRequest req)
+        public async Task<ItemResult> TableNames(SqlRequest req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
-            var list = utils.GetTableNames();
+            var list = await utils.GetTableNames();
             return new ItemResult(list);
         }
 
         [HttpPost("TableColumns")]
-        public ItemResult TableColumns(SqlRequest req)
+        public async Task<ItemResult> TableColumns(SqlRequest req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
-            var list = utils.GetColumns(req.table);
+            var list = await utils.GetColumns(req.table);
             return new ItemResult(list);
         }
 
@@ -44,15 +44,15 @@ namespace SqlApiCore.Controllers
         public async Task<ItemResult> ListGet(ListGetReq req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
-            var result = await utils.ListGet(req.sql, req.skip, req.take);
+            var result = await utils.PagerList<dynamic>(req.sql, req.skip, req.take);
             return new ItemResult(result);
         }
 
         [HttpPost("UpdateColumnComment")]
-        public ItemResult UpdateColumnComment(SqlRequest req)
+        public async Task<ItemResult> UpdateColumnComment(SqlRequest req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
-            utils.UpdateComment(req.table, req.column, req.comment);
+            await utils.UpdateComment(req.table, req.column, req.comment);
             return new ItemResult();
         }
 
@@ -63,13 +63,13 @@ namespace SqlApiCore.Controllers
         }
 
         [HttpPost("TableDataAdd")]
-        public ItemResult TableDataAdd(TableDataAddReq req)
+        public async Task<ItemResult> TableDataAdd(TableDataAddReq req)
         {
             var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
 
             foreach (var row in req.import_datas)
             {
-                utils.TableDataAdd(req.table, req.import_cols, row);
+                await utils.TableDataAdd(req.table, req.import_cols, row);
             }
 
             return new ItemResult();

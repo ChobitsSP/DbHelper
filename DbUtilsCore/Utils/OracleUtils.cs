@@ -1,27 +1,14 @@
-﻿using Dapper;
-using Oracle.ManagedDataAccess.Client;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace DbUtilsCore.Utils
 {
     public class OracleUtils : IDbUtils
     {
-        protected string connstr { get; set; }
         protected ISqlClient client { get; set; }
-
-        public OracleUtils(string connstr)
-        {
-            this.connstr = connstr;
-        }
 
         public OracleUtils(ISqlClient client)
         {
-            this.connstr = connstr;
+            this.client = client;
         }
 
         public class TableColumnsItem
@@ -33,7 +20,7 @@ namespace DbUtilsCore.Utils
             public string NULLABLE { get; set; }
         }
 
-        public IEnumerable<TableColumn> GetColumns(string table)
+        public async Task<List<TableColumn>> GetColumns(string table)
         {
             table = DbHelper.SafeTableName(table);
 
@@ -43,12 +30,7 @@ namespace DbUtilsCore.Utils
 
             sql = string.Format(sql, fields, table);
 
-            List<TableColumnsItem> list;
-
-            using (var db = new OracleConnection(connstr))
-            {
-                list = db.Query<TableColumnsItem>(sql).AsList();
-            }
+            var list = await client.QueryAsync<TableColumnsItem>(sql);
 
             var result = list.Select(t => new TableColumn()
             {
@@ -57,41 +39,29 @@ namespace DbUtilsCore.Utils
                 comments = t.COMMENTS,
                 null_able = t.NULLABLE == "Y",
                 type = t.DATA_TYPE,
-            });
+            }).ToList();
 
             return result;
         }
 
-        public List<string> GetTableNames()
+        public async Task<List<string>> GetTableNames()
         {
-            List<string> result;
-
             const string sql = "SELECT table_name FROM user_tables order by table_name";
-
-            using (var db = new OracleConnection(connstr))
-            {
-                result = db.Query<string>(sql).AsList();
-            }
-
-            return result;
+            var list = await client.QueryAsync<string>(sql);
+            return list;
         }
 
-        public IDbConnection GetDb()
-        {
-            return new OracleConnection(connstr);
-        }
-
-        public void UpdateComment(string table, string column, string comment)
+        public Task UpdateComment(string table, string column, string comment)
         {
             throw new NotImplementedException();
         }
 
-        public void TableDataAdd(string table, string[] columns, object data)
+        public Task TableDataAdd(string table, string[] columns, object data)
         {
             throw new NotImplementedException();
         }
 
-        public string SqlPager(string sql, int skip, int take)
+        static string SqlPager(string sql, int skip, int take)
         {
             int endRow = skip + take;
             return $@"SELECT * FROM (
@@ -99,6 +69,12 @@ namespace DbUtilsCore.Utils
                 FROM ({sql}) subquery
                 WHERE ROWNUM <= {endRow}
             ) WHERE rnum > {skip}";
+        }
+
+        public Task<List<T>> PagerList<T>(string sql, int skip, int take)
+        {
+            var pagerSql = SqlPager(sql, skip, take);
+            return client.QueryAsync<T>(pagerSql);
         }
     }
 }

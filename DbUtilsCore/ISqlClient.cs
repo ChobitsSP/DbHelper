@@ -1,13 +1,112 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Npgsql;
+using Dapper;
+using MySqlConnector;
+using Microsoft.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
+using System.Data;
 
 namespace DbUtilsCore
 {
     public interface ISqlClient
     {
-        Task<T> QueryAsync<T>(string sql);
+        Task<List<T>> QueryAsync<T>(string sql, object param = null);
+        IDbConnection GetDb();
+    }
+
+    public class ApiClient : ISqlClient
+    {
+        public IDbConnection GetDb()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<T>> QueryAsync<T>(string sql, object param = null)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class NpgSqlClient : ISqlClient
+    {
+        public string connstr { get; set; }
+        public NpgSqlClient(string connstr)
+        {
+            this.connstr = connstr;
+        }
+
+        public IDbConnection GetDb()
+        {
+            return new NpgsqlConnection(connstr);
+        }
+
+        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
+        {
+            using var db = new NpgsqlConnection(connstr);
+            var list = (await db.QueryAsync<T>(sql, param)).AsList();
+            return list;
+        }
+    }
+
+    public class OracleSqlClient : ISqlClient
+    {
+        public string connstr { get; set; }
+        public OracleSqlClient(string connstr)
+        {
+            this.connstr = connstr;
+        }
+
+        public IDbConnection GetDb()
+        {
+            return new OracleConnection(connstr);
+        }
+
+        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
+        {
+            using var db = new OracleConnection(connstr);
+            var list = (await db.QueryAsync<T>(sql, param)).AsList();
+            return list;
+        }
+    }
+
+    public class MsSqlClient : ISqlClient
+    {
+        public string connstr { get; set; }
+        public MsSqlClient(string connstr)
+        {
+            this.connstr = connstr;
+        }
+
+        public IDbConnection GetDb()
+        {
+            return new SqlConnection(connstr);
+        }
+
+        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
+        {
+            using var db = new SqlConnection(connstr);
+            var list = (await db.QueryAsync<T>(sql, param)).AsList();
+            return list;
+        }
+    }
+
+    public class MySqlClient : ISqlClient
+    {
+        public string connstr { get; set; }
+        public MySqlClient(string connstr)
+        {
+            this.connstr = connstr;
+        }
+
+        public IDbConnection GetDb()
+        {
+            return new MySqlConnection(connstr);
+        }
+
+        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
+        {
+            using var db = new MySqlConnection(connstr);
+            var list = (await db.QueryAsync<T>(sql, param)).AsList();
+            return list;
+        }
     }
 }

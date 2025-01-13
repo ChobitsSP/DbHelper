@@ -20,9 +20,9 @@ namespace DbUtilsCore
         /// 给文件添加注释
         /// </summary>
         /// <param name="filePath"></param>
-        public static void AddComments(IDbUtils db, string filePath)
+        public static async Task AddComments(IDbUtils db, string filePath)
         {
-            TableColumn[] cols;
+            List<TableColumn> cols;
 
             var alllines = File.ReadAllLines(filePath);
             // if (alllines.Any(t => t.Contains("/// <summary>"))) return;
@@ -30,7 +30,7 @@ namespace DbUtilsCore
             try
             {
                 var tbName = Path.GetFileNameWithoutExtension(filePath);
-                cols = db.GetColumns(tbName).ToArray();
+                cols = await db.GetColumns(tbName);
             }
             catch (Exception ex)
             {
