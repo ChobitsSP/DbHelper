@@ -4,6 +4,8 @@ import { IColumn } from '@/models/Index';
 interface DbConfig {
   providerName?: string;
   connectionString?: string;
+  api_url?: string;
+  api_secret?: string;
 }
 
 /**
@@ -49,6 +51,8 @@ export async function ListGet<T = any>(config: DbConfig, req: ListGetReq) {
   const rsp = await http.post<T[]>('/api/sql/ListGet', {
     providerName: config.providerName,
     connectionString: config.connectionString,
+    api_url: config.api_url,
+    api_secret: config.api_secret,
     ...req,
   });
   if (rsp.code !== 0) throw new Error(rsp.msg);

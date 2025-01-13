@@ -26,7 +26,14 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="连接"
+      <el-form-item label="连接类型">
+        <el-radio-group v-model="connectType">
+          <el-radio label="1">数据库连接字符串</el-radio>
+          <el-radio label="2">请求地址</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item v-if="connectType === '1'"
+                    label="连接"
                     prop="connectionString">
         <el-input v-model="item.connectionString"
                   placeholder="请输入数据库连接字符串"
@@ -39,6 +46,24 @@
           连接字符串参考
         </a>
       </el-form-item>
+      <template v-else>
+        <el-form-item label="请求地址"
+                      prop="api_url">
+          <el-input v-model="item.api_url"
+                    clearable
+                    placeholder="请输入请求地址">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="请求密钥"
+                      prop="api_secret">
+          <el-input v-model="item.api_secret"
+                    type="password"
+                    show-password
+                    clearable
+                    placeholder="请输入请求密钥">
+          </el-input>
+        </el-form-item>
+      </template>
     </el-form>
     <span slot="footer"
           class="dialog-footer">
@@ -52,7 +77,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref, nextTick } from 'vue';
+  import { defineComponent, ref, nextTick, computed } from 'vue';
   import _ from 'lodash';
 
   import * as DbUtils from '@/utils/DbUtils';
@@ -69,17 +94,29 @@
     setup() {
       const form = ref();
       const model = ref(new DbUtils.MyModel);
-      const rules = {
-        name: [
-          { required: true, message: '请输入名称', trigger: 'blur' },
-        ],
-        providerName: [
-          { required: true, message: '请选择类型', trigger: 'change' },
-        ],
-        connectionString: [
-          { required: true, message: '请输入连接字符串', trigger: 'blur' },
-        ]
-      };
+
+      // 1 为数据库连接字符串，2 为请求地址
+      const connectType = ref('1');
+
+      const rules = computed(() => {
+        return {
+          name: [
+            { required: true, message: '请输入名称', trigger: 'blur' },
+          ],
+          providerName: [
+            { required: true, message: '请选择类型', trigger: 'change' },
+          ],
+          connectionString: [
+            { required: true, message: '请输入连接字符串', trigger: 'blur' },
+          ],
+          api_url: [
+            { required: true, message: '请输入请求地址', trigger: 'blur' },
+          ],
+          api_secret: [
+            { required: true, message: '请输入请求密钥', trigger: 'blur' },
+          ],
+        };
+      });
 
       function FormatConstr(str: string) {
         return str.split(/[\r\n]+/).filter(t => !!t).map(t => t.replace(/;+$/g, '')).join(';');
@@ -94,8 +131,10 @@
             if (model.value.connectionString) {
               model.value.connectionString = model.value.connectionString.split(';').join(';\n');
             }
+            connectType.value = model.value.api_url ? '2' : '1';
           } else {
             model.value = new DbUtils.MyModel;
+            connectType.value = '1';
           }
           dialogSetup.show.value = true;
           await nextTick();
@@ -118,6 +157,7 @@
         form,
         item: model,
         rules,
+        connectType,
       };
     },
   });

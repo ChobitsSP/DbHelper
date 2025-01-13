@@ -55,6 +55,10 @@
                 v-copy="row.connectionString">{{ row.connectionString }}</span>
         </template>
       </vxe-column>
+      <vxe-column field="api_url"
+                  title="api_url"
+                  min-width="220">
+      </vxe-column>
       <vxe-column title="action"
                   width="150">
         <template #default="{ row }">

@@ -5,12 +5,14 @@ export class MyModel {
   id?: number;
   name?: string;
   providerName?: string;
-  connectionString?: string;
+
+  connectionString = '';
+  api_url = '';
+  api_secret = '';
 
   constructor() {
     this.name = "name1";
     this.providerName = "Npgsql";
-    this.connectionString = "";
   }
 }
 
@@ -23,7 +25,7 @@ class DbConfigDatabase extends Dexie {
   public constructor() {
     super("DbConfigDatabase");
     this.version(1).stores({
-      DbConfig: "++id,name,providerName,connectionString"
+      DbConfig: "++id,name,providerName,connectionString,api_url,api_secret"
     });
     this.DbConfig = this.table("DbConfig");
   }
@@ -78,7 +80,7 @@ export async function DbConfigDrag(id1: number, id2: number) {
     const temp = row1.id;
     row1.id = row2.id;
     row2.id = temp;
-    
+
     await db.DbConfig.update(id2, row1);
     await db.DbConfig.update(id1, row2);
   }
