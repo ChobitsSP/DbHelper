@@ -62,11 +62,15 @@ namespace DbUtilsCore
         {
             var reg = new Regex(@"\/api\/.+", RegexOptions.IgnoreCase);
 
+            var bodyJson = JsonConvert.SerializeObject(body);
+
             var dic = new Dictionary<string, string>();
             dic["method"] = reg.Match(url).Groups[0].Value;
-            dic["body"] = JsonConvert.SerializeObject(body);
+            dic["body"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(bodyJson));
             dic["timestamp"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             dic["sign"] = SignTopRequest(dic, secret, true);
+
+            var reqJson = JsonConvert.SerializeObject(dic);
 
             using var client = new HttpClient();
             var response = await client.PostAsJsonAsync(url, dic);
