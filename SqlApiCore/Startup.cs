@@ -37,6 +37,8 @@ namespace SqlApiCore
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseErrorHandlingMiddleware();
+
             app.UseStaticFiles();
 
             app.UseResponseCompression();
