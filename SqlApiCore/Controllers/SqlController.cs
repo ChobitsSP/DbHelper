@@ -15,12 +15,22 @@ namespace SqlApiCore.Controllers
             public string table { get; set; }
             public string comment { get; set; }
             public string column { get; set; }
+            public string api_secret { get; set; }
+
+            public IDbUtils GetUtils()
+            {
+                if (string.IsNullOrEmpty(this.api_secret))
+                {
+                    return DbHelper.GetUtils(providerName, connectionString);
+                }
+                return DbHelper.GetUtils(providerName, connectionString);
+            }
         }
 
         [HttpPost("TableNames")]
         public async Task<ItemResult> TableNames(SqlRequest req)
         {
-            var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
+            var utils = req.GetUtils();
             var list = await utils.GetTableNames();
             return new ItemResult(list);
         }
@@ -28,7 +38,7 @@ namespace SqlApiCore.Controllers
         [HttpPost("TableColumns")]
         public async Task<ItemResult> TableColumns(SqlRequest req)
         {
-            var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
+            var utils = req.GetUtils();
             var list = await utils.GetColumns(req.table);
             return new ItemResult(list);
         }
@@ -43,7 +53,7 @@ namespace SqlApiCore.Controllers
         [HttpPost("ListGet")]
         public async Task<ItemResult> ListGet(ListGetReq req)
         {
-            var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
+            var utils = req.GetUtils();
             var result = await utils.PagerList<dynamic>(req.sql, req.skip, req.take);
             return new ItemResult(result);
         }
@@ -51,7 +61,7 @@ namespace SqlApiCore.Controllers
         [HttpPost("UpdateColumnComment")]
         public async Task<ItemResult> UpdateColumnComment(SqlRequest req)
         {
-            var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
+            var utils = req.GetUtils();
             await utils.UpdateComment(req.table, req.column, req.comment);
             return new ItemResult();
         }
@@ -65,7 +75,7 @@ namespace SqlApiCore.Controllers
         [HttpPost("TableDataAdd")]
         public async Task<ItemResult> TableDataAdd(TableDataAddReq req)
         {
-            var utils = DbHelper.GetUtils(req.providerName, req.connectionString);
+            var utils = req.GetUtils();
 
             foreach (var row in req.import_datas)
             {

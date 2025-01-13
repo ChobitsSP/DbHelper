@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Configuration.Provider;
 using System.Text.RegularExpressions;
 using Dapper;
 
@@ -33,6 +34,28 @@ namespace DbUtilsCore
                     return new Utils.OracleUtils(new OracleSqlClient(ConnectionString));
                 default:
                     return new Utils.MsSqlUtils(new MsSqlClient(ConnectionString));
+            }
+        }
+
+        public static IDbUtils GetApiUtils(string endpoint, string secret, string ProviderName)
+        {
+            var apiClient = new ApiClient()
+            {
+                endpoint = endpoint,
+                secret = secret,
+            };
+            switch (ProviderName)
+            {
+                case "Npgsql":
+                    return new Utils.NpgUtils(apiClient);
+                case "MySql.Data.MySqlClient":
+                    return new Utils.MySqlUtils(apiClient);
+                case "System.Data.SqlClient":
+                    return new Utils.MsSqlUtils(apiClient);
+                case "Oracle.ManagedDataAccess.Client":
+                    return new Utils.OracleUtils(apiClient);
+                default:
+                    return new Utils.MsSqlUtils(apiClient);
             }
         }
 

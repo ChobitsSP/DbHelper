@@ -13,12 +13,6 @@ namespace DbUtilsCore.Utils
             this.client = client;
         }
 
-        static string GetDatabaseName(string constr)
-        {
-            var builder = new MySqlConnectionStringBuilder(constr);
-            return builder.Database;
-        }
-
         public class TableColumnsItem
         {
             public int ORDINAL_POSITION { get; set; }
@@ -59,10 +53,8 @@ and table_schema = ?table_schema";
 
             sql += " ORDER BY table_name, ORDINAL_POSITION;";
 
-            using var db = client.GetDb();
-            var table_schema = GetDatabaseName(db.ConnectionString);
-
-            var list = (await db.QueryAsync<TableColumnsItem>(sql, new { table, table_schema })).AsList();
+            var table_schema = client.GetDatabaseName();
+            var list = await client.QueryAsync<TableColumnsItem>(sql, new { table, table_schema });
 
             var result = list.Select(t => new TableColumn()
             {
@@ -82,15 +74,13 @@ and table_schema = ?table_schema";
 
         public async Task<List<string>> GetTableNames()
         {
-            using var db = client.GetDb();
-            var table_schema = GetDatabaseName(db.ConnectionString);
-
             const string sql = @"
 select table_name from information_schema.tables 
 where table_schema = ?table_schema
 and table_type='BASE TABLE';";
 
-            var list = (await db.QueryAsync<string>(sql, new { table_schema })).AsList();
+            var table_schema = client.GetDatabaseName();
+            var list = await client.QueryAsync<string>(sql, new { table_schema });
             return list;
         }
 
@@ -134,7 +124,7 @@ and table_name = ?table_name
 ";
 
             using var db = client.GetDb();
-            var table_schema = GetDatabaseName(db.ConnectionString);
+            var table_schema = client.GetDatabaseName();
 
             var result = await db.QueryFirstOrDefaultAsync<UpdateCommentResult>(sql, new
             {

@@ -11,10 +11,19 @@ namespace DbUtilsCore
     {
         Task<List<T>> QueryAsync<T>(string sql, object param = null);
         IDbConnection GetDb();
+        string GetDatabaseName();
     }
 
     public class ApiClient : ISqlClient
     {
+        public string endpoint { get; set; }
+        public string secret { get; set; }
+
+        public string GetDatabaseName()
+        {
+            throw new NotImplementedException();
+        }
+
         public IDbConnection GetDb()
         {
             throw new NotImplementedException();
@@ -32,6 +41,12 @@ namespace DbUtilsCore
         public NpgSqlClient(string connstr)
         {
             this.connstr = connstr;
+        }
+
+        public string GetDatabaseName()
+        {
+            var builder = new NpgsqlConnectionStringBuilder(this.connstr);
+            return builder.Database;
         }
 
         public IDbConnection GetDb()
@@ -55,6 +70,11 @@ namespace DbUtilsCore
             this.connstr = connstr;
         }
 
+        public string GetDatabaseName()
+        {
+            throw new NotImplementedException();
+        }
+
         public IDbConnection GetDb()
         {
             return new OracleConnection(connstr);
@@ -76,6 +96,12 @@ namespace DbUtilsCore
             this.connstr = connstr;
         }
 
+        public string GetDatabaseName()
+        {
+            var builder = new SqlConnectionStringBuilder(this.connstr);
+            return builder.InitialCatalog;
+        }
+
         public IDbConnection GetDb()
         {
             return new SqlConnection(connstr);
@@ -95,6 +121,12 @@ namespace DbUtilsCore
         public MySqlClient(string connstr)
         {
             this.connstr = connstr;
+        }
+
+        public string GetDatabaseName()
+        {
+            var builder = new MySqlConnectionStringBuilder(this.connstr);
+            return builder.Database;
         }
 
         public IDbConnection GetDb()
