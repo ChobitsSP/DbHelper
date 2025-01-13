@@ -23,7 +23,10 @@ namespace SqlApiCore.Controllers
                 {
                     return DbHelper.GetUtils(providerName, connectionString);
                 }
-                return DbHelper.GetUtils(providerName, connectionString);
+                else
+                {
+                    return DbHelper.GetApiUtils(connectionString, api_secret, providerName);
+                }
             }
         }
 
