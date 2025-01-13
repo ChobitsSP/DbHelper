@@ -4,7 +4,6 @@ using MySqlConnector;
 using Microsoft.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
-using Newtonsoft.Json;
 
 namespace DbUtilsCore
 {
