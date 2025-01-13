@@ -15,17 +15,19 @@ namespace SqlApiCore.Controllers
             public string table { get; set; }
             public string comment { get; set; }
             public string column { get; set; }
+
+            public string api_url { get; set; }
             public string api_secret { get; set; }
 
             public IDbUtils GetUtils()
             {
-                if (string.IsNullOrEmpty(this.api_secret))
+                if (string.IsNullOrEmpty(this.api_url))
                 {
                     return DbHelper.GetUtils(providerName, connectionString);
                 }
                 else
                 {
-                    return DbHelper.GetApiUtils(connectionString, api_secret, providerName);
+                    return DbHelper.GetApiUtils(api_url, api_secret, providerName);
                 }
             }
         }
