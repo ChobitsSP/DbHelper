@@ -143,6 +143,15 @@
         async submit(config) {
           await FormValidate(form.value);
           const item = _.cloneDeep(model.value);
+
+          if (connectType.value === '2') {
+            item.connectionString = '';
+          }
+          else {
+            item.api_url = '';
+            item.api_secret = '';
+          }
+
           item.connectionString = FormatConstr(item.connectionString);
           await DbUtils.DbConfigUpdate(item);
           config.callback(item);
