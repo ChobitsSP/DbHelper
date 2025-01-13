@@ -12,18 +12,12 @@ namespace DbUtilsCore
     {
         Task<List<T>> QueryAsync<T>(string sql, object param = null);
         IDbConnection GetDb();
-        string GetDatabaseName();
     }
 
     public class ApiClient : ISqlClient
     {
         public string endpoint { get; set; }
         public string secret { get; set; }
-
-        public string GetDatabaseName()
-        {
-            throw new NotImplementedException();
-        }
 
         public IDbConnection GetDb()
         {
@@ -33,19 +27,12 @@ namespace DbUtilsCore
         public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
         {
             var urlPath = this.endpoint;
-
-            var dic = new Dictionary<string, string>();
-            if (param != null)
+            var rsp = await TopUtils.PostJson(this.endpoint, new
             {
-                dic["param"] = JsonConvert.SerializeObject(param);
-            }
-            dic["sql"] = sql;
-            dic["timestamp"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            dic["sign"] = TopUtils.SignTopRequest(dic, this.secret, true);
-
-            var rsp = await TopUtils.PostForm(this.endpoint, dic);
+                sql,
+                param,
+            }, this.secret);
             if (rsp.code != 0) throw new Exception(rsp.msg);
-
             return rsp.result.ToObject<List<T>>();
         }
     }
@@ -56,12 +43,6 @@ namespace DbUtilsCore
         public NpgSqlClient(string connstr)
         {
             this.connstr = connstr;
-        }
-
-        public string GetDatabaseName()
-        {
-            var builder = new NpgsqlConnectionStringBuilder(this.connstr);
-            return builder.Database;
         }
 
         public IDbConnection GetDb()
@@ -85,11 +66,6 @@ namespace DbUtilsCore
             this.connstr = connstr;
         }
 
-        public string GetDatabaseName()
-        {
-            throw new NotImplementedException();
-        }
-
         public IDbConnection GetDb()
         {
             return new OracleConnection(connstr);
@@ -111,12 +87,6 @@ namespace DbUtilsCore
             this.connstr = connstr;
         }
 
-        public string GetDatabaseName()
-        {
-            var builder = new SqlConnectionStringBuilder(this.connstr);
-            return builder.InitialCatalog;
-        }
-
         public IDbConnection GetDb()
         {
             return new SqlConnection(connstr);
@@ -136,12 +106,6 @@ namespace DbUtilsCore
         public MySqlClient(string connstr)
         {
             this.connstr = connstr;
-        }
-
-        public string GetDatabaseName()
-        {
-            var builder = new MySqlConnectionStringBuilder(this.connstr);
-            return builder.Database;
         }
 
         public IDbConnection GetDb()

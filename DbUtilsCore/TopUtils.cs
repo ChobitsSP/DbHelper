@@ -2,6 +2,8 @@
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
+using System.Net.Http.Json;
 
 namespace DbUtilsCore
 {
@@ -56,11 +58,18 @@ namespace DbUtilsCore
             return result.ToString();
         }
 
-        public static async Task<TopResult> PostForm(string url, IDictionary<string, string> body)
+        public static async Task<TopResult> PostJson(string url, object body, string secret)
         {
+            var reg = new Regex(@"\/api\/.+", RegexOptions.IgnoreCase);
+
+            var dic = new Dictionary<string, string>();
+            dic["method"] = reg.Match(url).Groups[0].Value;
+            dic["body"] = JsonConvert.SerializeObject(body);
+            dic["timestamp"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            dic["sign"] = SignTopRequest(dic, secret, true);
+
             using var client = new HttpClient();
-            var content = new FormUrlEncodedContent(body);
-            var response = await client.PostAsync(url, content);
+            var response = await client.PostAsJsonAsync(url, dic);
             var responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<TopResult>(responseString);
             return result;

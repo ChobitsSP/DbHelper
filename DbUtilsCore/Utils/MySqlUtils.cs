@@ -44,7 +44,7 @@ NUMERIC_SCALE,
 COLUMN_COMMENT
 FROM INFORMATION_SCHEMA.COLUMNS 
   WHERE 1=1
-and table_schema = ?table_schema";
+and table_schema = DATABASE()";
 
             if (!string.IsNullOrEmpty(table))
             {
@@ -53,8 +53,7 @@ and table_schema = ?table_schema";
 
             sql += " ORDER BY table_name, ORDINAL_POSITION;";
 
-            var table_schema = client.GetDatabaseName();
-            var list = await client.QueryAsync<TableColumnsItem>(sql, new { table, table_schema });
+            var list = await client.QueryAsync<TableColumnsItem>(sql, new { table });
 
             var result = list.Select(t => new TableColumn()
             {
@@ -76,11 +75,9 @@ and table_schema = ?table_schema";
         {
             const string sql = @"
 select table_name from information_schema.tables 
-where table_schema = ?table_schema
+where table_schema = DATABASE()
 and table_type='BASE TABLE';";
-
-            var table_schema = client.GetDatabaseName();
-            var list = await client.QueryAsync<string>(sql, new { table_schema });
+            var list = await client.QueryAsync<string>(sql);
             return list;
         }
 
@@ -118,24 +115,20 @@ CONCAT('ALTER TABLE `',
 FROM
     information_schema.columns
 WHERE
-    table_schema = ?table_schema
+    table_schema = DATABASE()
 and column_name = ?column_name
 and table_name = ?table_name
 ";
 
             using var db = client.GetDb();
-            var table_schema = client.GetDatabaseName();
-
             var result = await db.QueryFirstOrDefaultAsync<UpdateCommentResult>(sql, new
             {
-                table_schema,
                 column_name = column,
                 table_name = table,
             });
             if (result == null) return;
 
             var sql2 = result.script + " COMMENT ?comment";
-
             await db.ExecuteAsync(sql2, new { comment });
         }
 
