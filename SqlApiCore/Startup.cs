@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.ResponseCompression;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text;
+using Newtonsoft.Json;
+using SqlApiCore.Middleware;
 
 namespace SqlApiCore
 {
@@ -19,6 +21,17 @@ namespace SqlApiCore
             {
                 options.Providers.Add<GzipCompressionProvider>();
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { Application.Json });
+            });
+
+            services.AddControllers(options =>
+            {
+                options.OutputFormatters.Insert(0, new ItemResultOutputFormatter());
+            }).AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            }).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             });
         }
 
