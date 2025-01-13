@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Utils\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
