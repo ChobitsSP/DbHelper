@@ -71,7 +71,7 @@
       </vxe-table>
     </el-row>
     <el-row>
-      <TempEditor :tablename="$route.params.table"></TempEditor>
+      <TempEditor :columns="tableData"></TempEditor>
     </el-row>
     <ExportDataDialog></ExportDataDialog>
   </div>
@@ -85,7 +85,7 @@
 
   import TableTabs from '@/components/TableTabs.vue'
   import ExportDataDialog from '@/components/ExportModal/Index.vue'
-  import TempEditor from '@/components/TempEditor/Index.vue'
+  import TempEditor from '@/components/TempEditor/IndexNew.vue'
   import XlsxUpload from '@/components/XlsxUpload.vue'
   import axios from '@/utils/AxiosUtils';
   import { RowTypeTrans } from '@/utils/ImportDataUtils';
