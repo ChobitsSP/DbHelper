@@ -23,7 +23,7 @@ namespace DbUtilsCore
 
         public Task ExecuteAsync(string sql, object param = null)
         {
-            return TopUtils.PostJson<JArray>(this.endpoint, new
+            return TopUtils.PostJson<JToken>(this.endpoint, new
             {
                 sql,
                 param,
@@ -37,13 +37,20 @@ namespace DbUtilsCore
 
         public async Task<List<T>> QueryAsync<T>(string sql, object param = null, int take = 0)
         {
-            var arrList = await TopUtils.PostJson<JArray>(this.endpoint, new
+            var result = await TopUtils.PostJson<JToken>(this.endpoint, new
             {
                 sql,
                 param,
                 take,
             }, this.secret);
-            return arrList.ToObject<List<T>>();
+            if (result.Type == JTokenType.Array)
+            {
+                return result.ToObject<List<T>>();
+            }
+            else
+            {
+                return new List<T> { result.ToObject<T>() };
+            }
         }
 
         public async Task<T> QueryFirstAsync<T>(string sql, object param = null)
