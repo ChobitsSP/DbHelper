@@ -30,6 +30,7 @@ namespace SqlApiCore.Middleware
             catch (Exception ex)
             {
                 // await _emailService.SendException(ex);
+                LogService.Error(ex);
                 logger?.Error(ex.Message, ex);
                 await HandleExceptionAsync(httpContext, ex);
             }

@@ -17,6 +17,8 @@ namespace SqlApiCore
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(LogService.Init());
+
             services.AddResponseCompression(options =>
             {
                 options.Providers.Add<GzipCompressionProvider>();
