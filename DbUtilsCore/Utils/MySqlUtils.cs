@@ -145,8 +145,15 @@ and table_name = ?table_name
 
         public Task<List<T>> PagerList<T>(string sql, int skip, int take)
         {
-            var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
-            return client.QueryAsync<T>(pagerSql);
+            if (take > 0)
+            {
+                var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
+                return client.QueryAsync<T>(pagerSql);
+            }
+            else
+            {
+                return client.QueryAsync<T>(sql);
+            }
         }
     }
 }
