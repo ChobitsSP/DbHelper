@@ -58,7 +58,7 @@ namespace DbUtilsCore
             return result.ToString();
         }
 
-        public static async Task<TopResult> PostJson(string url, object body, string secret)
+        public static async Task<T> PostJson<T>(string url, object body, string secret)
         {
             var reg = new Regex(@"\/api\/.+", RegexOptions.IgnoreCase);
 
@@ -80,8 +80,11 @@ namespace DbUtilsCore
             using var client = new HttpClient(handler);
             var response = await client.PostAsJsonAsync(url, dic);
             var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<TopResult>(responseString);
-            return result;
+
+            var rsp = JsonConvert.DeserializeObject<TopResult>(responseString);
+            if (rsp.code != 0) throw new Exception(rsp.msg);
+            if (rsp.result == null || rsp.result.Type == JTokenType.Null) return default;
+            return rsp.result.ToObject<T>();
         }
 
         public class TopResult

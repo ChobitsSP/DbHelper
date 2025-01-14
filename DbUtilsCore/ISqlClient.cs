@@ -4,6 +4,7 @@ using MySqlConnector;
 using Microsoft.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
+using Newtonsoft.Json.Linq;
 
 namespace DbUtilsCore
 {
@@ -25,14 +26,37 @@ namespace DbUtilsCore
 
         public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
         {
-            var urlPath = this.endpoint;
-            var rsp = await TopUtils.PostJson(this.endpoint, new
+            var arrList = await TopUtils.PostJson<JArray>(this.endpoint, new
             {
                 sql,
                 param,
             }, this.secret);
-            if (rsp.code != 0) throw new Exception(rsp.msg);
-            return rsp.result.ToObject<List<T>>();
+
+            if (typeof(T) == typeof(string) && arrList.Count > 0)
+            {
+                var row = arrList.First();
+
+                if (row.Type == JTokenType.String)
+                {
+                    return arrList.ToObject<List<T>>();
+                }
+                else if (row.Type == JTokenType.Object)
+                {
+                    return arrList.Select(t =>
+                    {
+                        var row = t.ToObject<Dictionary<string, T>>();
+                        return row.Values.First();
+                    }).ToList();
+                }
+                else
+                {
+                    return arrList.ToObject<List<T>>();
+                }
+            }
+            else
+            {
+                return arrList.ToObject<List<T>>();
+            }
         }
     }
 

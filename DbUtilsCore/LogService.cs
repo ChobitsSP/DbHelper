@@ -3,7 +3,7 @@ using log4net.Repository;
 using System.Reflection;
 using System.Text;
 
-namespace SqlApiCore
+namespace DbUtilsCore
 {
     public static class LogService
     {
