@@ -10,7 +10,9 @@ namespace DbUtilsCore
 {
     public interface ISqlClient
     {
-        Task<List<T>> QueryAsync<T>(string sql, object param = null);
+        Task<List<T>> QueryAsync<T>(string sql, object param = null, int take = 0);
+        Task<T> QueryFirstAsync<T>(string sql, object param = null);
+        Task ExecuteAsync(string sql, object param = null);
         IDbConnection GetDb();
     }
 
@@ -19,128 +21,112 @@ namespace DbUtilsCore
         public string endpoint { get; set; }
         public string secret { get; set; }
 
+        public Task ExecuteAsync(string sql, object param = null)
+        {
+            return TopUtils.PostJson<JArray>(this.endpoint, new
+            {
+                sql,
+                param,
+            }, this.secret);
+        }
+
         public IDbConnection GetDb()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
+        public async Task<List<T>> QueryAsync<T>(string sql, object param = null, int take = 0)
         {
             var arrList = await TopUtils.PostJson<JArray>(this.endpoint, new
             {
                 sql,
                 param,
+                take,
             }, this.secret);
+            return arrList.ToObject<List<T>>();
+        }
 
-            if (typeof(T) == typeof(string) && arrList.Count > 0)
+        public async Task<T> QueryFirstAsync<T>(string sql, object param = null)
+        {
+            var list = await this.QueryAsync<T>(sql, param, 1);
+            return list.FirstOrDefault();
+        }
+    }
+
+    public abstract class BaseSqlClient : ISqlClient
+    {
+        public string connstr { get; set; }
+        public BaseSqlClient(string connstr)
+        {
+            this.connstr = connstr;
+        }
+
+        public abstract IDbConnection GetDb();
+
+        public async Task<List<T>> QueryAsync<T>(string sql, object param = null, int take = 0)
+        {
+            using var db = this.GetDb();
+
+            if (take > 0)
             {
-                var row = arrList.First();
-
-                if (row.Type == JTokenType.String)
-                {
-                    return arrList.ToObject<List<T>>();
-                }
-                else if (row.Type == JTokenType.Object)
-                {
-                    return arrList.Select(t =>
-                    {
-                        var row = t.ToObject<Dictionary<string, T>>();
-                        return row.Values.First();
-                    }).ToList();
-                }
-                else
-                {
-                    return arrList.ToObject<List<T>>();
-                }
+                var rows = await db.QueryAsync<T>(sql, param);
+                var list = rows.Take(take).AsList();
+                return list;
             }
             else
             {
-                return arrList.ToObject<List<T>>();
+                var rows = await db.QueryAsync<T>(sql, param);
+                var list = rows.AsList();
+                return list;
             }
+        }
+
+        public async Task<T> QueryFirstAsync<T>(string sql, object param = null)
+        {
+            var list = await this.QueryAsync<T>(sql, param, 1);
+            return list.FirstOrDefault();
+        }
+
+        public Task ExecuteAsync(string sql, object param = null)
+        {
+            using var db = this.GetDb();
+            return db.ExecuteAsync(sql, param);
         }
     }
 
-    public class NpgSqlClient : ISqlClient
+    public class NpgSqlClient : BaseSqlClient
     {
-        public string connstr { get; set; }
-        public NpgSqlClient(string connstr)
-        {
-            this.connstr = connstr;
-        }
-
-        public IDbConnection GetDb()
+        public NpgSqlClient(string connstr) : base(connstr) { }
+        public override IDbConnection GetDb()
         {
             return new NpgsqlConnection(connstr);
         }
-
-        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
-        {
-            using var db = new NpgsqlConnection(connstr);
-            var list = (await db.QueryAsync<T>(sql, param)).AsList();
-            return list;
-        }
     }
 
-    public class OracleSqlClient : ISqlClient
+    public class OracleSqlClient : BaseSqlClient
     {
-        public string connstr { get; set; }
-        public OracleSqlClient(string connstr)
-        {
-            this.connstr = connstr;
-        }
-
-        public IDbConnection GetDb()
+        public OracleSqlClient(string connstr) : base(connstr) { }
+        public override IDbConnection GetDb()
         {
             return new OracleConnection(connstr);
         }
-
-        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
-        {
-            using var db = new OracleConnection(connstr);
-            var list = (await db.QueryAsync<T>(sql, param)).AsList();
-            return list;
-        }
     }
 
-    public class MsSqlClient : ISqlClient
+    public class MsSqlClient : BaseSqlClient
     {
-        public string connstr { get; set; }
-        public MsSqlClient(string connstr)
-        {
-            this.connstr = connstr;
-        }
-
-        public IDbConnection GetDb()
+        public MsSqlClient(string connstr) : base(connstr) { }
+        public override IDbConnection GetDb()
         {
             return new SqlConnection(connstr);
         }
-
-        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
-        {
-            using var db = new SqlConnection(connstr);
-            var list = (await db.QueryAsync<T>(sql, param)).AsList();
-            return list;
-        }
     }
 
-    public class MySqlClient : ISqlClient
+    public class MySqlClient : BaseSqlClient
     {
-        public string connstr { get; set; }
-        public MySqlClient(string connstr)
-        {
-            this.connstr = connstr;
-        }
-
-        public IDbConnection GetDb()
+        public MySqlClient(string connstr) : base(connstr) { }
+        public override IDbConnection GetDb()
         {
             return new MySqlConnection(connstr);
-        }
-
-        public async Task<List<T>> QueryAsync<T>(string sql, object param = null)
-        {
-            using var db = new MySqlConnection(connstr);
-            var list = (await db.QueryAsync<T>(sql, param)).AsList();
-            return list;
         }
     }
 }

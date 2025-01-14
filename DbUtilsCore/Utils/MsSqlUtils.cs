@@ -95,15 +95,6 @@ SELECT
             {
                 await db.ExecuteAsync("sys.sp_addextendedproperty", p, commandType: CommandType.StoredProcedure);
             }
-
-            //if (!hasDesc)
-            //{
-            //    db.Execute("sys.sp_addextendedproperty", p, commandType: CommandType.StoredProcedure);
-            //}
-            //else
-            //{
-            //    db.Execute("sys.sp_updateextendedproperty", p, commandType: CommandType.StoredProcedure);
-            //}
         }
 
         public Task TableDataAdd(string table, string[] columns, object data)
@@ -113,8 +104,22 @@ SELECT
 
         public Task<List<T>> PagerList<T>(string sql, int skip, int take)
         {
-            var pagerSql = $"SELECT * FROM ({sql}) AS subquery ORDER BY (SELECT NULL) OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY";
-            return client.QueryAsync<T>(pagerSql);
+            if (take > 0)
+            {
+                if (skip > 0)
+                {
+                    var pagerSql = $"SELECT * FROM ({sql}) AS subquery ORDER BY (SELECT NULL) OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY";
+                    return client.QueryAsync<T>(pagerSql);
+                }
+                else
+                {
+                    return client.QueryAsync<T>(sql, take);
+                }
+            }
+            else
+            {
+                return client.QueryAsync<T>(sql);
+            }
         }
     }
 }

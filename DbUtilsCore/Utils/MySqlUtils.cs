@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using Dapper;
-using MySqlConnector;
 
 namespace DbUtilsCore.Utils
 {
@@ -71,14 +70,19 @@ and table_schema = DATABASE()";
             return result;
         }
 
+        class TableNamesItem
+        {
+            public string table_name { get; set; }
+        }
+
         public async Task<List<string>> GetTableNames()
         {
             const string sql = @"
 select table_name from information_schema.tables 
 where table_schema = DATABASE()
 and table_type='BASE TABLE';";
-            var list = await client.QueryAsync<string>(sql);
-            return list;
+            var list = await client.QueryAsync<TableNamesItem>(sql);
+            return list.Select(t => t.table_name).ToList();
         }
 
         class UpdateCommentResult
@@ -120,8 +124,7 @@ and column_name = ?column_name
 and table_name = ?table_name
 ";
 
-            using var db = client.GetDb();
-            var result = await db.QueryFirstOrDefaultAsync<UpdateCommentResult>(sql, new
+            var result = await client.QueryFirstAsync<UpdateCommentResult>(sql, new
             {
                 column_name = column,
                 table_name = table,
@@ -129,7 +132,7 @@ and table_name = ?table_name
             if (result == null) return;
 
             var sql2 = result.script + " COMMENT ?comment";
-            await db.ExecuteAsync(sql2, new { comment });
+            await client.ExecuteAsync(sql2, new { comment });
         }
 
         public async Task TableDataAdd(string table, string[] columns, object data)
@@ -139,16 +142,22 @@ and table_name = ?table_name
 
             var sql = string.Format(@"insert into {0} ({1}) values ({2})", table, str1, str2);
 
-            using var db = client.GetDb();
-            await db.ExecuteAsync(sql, data);
+            await client.ExecuteAsync(sql, data);
         }
 
         public Task<List<T>> PagerList<T>(string sql, int skip, int take)
         {
             if (take > 0)
             {
-                var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
-                return client.QueryAsync<T>(pagerSql);
+                if (skip > 0)
+                {
+                    var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
+                    return client.QueryAsync<T>(pagerSql);
+                }
+                else
+                {
+                    return client.QueryAsync<T>(sql, take);
+                }
             }
             else
             {

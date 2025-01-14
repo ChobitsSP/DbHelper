@@ -73,8 +73,22 @@ namespace DbUtilsCore.Utils
 
         public Task<List<T>> PagerList<T>(string sql, int skip, int take)
         {
-            var pagerSql = SqlPager(sql, skip, take);
-            return client.QueryAsync<T>(pagerSql);
+            if (take > 0)
+            {
+                if (skip > 0)
+                {
+                    var pagerSql = SqlPager(sql, skip, take);
+                    return client.QueryAsync<T>(pagerSql);
+                }
+                else
+                {
+                    return client.QueryAsync<T>(sql, take);
+                }
+            }
+            else
+            {
+                return client.QueryAsync<T>(sql);
+            }
         }
     }
 }

@@ -81,8 +81,7 @@ WHERE t1.table_schema = 'public'";
         {
             // comment on column ecif_point_rule.add_growth is @comment;
             string sql = string.Format("comment on column {0}.{1} is '{2}'", table, column, comment);
-            using var db = client.GetDb();
-            await db.ExecuteAsync(sql);
+            await client.ExecuteAsync(sql);
         }
 
         public Task TableDataAdd(string table, string[] columns, object data)
@@ -92,8 +91,22 @@ WHERE t1.table_schema = 'public'";
 
         public Task<List<T>> PagerList<T>(string sql, int skip, int take)
         {
-            var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {take} OFFSET {skip}";
-            return client.QueryAsync<T>(pagerSql);
+            if (take > 0)
+            {
+                if (skip > 0)
+                {
+                    var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {take} OFFSET {skip}";
+                    return client.QueryAsync<T>(pagerSql);
+                }
+                else
+                {
+                    return client.QueryAsync<T>(sql, take);
+                }
+            }
+            else
+            {
+                return client.QueryAsync<T>(sql);
+            }
         }
     }
 }
