@@ -72,7 +72,12 @@ namespace DbUtilsCore
 
             var reqJson = JsonConvert.SerializeObject(dic);
 
-            using var client = new HttpClient();
+            var handler = new HttpClientHandler()
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+
+            using var client = new HttpClient(handler);
             var response = await client.PostAsJsonAsync(url, dic);
             var responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<TopResult>(responseString);
