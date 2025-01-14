@@ -106,15 +106,8 @@ SELECT
         {
             if (take > 0)
             {
-                if (skip > 0)
-                {
-                    var pagerSql = $"SELECT * FROM ({sql}) AS subquery ORDER BY (SELECT NULL) OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY";
-                    return client.QueryAsync<T>(pagerSql);
-                }
-                else
-                {
-                    return client.QueryAsync<T>(sql, take);
-                }
+                var pagerSql = $"SELECT * FROM ({sql}) AS subquery ORDER BY (SELECT NULL) OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY";
+                return client.QueryAsync<T>(pagerSql);
             }
             else
             {

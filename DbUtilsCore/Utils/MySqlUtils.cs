@@ -149,15 +149,8 @@ and table_name = ?table_name
         {
             if (take > 0)
             {
-                if (skip > 0)
-                {
-                    var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
-                    return client.QueryAsync<T>(pagerSql);
-                }
-                else
-                {
-                    return client.QueryAsync<T>(sql, take);
-                }
+                var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
+                return client.QueryAsync<T>(pagerSql);
             }
             else
             {

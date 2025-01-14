@@ -93,15 +93,8 @@ WHERE t1.table_schema = 'public'";
         {
             if (take > 0)
             {
-                if (skip > 0)
-                {
-                    var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {take} OFFSET {skip}";
-                    return client.QueryAsync<T>(pagerSql);
-                }
-                else
-                {
-                    return client.QueryAsync<T>(sql, take);
-                }
+                var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {take} OFFSET {skip}";
+                return client.QueryAsync<T>(pagerSql);
             }
             else
             {
