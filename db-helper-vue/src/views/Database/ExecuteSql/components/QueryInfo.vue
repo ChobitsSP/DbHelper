@@ -15,9 +15,9 @@
       </el-form-item>
       <el-form-item>
         <el-select v-model="queryConfig.maxCount">
-          <el-option v-for="option in [10, 20, 50, 100, 500, 1000]"
+          <el-option v-for="option in [10, 20, 50, 100, 500, 1000, 0]"
                      :key="option"
-                     :label="`Limit ${option} rows`"
+                     :label="option === 0 ? 'no limit' : `Limit ${option} rows`"
                      :value="option" />
         </el-select>
       </el-form-item>
