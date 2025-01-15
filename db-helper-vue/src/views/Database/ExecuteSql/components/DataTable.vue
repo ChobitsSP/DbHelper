@@ -31,6 +31,18 @@
         columns: [],
         data: [],
         size: 'mini',
+        rowConfig: {
+          isCurrent: true,
+          isHover: true
+        },
+        scrollY: {
+          enabled: true,
+          gt: 0
+        },
+        scrollX: {
+          enabled: true,
+          gt: 0
+        },
       });
 
       watchEffect(() => {
@@ -46,7 +58,14 @@
               minWidth: 160,
             };
           });
-          gridOptions.value.columns = columns;
+          gridOptions.value.columns = [
+            {
+              title: 'seq',
+              type: 'seq',
+              minWidth: 80,
+            },
+            ...columns,
+          ];
         }
         else {
           gridOptions.value.columns = [];
