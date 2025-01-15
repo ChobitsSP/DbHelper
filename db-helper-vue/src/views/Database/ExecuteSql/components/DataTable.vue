@@ -1,9 +1,18 @@
 <template>
-  <vxe-grid v-bind="gridOptions"
+  <vxe-grid ref="gridRef"
+            v-bind="gridOptions"
             :max-height="height"
             :loading="loading"
             @header-cell-click="onHeaderCellClick"
             @cell-click="onCellClick">
+
+    <template #filter_name="{ column }">
+      <div v-for="(option, index) in column.filters"
+           :key="index">
+        <vxe-input v-model="option.data"
+                   @change="changeNameFilter(option)"></vxe-input>
+      </div>
+    </template>
   </vxe-grid>
 </template>
 
@@ -11,6 +20,8 @@
   import { defineComponent, ref, watchEffect } from 'vue';
   import _ from 'lodash';
   import { useClipboard } from '@vueuse/core';
+
+  import filterBy from '@/filters/filterBy';
 
   export default defineComponent({
     props: {
@@ -57,6 +68,15 @@
               title: key,
               minWidth: 160,
               sortable: true,
+              filters: [
+                { data: '' }
+              ],
+              filterMethod({ option, row, column }) {
+                return filterBy([_.get(row, column.field)], option.data).length > 0;
+              },
+              slots: {
+                filter: 'filter_name'
+              },
             };
           });
           gridOptions.value.columns = [
@@ -73,6 +93,14 @@
         }
       });
 
+      const gridRef = ref();
+      function changeNameFilter(option: any) {
+        const $grid = gridRef.value;
+        if ($grid) {
+          $grid.updateFilterOptionStatus(option, !!option.data)
+        }
+      }
+
       return {
         gridOptions,
         onCellClick({ row, column }) {
@@ -83,6 +111,9 @@
         onHeaderCellClick({ column }) {
           copy(column.title);
         },
+
+        gridRef,
+        changeNameFilter,
       };
     },
   });
