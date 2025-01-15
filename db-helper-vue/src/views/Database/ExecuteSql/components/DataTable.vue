@@ -56,6 +56,7 @@
               field: key,
               title: key,
               minWidth: 160,
+              sortable: true,
             };
           });
           gridOptions.value.columns = [
