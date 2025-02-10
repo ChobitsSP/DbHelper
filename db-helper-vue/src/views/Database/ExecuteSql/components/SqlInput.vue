@@ -4,6 +4,14 @@
   </div>
 </template>
 
+<style lang="scss" scoped>
+  .sql-input {
+    :deep(.cm-editor) {
+      height: 100%;
+    }
+  }
+</style>
+
 <script lang="ts">
   import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
   import _ from 'lodash';

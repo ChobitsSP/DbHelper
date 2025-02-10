@@ -61,7 +61,7 @@
     sql = [
       'select * from table1',
       'where 1=1',
-      ...Array(8).fill(''),
+      // ...Array(8).fill(''),
     ].join('\n');
   }
 
@@ -187,7 +187,7 @@
 
       .sql-input {
         width: 100%;
-        height: 200px; // 可以根据需要调整高度
+        height: 240px; // 可以根据需要调整高度
       }
     }
 
