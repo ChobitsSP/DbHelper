@@ -72,11 +72,16 @@
         type: Function,
         required: true,
       },
+      groupCount: {
+        type: Number,
+        default: 1,
+      },
     },
     setup(props) {
       const mainSetup = useSetup({
         getGridColumns: () => props.gridColumns,
         upload: props.upload as any,
+        groupCount: props.groupCount,
       });
       return {
         ...mainSetup,
