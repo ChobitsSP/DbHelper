@@ -3,11 +3,22 @@ import { Message } from 'element-ui';
 
 interface MyProps {
   getGridColumns: () => any[];
-  upload?: (row: any) => Promise<void>;
+  upload?: (rows: any[]) => Promise<void>;
+  groupCount?: number;
 }
 
 function Delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function* groupByCount<T = any>(items: readonly T[], count: number): Generator<T[]> {
+  if (count <= 0) {
+    throw new Error('Count must be a positive integer');
+  }
+
+  for (let i = 0; i < items.length; i += count) {
+    yield items.slice(i, i + count);
+  }
 }
 
 export function useSetup(props: MyProps) {
@@ -69,23 +80,30 @@ export function useSetup(props: MyProps) {
       return;
     }
 
-    taskTotal.value = list.length;
+    const glist = Array.from(groupByCount(list, props.groupCount || 1));
+
+    taskTotal.value = glist.length;
     taskIndex.value = 0;
 
     loading.value = true;
 
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < glist.length; i++) {
       if (taskTotal.value === 0) {
         loading.value = false;
         break;
       }
-      const row = list[i];
+      const rows = glist[i];
       try {
-        await onAdd(row);
-        row.up_state = 1;
+        await onAdd(rows);
+        rows.forEach(t => { 
+          t.up_state = 1;
+          t.err_msg = '';
+        });
       } catch (err: any) {
-        row.up_state = 2;
-        row.err_msg = err.message;
+        rows.forEach(t => {
+          t.up_state = 2;
+          t.err_msg = err.message;
+        });
       }
       taskIndex.value++;
     }
@@ -101,7 +119,7 @@ export function useSetup(props: MyProps) {
   }
 
   const executeText = computed(() => {
-    return isUploading.value ? `导入中 ${taskIndex.value}/${taskTotal.value}` : '开始导入';
+    return isUploading.value ? `${taskIndex.value}/${taskTotal.value}` : 'Start Import';
   });
 
   function onExecute() {
