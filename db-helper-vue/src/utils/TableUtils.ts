@@ -57,11 +57,13 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
 
     const value = row[column.name];
 
-    if (TypeIsString(column.type)) {
+    if (value == null || value == '') {
+      values += 'null';
+    }
+    else if (TypeIsString(column.type) || TypeIsDate(column.type)) {
       values += `'${value}'`;
     } else {
-      const isNull = value === null || value === undefined || value === "";
-      values += isNull ? "null" : value;
+      values += value;
     }
   });
   sql += ") ";
