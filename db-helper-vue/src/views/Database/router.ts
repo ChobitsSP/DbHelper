@@ -6,4 +6,11 @@ export default [
       title: 'ExecuteSql',
     },
   },
+  {
+    path: 'Database/ImportData',
+    component: () => import('./ImportData/index.vue'),
+    meta: {
+      title: 'ImportData',
+    },
+  },
 ];

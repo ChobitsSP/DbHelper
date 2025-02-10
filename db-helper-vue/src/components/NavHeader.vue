@@ -40,7 +40,7 @@
 
   const MenuList: Menu[] = [
     {
-      name: '首页',
+      name: 'Home',
       url: '/',
     },
     {
@@ -67,25 +67,29 @@
       ],
     },
     {
-      name: '数据库',
+      name: 'Database',
       url: '/Table/ConfigList',
       children: [
         {
-          name: '配置',
+          name: 'Config',
           url: '/Table/ConfigList',
         },
         {
-          name: '对比',
+          name: 'Compare',
           url: '/Table/DbCompare',
         },
         {
           name: 'ExecuteSql',
           url: '/Database/ExecuteSql',
         },
+        {
+          name: 'ImportData',
+          url: '/Database/ImportData',
+        },
       ],
     },
     {
-      name: '工具',
+      name: 'OtherUtils',
       children: [
         {
           name: 'Json2Ts',
