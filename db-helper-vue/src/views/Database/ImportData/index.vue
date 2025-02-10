@@ -22,10 +22,19 @@
                      :value="option" />
         </el-select>
       </el-form-item>
+      <el-form-item>
+        <el-input-number v-model="model.groupCount"
+                         controls-position="right"
+                         :min="1"
+                         :max="10000"
+                         :step="1"
+                         placeholder="Group Count">
+        </el-input-number>
+      </el-form-item>
     </el-form>
     <XlsxImport :gridColumns="gridColumns"
                 :importColumns="importColumns"
-                :groupCount="100"
+                :groupCount="model.groupCount"
                 :upload="onUpload">
     </XlsxImport>
   </div>
@@ -51,6 +60,7 @@
       const model = ref({
         dbId: null,
         table: null,
+        groupCount: 100,
       });
 
       const dbList = ref([]);
