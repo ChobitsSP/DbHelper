@@ -58,3 +58,17 @@ export async function ListGet<T = any>(config: DbConfig, req: ListGetReq) {
   if (rsp.code !== 0) throw new Error(rsp.msg);
   return rsp.data;
 }
+
+export async function ExecuteSql(config: DbConfig, sql: string) {
+  const rsp = await http.post('/api/sql/ListGet', {
+    providerName: config.providerName,
+    connectionString: config.connectionString,
+    api_url: config.api_url,
+    api_secret: config.api_secret,
+    sql,
+    skip: 0,
+    take: 0,
+  });
+  if (rsp.code !== 0) throw new Error(rsp.msg);
+  return rsp.data;
+}
