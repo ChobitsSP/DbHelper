@@ -81,7 +81,7 @@
       const mainSetup = useSetup({
         getGridColumns: () => props.gridColumns,
         upload: props.upload as any,
-        groupCount: props.groupCount,
+        getGroupCount: () => props.groupCount,
       });
       return {
         ...mainSetup,

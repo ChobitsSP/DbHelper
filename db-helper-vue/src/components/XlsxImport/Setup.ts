@@ -4,7 +4,7 @@ import { Message } from 'element-ui';
 interface MyProps {
   getGridColumns: () => any[];
   upload?: (rows: any[]) => Promise<void>;
-  groupCount?: number;
+  getGroupCount: () => number;
 }
 
 function Delay(ms: number) {
@@ -80,7 +80,7 @@ export function useSetup(props: MyProps) {
       return;
     }
 
-    const glist = Array.from(groupByCount(list, props.groupCount || 1));
+    const glist = Array.from(groupByCount(list, props.getGroupCount()));
 
     taskTotal.value = glist.length;
     taskIndex.value = 0;
@@ -95,7 +95,7 @@ export function useSetup(props: MyProps) {
       const rows = glist[i];
       try {
         await onAdd(rows);
-        rows.forEach(t => { 
+        rows.forEach(t => {
           t.up_state = 1;
           t.err_msg = '';
         });
