@@ -45,7 +45,7 @@ export function TypeIsJs(type: string) {
   return ["string", "number", "boolean", "Date"].some(t => StringEqualsIgnoreCase(t, type));
 }
 
-export function BuildInsertSql(tableName: string, columns: IColumn[], row: Record<string, any>) {
+export function BuildInsertSql(tableName: string, columns: IColumn[], row: Record<string, string>) {
   let sql = `insert into ${tableName} (`;
   let values = "values (";
   columns.forEach((column, index) => {
@@ -54,10 +54,14 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
       values += ", ";
     }
     sql += column.name;
+
+    const value = row[column.name];
+
     if (TypeIsString(column.type)) {
-      values += `'${row[column.name]}'`;
+      values += `'${value}'`;
     } else {
-      values += row[column.name];
+      const isNull = value === null || value === undefined || value === "";
+      values += isNull ? "null" : value;
     }
   });
   sql += ") ";
