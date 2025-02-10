@@ -25,6 +25,7 @@
     </el-form>
     <XlsxImport :gridColumns="gridColumns"
                 :importColumns="importColumns"
+                :groupCount="100"
                 :upload="onUpload">
     </XlsxImport>
   </div>
@@ -72,8 +73,10 @@
         tableColumns.value = await api.getColumns(db, table);
       }
 
-      async function onUpload(row: Record<string, string>) {
-        const sql = BuildInsertSql(model.value.table, tableColumns.value, row);
+      async function onUpload(rows: Record<string, string>[]) {
+        const sql = rows.map(row => {
+          return BuildInsertSql(model.value.table, tableColumns.value, row);
+        }).join(';');
         const db = dbList.value.find(t => t.id === model.value.dbId);
         await api.ExecuteSql(db, sql);
       }
