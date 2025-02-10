@@ -126,3 +126,16 @@ export function LoadJson<T = any>(file: File) {
     reader.readAsText(file);
   });
 }
+
+export function GetFileName(url: string) {
+  const m = /[^/]+\.\w+$/.exec(url);
+  return m ? m[0] : '';
+}
+
+export function FileDownload(url: string, fileName?: string) {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = fileName || GetFileName(url);
+  link.click();
+  link.remove();
+}

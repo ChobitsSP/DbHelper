@@ -1,3 +1,5 @@
+import { IColumn } from '@/models/Index';
+
 const numberlist = ["NUMBER", "integer", "smallint", "int", "numeric", "bigint"];
 
 const datelist = ["DATE", "Date", "timestamp without time zone", "timestamp with time zone", "date", "datetime", "smalldatetime"];
@@ -15,26 +17,51 @@ const strlist = [
   "string",
 ];
 
+function StringEqualsIgnoreCase(str1: string, str2: string) {
+  return str1.toLowerCase() === str2.toLowerCase();
+}
+
 export function TypeIsDecimal(type: string) {
-  return ["decimal", "numeric", "money"].some(t => t === type);
+  return ["decimal", "numeric", "money"].some(t => StringEqualsIgnoreCase(t, type));
 }
 
 export function TypeIsLong(type: string) {
-  return ['bigint'].some(t => t === type);
+  return ['bigint'].some(t => StringEqualsIgnoreCase(t, type));
 }
 
 export function TypeIsNumber(type: string) {
-  return numberlist.some(t => t === type);
+  return numberlist.some(t => StringEqualsIgnoreCase(t, type));
 }
 
 export function TypeIsString(type: string) {
-  return strlist.some(t => t === type);
+  return strlist.some(t => StringEqualsIgnoreCase(t, type));
 }
 
 export function TypeIsDate(type: string) {
-  return datelist.some(t => t === type);
+  return datelist.some(t => StringEqualsIgnoreCase(t, type));
 }
 
 export function TypeIsJs(type: string) {
-  return ["string", "number", "boolean", "Date"].some(t => t === type);
+  return ["string", "number", "boolean", "Date"].some(t => StringEqualsIgnoreCase(t, type));
+}
+
+export function BuildInsertSql(tableName: string, columns: IColumn[], row: Record<string, any>) {
+  let sql = `insert into ${tableName} (`;
+  let values = "values (";
+  columns.forEach((column, index) => {
+    if (index > 0) {
+      sql += ", ";
+      values += ", ";
+    }
+    sql += column.name;
+    if (TypeIsString(column.type)) {
+      values += `'${row[column.name]}'`;
+    } else {
+      values += row[column.name];
+    }
+  });
+  sql += ") ";
+  values += ")";
+  sql += values;
+  return sql;
 }
