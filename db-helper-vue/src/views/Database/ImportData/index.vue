@@ -88,7 +88,13 @@
           return BuildInsertSql(model.value.table, tableColumns.value, row);
         }).join(';');
         const db = dbList.value.find(t => t.id === model.value.dbId);
-        await api.ExecuteSql(db, sql);
+        try {
+          await api.ExecuteSql(db, sql);
+        } catch (e) {
+          console.error(e.message);
+          console.log(sql);
+          console.log(rows);
+        }
       }
 
       const gridColumns = computed(() => {

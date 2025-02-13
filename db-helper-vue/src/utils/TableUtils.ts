@@ -58,7 +58,7 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
 
     const value = row[column.name];
 
-    if (value == null || value == '') {
+    if (value == null || value === '') {
       values += 'null';
     }
     else if (TypeIsDate(column.type)) {
