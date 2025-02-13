@@ -140,7 +140,7 @@
           const list = await api.ListGet(config, {
             sql,
             skip: allList.length,
-            take: queryConfig.value.maxCount,
+            take: queryConfig.value.maxCount || 100,
           });
 
           if (list.length === 0) {
