@@ -91,9 +91,9 @@
         try {
           await api.ExecuteSql(db, sql);
         } catch (e) {
-          console.error(e.message);
           console.log(sql);
           console.log(rows);
+          throw e;
         }
       }
 
