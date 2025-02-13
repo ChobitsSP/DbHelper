@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { IColumn } from '@/models/Index';
 
 const numberlist = ["NUMBER", "integer", "smallint", "int", "numeric", "bigint"];
@@ -60,7 +61,15 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
     if (value == null || value == '') {
       values += 'null';
     }
-    else if (TypeIsString(column.type) || TypeIsDate(column.type)) {
+    else if (TypeIsDate(column.type)) {
+      if (moment(value).isValid()) {
+        values += `'${moment(value).format('YYYY-MM-DD HH:mm:ss')}'`;
+      }
+      else {
+        values += `'${value}'`;
+      }
+    }
+    else if (TypeIsString(column.type)) {
       values += `'${value}'`;
     } else {
       values += value;
