@@ -15,7 +15,8 @@
     </div>
     <div class="grid-container">
       <vxe-grid ref="grid"
-                v-bind="gridOptions"
+                :columns="columns"
+                :data="tableData"
                 size="mini"
                 :scroll-y="{ enabled: true, gt: 0 }"
                 :max-height="800"

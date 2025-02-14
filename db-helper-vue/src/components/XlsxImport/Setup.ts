@@ -39,13 +39,11 @@ export function useSetup(props: MyProps) {
     { label: 'Fail', value: 2 },
   ];
 
-  const gridOptions = ref({
-    columns: [],
-    data: [],
-  });
+  const tableData = ref([]);
+  const columns = ref([]);
 
   watchEffect(() => {
-    gridOptions.value.columns = [
+    columns.value = [
       {
         field: 'up_state',
         title: 'Status',
@@ -64,6 +62,7 @@ export function useSetup(props: MyProps) {
       },
       ...props.getGridColumns(),
     ];
+    tableData.value = [];
   });
 
   const loading = ref(false);
@@ -74,7 +73,7 @@ export function useSetup(props: MyProps) {
   const grid = ref();
 
   async function onStart() {
-    const list = gridOptions.value.data.filter(t => t.up_state !== 1);
+    const list = tableData.value.filter(t => t.up_state !== 1);
     if (list.length === 0) {
       Message.warning('无可导入数据');
       return;
@@ -141,7 +140,7 @@ export function useSetup(props: MyProps) {
     return {};
   }
 
-  const hasFailed = computed(() => gridOptions.value.data.some(t => t.up_state === 2));
+  const hasFailed = computed(() => tableData.value.some(t => t.up_state === 2));
   function exportFailed() {
 
   }
@@ -150,13 +149,15 @@ export function useSetup(props: MyProps) {
     loading,
 
     grid,
-    gridOptions,
+    columns,
+    tableData,
+
     onLoad(rows) {
       rows.forEach((row) => {
         row.up_state = 0;
         row.err_msg = '';
       });
-      gridOptions.value.data = rows;
+      tableData.value = rows;
     },
 
     getCellStyle,
