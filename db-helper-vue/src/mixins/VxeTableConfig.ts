@@ -8,6 +8,7 @@ export function InitVxeConfig() {
       resizable: true,
       border: true,
       showOverflow: 'tooltip',
+      showHeaderOverflow: 'tooltip',
       rowConfig: {
         isCurrent: true,
         isHover: true,
