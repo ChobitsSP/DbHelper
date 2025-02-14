@@ -6,6 +6,7 @@
       <el-form-item>
         <el-select v-model="queryConfig.dbId"
                    filterable
+                   @change="onDbChange"
                    placeholder="Select Database">
           <el-option v-for="db in dbList"
                      :key="db.id"
@@ -33,6 +34,7 @@
     </el-form>
     <div class="sql-input-wrapper">
       <SqlInput v-model="queryConfig.sql"
+                :autocompletion="queryWords"
                 class="sql-input"></SqlInput>
     </div>
     <div class="sql-result-wrapper">
@@ -44,8 +46,9 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, ref } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import { Message } from 'element-ui';
+  import _ from 'lodash';
 
   import * as api from '@/api';
   import * as DbUtils from '@/utils/DbUtils';
@@ -54,6 +57,9 @@
 
   import DataTable from './DataTable.vue';
   import SqlInput from './SqlInput.vue';
+
+  import { IColumn } from '@/models/Index';
+  import filterBy from '@/filters/filterBy';
 
   class QueryConfig {
     dbId: number = null;
@@ -153,6 +159,25 @@
         return allList;
       }
 
+      // 获取数据库表字段 用于提示
+      const tableColumns = ref<IColumn[]>([]);
+      async function onDbChange(id) {
+        tableColumns.value = [];
+        const db = dbList.value.find(db => db.id === id);
+        tableColumns.value = await api.getColumns(db);
+      }
+
+      function queryWords(str: string) {
+        if (!str) return [];
+        const tables = tableColumns.value.map(t => t.table);
+        const columns = tableColumns.value.map(t => t.name);
+        return _.chain(tables)
+          .concat(columns)
+          .uniq()
+          .filter(t => filterBy([t], str).length > 0)
+          .value();
+      }
+
       return {
         dbList,
         queryConfig,
@@ -162,6 +187,10 @@
         exportData,
 
         tableData,
+
+        onDbChange,
+
+        queryWords,
       };
     },
   });
