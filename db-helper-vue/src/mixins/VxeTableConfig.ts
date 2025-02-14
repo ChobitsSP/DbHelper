@@ -8,6 +8,10 @@ export function InitVxeConfig() {
       resizable: true,
       border: true,
       showOverflow: 'tooltip',
+      rowConfig: {
+        isCurrent: true,
+        isHover: true,
+      },
     },
   });
 }
