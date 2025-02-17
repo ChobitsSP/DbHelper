@@ -49,6 +49,7 @@
   import { defineComponent, ref } from 'vue';
   import { Message } from 'element-ui';
   import _ from 'lodash';
+  import moment from 'moment';
 
   import * as api from '@/api';
   import * as DbUtils from '@/utils/DbUtils';
@@ -126,7 +127,8 @@
 
         try {
           const allList = await getAllList();
-          exportToExcel(allList);
+          const fileName = `export-${moment().format('YYYYMMDD-HHmmss')}`;
+          exportToExcel(allList, fileName);
         } catch (err: any) {
           console.error(err);
           Message.error(err.message);
