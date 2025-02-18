@@ -85,3 +85,11 @@ export async function DbConfigDrag(id1: number, id2: number) {
     await db.DbConfig.update(id1, row2);
   }
 }
+
+export async function DbSortUpdate(ids: number[]) {
+  const list = await DbConfigList();
+  const newList = _.sortBy(list, t => ids.indexOf(t.id));
+  newList.forEach((t, i) => t.id = i + 1);
+  await db.DbConfig.clear();
+  await db.DbConfig.bulkAdd(newList);
+}

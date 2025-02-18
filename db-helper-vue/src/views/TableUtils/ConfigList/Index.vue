@@ -20,7 +20,8 @@
         </el-upload>
       </el-form-item>
     </el-form>
-    <vxe-table :row-config="{ keyField: 'id', drag: true }"
+    <vxe-table ref="table"
+               :row-config="{ keyField: 'id', drag: true }"
                :data="tableData"
                @row-dragend="rowDragendEvent"
                :min-height="400"
@@ -75,7 +76,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, nextTick } from 'vue';
 
   import ConfigEditDialog from '@/components/ConfigEditDialog.vue';
   import * as DbUtils from '@/utils/DbUtils';
@@ -98,6 +99,7 @@
         refresh,
       });
 
+      const table = ref();
       const tableData = ref([]);
       async function refresh() {
         tableData.value = await DbUtils.DbConfigList();
@@ -108,15 +110,19 @@
         return DbTypes.find(t => t.value === cellValue)?.label;
       }
 
+      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
       async function rowDragendEvent({ newRow, oldRow }) {
-        await DbUtils.DbConfigDrag(oldRow.id, newRow.id);
-        return refresh();
+        const list = table.value.getFullData();
+        await DbUtils.DbSortUpdate(list.map(t => t.id));
+        await refresh();
       }
 
       return {
         ...setup,
         ...setupConfigData,
 
+        table,
         tableData,
 
         DbTypes,

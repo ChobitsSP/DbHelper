@@ -27,8 +27,8 @@
     "vue": "^2.7.15",
     "vue-router": "^3.6.5",
     "vuex": "^3.6.2",
-    "vxe-pc-ui": "^3.3.32",
-    "vxe-table": "^3.11.29",
+    "vxe-pc-ui": "^3.3.93",
+    "vxe-table": "^3.12.17",
     "xlsx": "^0.14.5"
   },
   "devDependencies": {
