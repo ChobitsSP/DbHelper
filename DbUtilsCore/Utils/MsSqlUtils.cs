@@ -49,11 +49,16 @@ SELECT
             return list;
         }
 
+        class TableNamesItem
+        {
+            public string name { get; set; }
+        }
+
         public async Task<List<string>> GetTableNames()
         {
             const string sql = "select name from sysobjects where xtype='u' order by name";
-            var list = await client.QueryAsync<string>(sql);
-            return list;
+            var list = await client.QueryAsync<TableNamesItem>(sql);
+            return list.Select(t => t.name).ToList();
         }
 
         /// <summary>
