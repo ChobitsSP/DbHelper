@@ -61,6 +61,7 @@
 
   import { IColumn } from '@/models/Index';
   import filterBy from '@/filters/filterBy';
+  import * as TableUtils from '@/utils/TableUtils';
 
   class QueryConfig {
     dbId: number = null;
@@ -104,6 +105,8 @@
           return;
         }
 
+        const isSelect = TableUtils.CheckIsSelect(sql);
+
         loading.value = true;
 
         try {
@@ -111,7 +114,7 @@
           tableData.value = await api.ListGet(config, {
             sql,
             skip: 0,
-            take: queryConfig.value.maxCount,
+            take: isSelect ? queryConfig.value.maxCount : 0,
           });
         } catch (err: any) {
           console.error(err);
