@@ -116,6 +116,9 @@
             skip: 0,
             take: isSelect ? queryConfig.value.maxCount : 0,
           });
+          if (!isSelect) {
+            Message.success('Execute Success');
+          }
         } catch (err: any) {
           console.error(err);
           Message.error(err.message);
