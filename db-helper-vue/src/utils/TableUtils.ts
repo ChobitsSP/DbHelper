@@ -80,3 +80,7 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
   sql += values;
   return sql;
 }
+
+export function CheckIsSelect(sql: string) {
+  return sql && /^\s{0,}select /i.test(sql);
+}
