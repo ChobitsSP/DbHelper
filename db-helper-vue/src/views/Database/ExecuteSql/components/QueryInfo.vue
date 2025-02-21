@@ -61,7 +61,7 @@
 
   import { IColumn } from '@/models/Index';
   import filterBy from '@/filters/filterBy';
-  import * as TableUtils from '@/utils/TableUtils';
+  import * as SqlUtils from '@/utils/SqlUtils';
 
   class QueryConfig {
     dbId: number = null;
@@ -105,20 +105,22 @@
           return;
         }
 
-        const isSelect = TableUtils.CheckIsSelect(sql);
+        const config = await DbUtils.DbConfigGet(queryConfig.value.dbId);
+        const ast = SqlUtils.ParseSql(sql, config.providerName);
+
+        console.log(ast);
+
+        const hasLimit = SqlUtils.HasLimit(ast);
 
         loading.value = true;
 
         try {
-          const config = await DbUtils.DbConfigGet(queryConfig.value.dbId);
           tableData.value = await api.ListGet(config, {
             sql,
             skip: 0,
-            take: isSelect ? queryConfig.value.maxCount : 0,
+            take: hasLimit ? 0 : queryConfig.value.maxCount,
           });
-          if (!isSelect) {
-            Message.success('Execute Success');
-          }
+          Message.success('Execute Success');
         } catch (err: any) {
           console.error(err);
           Message.error(err.message);
