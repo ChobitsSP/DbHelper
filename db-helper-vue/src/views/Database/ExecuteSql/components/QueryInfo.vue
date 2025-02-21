@@ -120,7 +120,7 @@
             skip: 0,
             take: hasLimit ? 0 : queryConfig.value.maxCount,
           });
-          Message.success('Execute Success');
+          !SqlUtils.IsSelect(ast) && Message.success('Execute Success');
         } catch (err: any) {
           console.error(err);
           Message.error(err.message);
