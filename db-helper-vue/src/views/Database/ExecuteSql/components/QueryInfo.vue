@@ -99,7 +99,7 @@
       }
 
       async function executeSQL() {
-        const sql = getSql();
+        let sql = getSql();
         if (!sql) {
           Message.error('请输入SQL语句');
           return;
@@ -107,20 +107,18 @@
 
         const config = await DbUtils.DbConfigGet(queryConfig.value.dbId);
         const ast = SqlUtils.ParseSql(sql, config.providerName);
-
         console.log(ast);
-
-        const hasLimit = SqlUtils.HasLimit(ast);
 
         loading.value = true;
 
         try {
+          sql = SqlUtils.GetLimitSql(sql, config.providerName, queryConfig.value.maxCount);
           tableData.value = await api.ListGet(config, {
             sql,
             skip: 0,
-            take: hasLimit ? 0 : queryConfig.value.maxCount,
+            take: 0,
           });
-          !SqlUtils.IsSelect(ast) && Message.success('Execute Success');
+          // !SqlUtils.IsSelect(ast) && Message.success('Execute Success');
         } catch (err: any) {
           console.error(err);
           Message.error(err.message);
