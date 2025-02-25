@@ -3,6 +3,8 @@ import { Notification } from 'element-ui';
 let isNotified = false;
 
 export async function useVersionCheck() {
+  if (process.env.NODE_ENV === 'development') return;
+
   const isNew = await getIsNew();
   if (isNew) return;
 
@@ -56,6 +58,6 @@ async function getIsNew() {
   return true;
 }
 
-async function getPageHtml(url: string) {
+function getPageHtml(url: string) {
   return fetch(url).then(res => res.text());
 }
