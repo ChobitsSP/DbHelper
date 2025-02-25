@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue';
-import { useWindowSize } from '@/utils/WindowUtils';
+import { useWindowSize } from '@vueuse/core';
 import { useRx } from './RxBusMixins';
 
 interface Config {
