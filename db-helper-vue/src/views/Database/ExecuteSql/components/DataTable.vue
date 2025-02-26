@@ -8,8 +8,8 @@
             :row-config="{ isCurrent: true, isHover: true }"
             :scroll-x="{ enabled: true, gt: 0 }"
             :scroll-y="{ enabled: true, gt: 0 }"
-            @cell-click="onCellClick">
-
+            @cell-click="onCellClick"
+            @cell-dblclick="onCellDbClick">
     <template #filter_name="{ column }">
       <div v-for="(option, index) in column.filters"
            :key="index">
@@ -65,7 +65,7 @@
             return {
               field: key,
               title: key,
-              width: 'auto',
+              width: 160,
               sortable: true,
               filters: [
                 { data: '' }
@@ -100,6 +100,15 @@
         }
       }
 
+      function onCellDbClick({ cell }) {
+        const span = cell.querySelector('.vxe-cell--label span');
+        const range = document.createRange();
+        range.selectNodeContents(span);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+
       return {
         gridOptions,
         onCellClick({ row, column }) {
@@ -107,6 +116,7 @@
           if (!value) return;
           copy(value);
         },
+        onCellDbClick,
         onHeaderCellClick({ column }) {
           copy(column.title);
         },
