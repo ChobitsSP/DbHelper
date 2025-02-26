@@ -66,7 +66,7 @@
             return {
               field: key,
               title: key,
-              minWidth: 160,
+              width: 'auto',
               sortable: true,
               filters: [
                 { data: '' }
@@ -81,9 +81,9 @@
           });
           gridOptions.value.columns = [
             {
-              title: 'seq',
+              title: 'index',
               type: 'seq',
-              minWidth: 80,
+              width: 80,
             },
             ...columns,
           ];
