@@ -4,6 +4,10 @@
             :max-height="height"
             :loading="loading"
             @header-cell-click="onHeaderCellClick"
+            size="mini"
+            :row-config="{ isCurrent: true, isHover: true }"
+            :scroll-x="{ enabled: true, gt: 0 }"
+            :scroll-y="{ enabled: true, gt: 0 }"
             @cell-click="onCellClick">
 
     <template #filter_name="{ column }">
@@ -41,18 +45,13 @@
       const gridOptions = ref({
         columns: [],
         data: [],
-        size: 'mini',
-        rowConfig: {
-          isCurrent: true,
-          isHover: true
+        toolbarConfig: {
+          custom: true,
+          export: true,
         },
-        scrollY: {
-          enabled: true,
-          gt: 0
-        },
-        scrollX: {
-          enabled: true,
-          gt: 0
+        exportConfig: {},
+        customConfig: {
+          mode: 'modal'
         },
       });
 
@@ -83,7 +82,7 @@
             {
               title: 'index',
               type: 'seq',
-              width: 80,
+              width: 60,
             },
             ...columns,
           ];
