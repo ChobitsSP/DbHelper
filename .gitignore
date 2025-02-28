@@ -250,3 +250,4 @@ ModelManifest.xml
 /NpgsqlHelper/Properties/PublishProfiles
 /NpgsqlHelper/bin
 /NpgsqlHelper/obj
+.config
