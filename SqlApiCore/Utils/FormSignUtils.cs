@@ -41,19 +41,6 @@ namespace SqlApiCore.Utils
             }
         }
 
-        public static void ValidForm(HttpRequest request)
-        {
-            var secert_key = ConfigUtils.GetSectionValue("form_secert_key");
-            if (string.IsNullOrEmpty(secert_key)) throw new Exception("form_secert_key error");
-            var dic = new Dictionary<string, string>();
-            var form = request.Form;
-            foreach (var key in form.Keys)
-            {
-                dic[key] = form[key];
-            }
-            ValidParams(dic, request.Path);
-        }
-
         public static T ValidBody<T>(this ControllerBase controller, JObject jobj)
         {
             var dic = jobj.ToObject<Dictionary<string, string>>();
