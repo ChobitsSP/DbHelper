@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using System.Net.Http.Json;
+using System.Globalization;
 
 namespace DbUtilsCore
 {
@@ -92,6 +93,44 @@ namespace DbUtilsCore
             public int code { get; set; }
             public string msg { get; set; }
             public JToken result { get; set; }
+        }
+
+        public static DateTime TimeStampToDateTime(string timestamp)
+        {
+            if (Regex.IsMatch(timestamp, @"^\d{4}-\d{2}-\d{2}[^\d]\d{2}:\d{2}:\d{2}$"))
+            {
+                return ToDateTime(timestamp, "yyyy-MM-dd HH:mm:ss").Value;
+            }
+
+            ulong val = ulong.Parse(timestamp);
+
+            // (val > 1498213901000)
+            if (val > 1400000000000)
+            {
+                val /= 1000;
+            }
+
+            return UnixTimeStampToDateTime(val);
+        }
+
+        public static DateTime? ToDateTime(this string str, string format)
+        {
+            if (string.IsNullOrEmpty(str)) return null;
+            if (format.Length > str.Length)
+            {
+                format = format.Substring(0, str.Length);
+            }
+            DateTime result;
+            if (DateTime.TryParseExact(str, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out result)) return result;
+            return null;
+        }
+
+        public static DateTime UnixTimeStampToDateTime(ulong unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dateTime;
         }
     }
 }
