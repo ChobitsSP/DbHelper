@@ -65,7 +65,7 @@
 
   class QueryConfig {
     dbId: number = null;
-    maxCount = 20;
+    maxCount = 10;
     sql = [
       'select * from table1',
       'where 1=1',
