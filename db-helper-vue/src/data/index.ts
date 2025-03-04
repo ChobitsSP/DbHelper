@@ -1,6 +1,6 @@
 export const DbTypeOracle = 'Oracle';
 export const DbTypeMySql = 'MySql';
-export const DbTypeMsSql = 'MsSql';
+export const DbTypeMsSql = 'SqlServer';
 export const DbTypeNpgsql = 'Npgsql';
 
 export const DbTypes = [
