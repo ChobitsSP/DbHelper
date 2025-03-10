@@ -43,7 +43,7 @@
     "sass": "~1.64.1",
     "sass-loader": "~10.4.1",
     "typescript": "^5.6.2",
-    "vite": "^5.1.8",
+    "vite": "5.1.8",
     "vite-plugin-resolve-externals": "^0.2.2"
   }
 }
