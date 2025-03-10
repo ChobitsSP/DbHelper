@@ -20,6 +20,8 @@ namespace SqlApiCore
         {
             services.AddSingleton(LogService.Init());
 
+            // services.AddHostedService<TestWorker>();
+
             services.AddResponseCompression(options =>
             {
                 options.Providers.Add<GzipCompressionProvider>();
