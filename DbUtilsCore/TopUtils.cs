@@ -82,17 +82,25 @@ namespace DbUtilsCore
             var response = await client.PostAsJsonAsync(url, dic);
             var responseString = await response.Content.ReadAsStringAsync();
 
-            var rsp = JsonConvert.DeserializeObject<TopResult>(responseString);
+            var rspObj = JObject.Parse(responseString);
+            var rsp = rspObj.ToObject<TopResult>();
             if (rsp.code != 0) throw new Exception(rsp.msg);
-            if (rsp.result == null || rsp.result.Type == JTokenType.Null) return default;
-            return rsp.result.ToObject<T>();
+
+            if (rspObj.ContainsKey("data"))
+            {
+                return rspObj["data"].ToObject<T>();
+            }
+            if (rspObj.ContainsKey("result"))
+            {
+                return rspObj["result"].ToObject<T>();
+            }
+            return default;
         }
 
         public class TopResult
         {
             public int code { get; set; }
             public string msg { get; set; }
-            public JToken result { get; set; }
         }
 
         public static DateTime TimeStampToDateTime(string timestamp)
