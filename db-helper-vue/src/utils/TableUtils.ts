@@ -59,7 +59,21 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
     const value = row[column.name];
 
     if (value == null || value === '') {
-      values += 'null';
+      if (column.null_able) {
+        values += 'null';
+      }
+      else if (TypeIsDate(column.type)) {
+        values += `'${moment().format('YYYY-MM-DD HH:mm:ss')}'`;
+      }
+      else if (TypeIsNumber(column.type) || TypeIsLong(column.type) || TypeIsDecimal(column.type)) {
+        values += `0`;
+      }
+      else if (TypeIsString(column.type)) {
+        values += `''`;
+      }
+      else {
+        throw new Error(`column ${column.name} type ${column.type} cannot be null`);
+      }
     }
     else if (TypeIsDate(column.type)) {
       if (moment(value).isValid()) {
