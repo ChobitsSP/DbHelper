@@ -46,6 +46,10 @@ export function TypeIsJs(type: string) {
   return ["string", "number", "boolean", "Date"].some(t => StringEqualsIgnoreCase(t, type));
 }
 
+function getEscape(value: string) {
+  return value.replace(/'/g, "''");
+}
+
 export function BuildInsertSql(tableName: string, columns: IColumn[], row: Record<string, string>) {
   let sql = `insert into ${tableName} (`;
   let values = "values (";
@@ -84,7 +88,7 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
       }
     }
     else if (TypeIsString(column.type)) {
-      values += `'${value}'`;
+      values += `'${getEscape(value)}'`;
     } else {
       values += value;
     }
