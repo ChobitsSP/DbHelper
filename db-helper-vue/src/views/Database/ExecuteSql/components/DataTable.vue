@@ -17,6 +17,9 @@
                    @change="changeNameFilter(option)"></vxe-input>
       </div>
     </template>
+    <template #expand_content="{ row }">
+      <ObjectView :value="row"></ObjectView>
+    </template>
   </vxe-grid>
 </template>
 
@@ -26,8 +29,12 @@
   import { useClipboard } from '@vueuse/core';
 
   import filterBy from '@/filters/filterBy';
+  import ObjectView from './ObjectView.vue';
 
   export default defineComponent({
+    components: {
+      ObjectView,
+    },
     props: {
       data: Array,
       loading: {
@@ -84,6 +91,11 @@
               type: 'seq',
               width: 60,
             },
+            {
+              type: 'expand',
+              width: 80,
+              slots: { content: 'expand_content' },
+            },
             ...columns,
           ];
         }
@@ -103,6 +115,7 @@
       function onCellDbClick({ cell }) {
         const span = cell.querySelector('.vxe-cell--label span');
         const range = document.createRange();
+        if (!span || !range) return;
         range.selectNodeContents(span);
         const selection = window.getSelection();
         selection.removeAllRanges();
