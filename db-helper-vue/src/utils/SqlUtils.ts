@@ -37,6 +37,14 @@ export function ParseSql(sql: string, type: string) {
 
 export function GetLimitSql(sql: string, type: string, limit = 0) {
   if (limit <= 0) return sql;
+
+  if (type === 'Oracle.ManagedDataAccess.Client') {
+    return `SELECT * FROM (
+    SELECT subquery.*, ROWNUM rnum FROM (${sql}) subquery
+    WHERE ROWNUM <= ${limit}
+    )`;
+  }
+
   const parser = new Parser();
   const ast = parser.astify(sql, {
     database: getDatabase(type),
