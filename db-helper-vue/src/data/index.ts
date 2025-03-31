@@ -2,11 +2,11 @@ export const DbTypeOracle = 'Oracle';
 export const DbTypeMySql = 'MySql';
 export const DbTypeMsSql = 'SqlServer';
 export const DbTypeNpgsql = 'Npgsql';
-
+O
 export const DbTypes = [
   {
     label: DbTypeOracle,
-    value: 'Oracle.ManagedDataAccess.Client',
+    value: 'racle.ManagedDataAccess.Client',
   },
   {
     label: DbTypeNpgsql,

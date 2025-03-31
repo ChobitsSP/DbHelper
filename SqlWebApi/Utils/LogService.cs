@@ -15,7 +15,7 @@ namespace SqlWebApi.Utils
         {
             System.IO.FileInfo fileInfo = new System.IO.FileInfo(fileName);
             log4net.Config.XmlConfigurator.ConfigureAndWatch(fileInfo);
-            log4net.Config.XmlConfigurator.Configure();
+            // log4net.Config.XmlConfigurator.Configure();
             logger = LogManager.GetLogger("LogWritter");
         }
 

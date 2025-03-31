@@ -67,6 +67,8 @@ export function GetLimitSql(sql: string, type: string, limit = 0) {
     };
   } else if (type === 'System.Data.SqlClient') {
     ast['top'] = { value: limit };
+  } else if (type === 'Oracle.ManagedDataAccess.Client') {
+
   }
 
   return parser.sqlify(ast, {
