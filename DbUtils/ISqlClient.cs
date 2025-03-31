@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.SqlClient;
+using Newtonsoft.Json.Linq;
+using System;
 
 namespace DbUtilsCore
 {
@@ -16,6 +18,50 @@ namespace DbUtilsCore
         Task<T> QueryFirstAsync<T>(string sql, object param = null);
         Task ExecuteAsync(string sql, object param = null);
         IDbConnection GetDb();
+    }
+
+    public class ApiClient : ISqlClient
+    {
+        public string endpoint { get; set; }
+        public string secret { get; set; }
+
+        public Task ExecuteAsync(string sql, object param = null)
+        {
+            return TopUtils.PostJson<JToken>(this.endpoint, new
+            {
+                sql,
+                param,
+            }, this.secret);
+        }
+
+        public IDbConnection GetDb()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<T>> QueryAsync<T>(string sql, object param = null, int take = 0)
+        {
+            var result = await TopUtils.PostJson<JToken>(this.endpoint, new
+            {
+                sql,
+                param,
+                take,
+            }, this.secret);
+            if (result.Type == JTokenType.Array)
+            {
+                return result.ToObject<List<T>>();
+            }
+            else
+            {
+                return new List<T> { result.ToObject<T>() };
+            }
+        }
+
+        public async Task<T> QueryFirstAsync<T>(string sql, object param = null)
+        {
+            var list = await this.QueryAsync<T>(sql, param, 1);
+            return list.FirstOrDefault();
+        }
     }
 
     public abstract class BaseSqlClient : ISqlClient
