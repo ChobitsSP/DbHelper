@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace DbUtils
+namespace DbUtilsCore
 {
     public static class EfUtils
     {
@@ -20,9 +19,9 @@ namespace DbUtils
         /// 给文件添加注释
         /// </summary>
         /// <param name="filePath"></param>
-        public static void AddComments(IDbUtils db, string filePath)
+        public static async Task AddComments(IDbUtils db, string filePath)
         {
-            TableColumn[] cols;
+            List<TableColumn> cols;
 
             var alllines = File.ReadAllLines(filePath);
             // if (alllines.Any(t => t.Contains("/// <summary>"))) return;
@@ -30,9 +29,9 @@ namespace DbUtils
             try
             {
                 var tbName = Path.GetFileNameWithoutExtension(filePath);
-                cols = db.GetColumns(tbName).ToArray();
+                cols = await db.GetColumns(tbName);
             }
-            catch (Exception ex)
+            catch
             {
                 return;
             }

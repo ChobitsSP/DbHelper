@@ -1,24 +1,22 @@
 ﻿using Dapper;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using System;
 
-namespace DbUtils.Utils
+namespace DbUtilsCore.Utils
 {
     public class MsSqlUtils : IDbUtils
     {
-        protected string connstr { get; set; }
+        protected ISqlClient client { get; set; }
 
-        public MsSqlUtils(string connstr)
+        public MsSqlUtils(ISqlClient client)
         {
-            this.connstr = connstr;
+            this.client = client;
         }
 
-        public IEnumerable<TableColumn> GetColumns(string table)
+        public async Task<List<TableColumn>> GetColumns(string table)
         {
             table = DbHelper.SafeTableName(table);
 
@@ -51,40 +49,20 @@ SELECT
 
             sql1 += " order by d.name, a.id, a.colorder";
 
-            using (var db = new SqlConnection(connstr))
-            {
-                var result = db.Query<TableColumn>(sql1, new { table }).AsList();
-
-                //var list = result.Select(t => new TableColumn()
-                //{
-                //    id = t.ORDINAL_POSITION,
-                //    name = t.COLUMN_NAME,
-                //    null_able = t.IS_NULLABLE == "YES",
-                //    type = t.DATA_TYPE,
-                //    comments = "",
-                //}).ToArray();
-
-                return result;
-            }
+            var list = await client.QueryAsync<TableColumn>(sql1, new { table });
+            return list;
         }
 
-        public List<string> GetTableNames()
+        class TableNamesItem
         {
-            List<string> result;
+            public string name { get; set; }
+        }
 
+        public async Task<List<string>> GetTableNames()
+        {
             const string sql = "select name from sysobjects where xtype='u' order by name";
-
-            using (var db = new SqlConnection(connstr))
-            {
-                result = db.Query<string>(sql).AsList();
-            }
-
-            return result;
-        }
-
-        public IDbConnection GetDb()
-        {
-            return new SqlConnection(connstr);
+            var list = await client.QueryAsync<TableNamesItem>(sql);
+            return list.Select(t => t.name).ToList();
         }
 
         /// <summary>
@@ -93,7 +71,7 @@ SELECT
         /// <param name="table"></param>
         /// <param name="column"></param>
         /// <param name="comment"></param>
-        public void UpdateComment(string table, string column, string comment)
+        public async Task UpdateComment(string table, string column, string comment)
         {
             //            var sql = @"
             //EXEC sp_updateextendedproperty 
@@ -103,9 +81,9 @@ SELECT
             //@level2type = N'Column', @level2name = Yuur Column Name;
             //";
 
-            using (var db = new SqlConnection(connstr))
+            using (var db = client.GetDb())
             {
-                var hasDesc = false;
+                // var hasDesc = false;
 
                 var p = new DynamicParameters();
                 p.Add("@name", "MS_Description");
@@ -120,56 +98,31 @@ SELECT
 
                 try
                 {
-                    db.Execute("sys.sp_updateextendedproperty", p, commandType: CommandType.StoredProcedure);
+                    await db.ExecuteAsync("sys.sp_updateextendedproperty", p, commandType: CommandType.StoredProcedure);
                 }
                 catch
                 {
-                    db.Execute("sys.sp_addextendedproperty", p, commandType: CommandType.StoredProcedure);
+                    await db.ExecuteAsync("sys.sp_addextendedproperty", p, commandType: CommandType.StoredProcedure);
                 }
-
-                //if (!hasDesc)
-                //{
-                //    db.Execute("sys.sp_addextendedproperty", p, commandType: CommandType.StoredProcedure);
-                //}
-                //else
-                //{
-                //    db.Execute("sys.sp_updateextendedproperty", p, commandType: CommandType.StoredProcedure);
-                //}
             }
         }
 
-        public void TableDataAdd(string table, string[] columns, object data)
+        public Task TableDataAdd(string table, string[] columns, object data)
         {
             throw new NotImplementedException();
         }
 
-        public string SqlPager(string sql, int skip, int take)
+        public Task<List<T>> PagerList<T>(string sql, int skip, int take)
         {
-            return $"SELECT * FROM ({sql}) AS subquery ORDER BY (SELECT NULL) OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY";
-        }
-
-        public class RootObject
-        {
-            public string COLUMN_NAME { get; set; }
-            public int ORDINAL_POSITION { get; set; }
-            public string COLUMN_DEFAULT { get; set; }
-            public string IS_NULLABLE { get; set; }
-            public string DATA_TYPE { get; set; }
-            public ulong? CHARACTER_MAXIMUM_LENGTH { get; set; }
-            public object CHARACTER_OCTET_LENGTH { get; set; }
-            public int? NUMERIC_PRECISION { get; set; }
-            public object NUMERIC_PRECISION_RADIX { get; set; }
-            public int? NUMERIC_SCALE { get; set; }
-            public object DATETIME_PRECISION { get; set; }
-            public string CHARACTER_SET_CATALOG { get; set; }
-            public string CHARACTER_SET_SCHEMA { get; set; }
-            public string CHARACTER_SET_NAME { get; set; }
-            public string COLLATION_CATALOG { get; set; }
-            public string COLLATION_SCHEMA { get; set; }
-            public string COLLATION_NAME { get; set; }
-            public string DOMAIN_CATALOG { get; set; }
-            public string DOMAIN_SCHEMA { get; set; }
-            public string DOMAIN_NAME { get; set; }
+            if (take > 0)
+            {
+                var pagerSql = $"SELECT * FROM ({sql}) AS subquery ORDER BY (SELECT NULL) OFFSET {skip} ROWS FETCH NEXT {take} ROWS ONLY";
+                return client.QueryAsync<T>(pagerSql);
+            }
+            else
+            {
+                return client.QueryAsync<T>(sql);
+            }
         }
     }
 }

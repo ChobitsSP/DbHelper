@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DbUtils.Utils
+namespace DbUtilsCore.Utils
 {
     public class NpgUtils : IDbUtils
     {
-        protected string connstr { get; set; }
+        protected ISqlClient client { get; set; }
 
-        public NpgUtils(string connstr)
+        public NpgUtils(ISqlClient client)
         {
-            this.connstr = connstr;
+            this.client = client;
         }
 
         public class TableColumnsItem
@@ -28,7 +28,7 @@ namespace DbUtils.Utils
             public string NULLABLE { get; set; }
         }
 
-        public IEnumerable<TableColumn> GetColumns(string table)
+        public async Task<List<TableColumn>> GetColumns(string table)
         {
             string fields = @"
 t1.TABLE_NAME,
@@ -55,12 +55,7 @@ WHERE t1.table_schema = 'public'";
 
             sql = string.Format(sql, fields);
 
-            List<TableColumnsItem> list;
-
-            using (var db = new NpgsqlConnection(connstr))
-            {
-                list = db.Query<TableColumnsItem>(sql, new { table }).AsList();
-            }
+            var list = await client.QueryAsync<TableColumnsItem>(sql, new { table });
 
             var result = list.Select(t => new TableColumn()
             {
@@ -70,49 +65,41 @@ WHERE t1.table_schema = 'public'";
                 comments = t.COMMENTS,
                 null_able = t.NULLABLE == "YES",
                 type = t.DATA_TYPE,
-            });
+            }).ToList();
 
             return result;
         }
 
-        public List<string> GetTableNames()
+        public async Task<List<string>> GetTableNames()
         {
-            List<string> result;
-
             const string sql = "SELECT table_name FROM information_schema.tables where table_schema ='public' order by table_name";
-
-            using (var db = new NpgsqlConnection(connstr))
-            {
-                result = db.Query<string>(sql).AsList();
-            }
-
-            return result;
+            var list = await client.QueryAsync<string>(sql);
+            return list;
         }
 
-        public IDbConnection GetDb()
-        {
-            return new NpgsqlConnection(connstr);
-        }
-
-        public void UpdateComment(string table, string column, string comment)
+        public async Task UpdateComment(string table, string column, string comment)
         {
             // comment on column ecif_point_rule.add_growth is @comment;
             string sql = string.Format("comment on column {0}.{1} is '{2}'", table, column, comment);
-
-            using (var db = new NpgsqlConnection(connstr))
-            {
-                db.Execute(sql, new { comment });
-            }
+            await client.ExecuteAsync(sql);
         }
 
-        public void TableDataAdd(string table, string[] columns, object data)
+        public Task TableDataAdd(string table, string[] columns, object data)
         {
             throw new NotImplementedException();
         }
 
-        public string SqlPager(string sql, int skip, int take)
+        public Task<List<T>> PagerList<T>(string sql, int skip, int take)
         {
-            return $"SELECT * FROM ({sql}) AS subquery LIMIT {take} OFFSET {skip}";
+            if (take > 0)
+            {
+                var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {take} OFFSET {skip}";
+                return client.QueryAsync<T>(pagerSql);
+            }
+            else
+            {
+                return client.QueryAsync<T>(sql);
+            }
         }
     }
 }

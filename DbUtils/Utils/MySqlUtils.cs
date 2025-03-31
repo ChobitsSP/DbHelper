@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Dapper;
-using MySqlConnector;
+using System.Linq;
 
-namespace DbUtils.Utils
+namespace DbUtilsCore.Utils
 {
     public class MySqlUtils : IDbUtils
     {
-        protected string connstr { get; set; }
+        protected ISqlClient client { get; set; }
 
-        public MySqlUtils(string connstr)
+        public MySqlUtils(ISqlClient client)
         {
-            this.connstr = connstr;
+            this.client = client;
         }
 
         public class TableColumnsItem
@@ -27,13 +24,13 @@ namespace DbUtils.Utils
             public string IS_NULLABLE { get; set; }
             public string COLUMN_TYPE { get; set; }
             public string COLUMN_COMMENT { get; set; }
-            public ulong? CHARACTER_MAXIMUM_LENGTH { get; set; }
+            public long? CHARACTER_MAXIMUM_LENGTH { get; set; }
             public int? NUMERIC_PRECISION { get; set; }
             public int? NUMERIC_SCALE { get; set; }
             public string table_name { get; set; }
         }
 
-        public IEnumerable<TableColumn> GetColumns(string table)
+        public async Task<List<TableColumn>> GetColumns(string table)
         {
             var sql = @"SELECT
 table_name,
@@ -49,7 +46,7 @@ NUMERIC_SCALE,
 COLUMN_COMMENT
 FROM INFORMATION_SCHEMA.COLUMNS 
   WHERE 1=1
-and table_schema = ?table_schema";
+and table_schema = DATABASE()";
 
             if (!string.IsNullOrEmpty(table))
             {
@@ -58,14 +55,7 @@ and table_schema = ?table_schema";
 
             sql += " ORDER BY table_name, ORDINAL_POSITION;";
 
-            List<TableColumnsItem> list;
-
-            var builder = new MySqlConnectionStringBuilder(connstr);
-
-            using (var db = new MySqlConnection(connstr))
-            {
-                list = db.Query<TableColumnsItem>(sql, new { table, table_schema = builder.Database }).AsList();
-            }
+            var list = await client.QueryAsync<TableColumnsItem>(sql, new { table });
 
             var result = list.Select(t => new TableColumn()
             {
@@ -78,35 +68,24 @@ and table_schema = ?table_schema";
                 numeric_precision = t.NUMERIC_PRECISION,
                 numeric_scale = t.NUMERIC_SCALE,
                 table = t.table_name,
-            });
+            }).ToList();
 
             return result;
         }
 
-        public List<string> GetTableNames()
+        class TableNamesItem
         {
-            List<string> result;
+            public string table_name { get; set; }
+        }
 
-            var sb = new StringBuilder();
-
-            var config = new MySqlConnectionStringBuilder(this.connstr);
-
+        public async Task<List<string>> GetTableNames()
+        {
             const string sql = @"
 select table_name from information_schema.tables 
-where table_schema = ?table_schema
+where table_schema = DATABASE()
 and table_type='BASE TABLE';";
-
-            using (var db = new MySqlConnection(connstr))
-            {
-                result = db.Query<string>(sql, new { table_schema = config.Database }).AsList();
-            }
-
-            return result;
-        }
-
-        public IDbConnection GetDb()
-        {
-            return new MySqlConnection(connstr);
+            var list = await client.QueryAsync<TableNamesItem>(sql);
+            return list.Select(t => t.table_name).ToList();
         }
 
         class UpdateCommentResult
@@ -120,10 +99,8 @@ and table_type='BASE TABLE';";
         /// <param name="table"></param>
         /// <param name="column"></param>
         /// <param name="comment"></param>
-        public void UpdateComment(string table, string column, string comment)
+        public async Task UpdateComment(string table, string column, string comment)
         {
-            var config = new MySqlConnectionStringBuilder(this.connstr);
-
             var sql = @"
 SELECT 
 CONCAT('ALTER TABLE `',
@@ -145,38 +122,43 @@ CONCAT('ALTER TABLE `',
 FROM
     information_schema.columns
 WHERE
-    table_schema = ?table_schema
+    table_schema = DATABASE()
 and column_name = ?column_name
 and table_name = ?table_name
 ";
 
-            using (var db = new MySqlConnection(connstr))
+            var result = await client.QueryFirstAsync<UpdateCommentResult>(sql, new
             {
-                var result = db.Query<UpdateCommentResult>(sql, new { table_schema = config.Database, column_name = column, table_name = table }).FirstOrDefault();
-                if (result == null) return;
+                column_name = column,
+                table_name = table,
+            });
+            if (result == null) return;
 
-                var sql2 = result.script + " COMMENT ?comment";
-
-                db.Execute(sql2, new { comment });
-            }
+            var sql2 = result.script + " COMMENT ?comment";
+            await client.ExecuteAsync(sql2, new { comment });
         }
 
-        public void TableDataAdd(string table, string[] columns, object data)
+        public async Task TableDataAdd(string table, string[] columns, object data)
         {
             var str1 = string.Join(",", columns);
             var str2 = string.Join(",", columns.Select(t => "?" + t));
 
             var sql = string.Format(@"insert into {0} ({1}) values ({2})", table, str1, str2);
 
-            using (var db = new MySqlConnection(connstr))
-            {
-                db.Execute(sql, data);
-            }
+            await client.ExecuteAsync(sql, data);
         }
 
-        public string SqlPager(string sql, int skip, int take)
+        public Task<List<T>> PagerList<T>(string sql, int skip, int take)
         {
-            return $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
+            if (take > 0)
+            {
+                var pagerSql = $"SELECT * FROM ({sql}) AS subquery LIMIT {skip}, {take}";
+                return client.QueryAsync<T>(pagerSql);
+            }
+            else
+            {
+                return client.QueryAsync<T>(sql);
+            }
         }
     }
 }
