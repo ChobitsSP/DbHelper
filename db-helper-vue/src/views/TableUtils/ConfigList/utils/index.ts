@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Message, MessageBox } from 'element-ui';
 import moment from 'moment';
 import _ from 'lodash';
@@ -178,4 +178,25 @@ export function useSetup(props) {
     menuConfig,
     contextMenuClickEvent,
   };
+}
+
+export function getFrequentTags(strArray: string[], minOccurrences = 2): string[] {
+  // 使用 Map 替代对象来统计计数
+  const substringCount = new Map<string, number>();
+
+  // 优化后的子字符串提取和计数
+  for (const str of strArray) {
+    for (let i = 0; i < str.length - 1; i++) {
+      for (let j = i + 2; j <= str.length; j++) {
+        const substr = str.slice(i, j);
+        substringCount.set(substr, (substringCount.get(substr) || 0) + 1);
+      }
+    }
+  }
+
+  // 筛选并排序
+  return Array.from(substringCount.entries())
+    .filter(([, count]) => count >= minOccurrences)
+    .map(([substr]) => substr)
+    .sort((a, b) => b.length - a.length);
 }

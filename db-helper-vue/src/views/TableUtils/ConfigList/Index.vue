@@ -36,6 +36,8 @@
       <vxe-column field="name"
                   title="name"
                   drag-sort
+                  :filters="nameTags"
+                  :filter-method="nameFilter"
                   width="200">
         <template #default="{ row }">
           <span class="span-link"
@@ -76,14 +78,16 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref, nextTick } from 'vue';
+  import { defineComponent, ref, computed } from 'vue';
+  import _ from 'lodash';
+  import filterBy from '@/filters/filterBy';
 
   import ConfigEditDialog from '@/components/ConfigEditDialog.vue';
   import * as DbUtils from '@/utils/DbUtils';
   import XlsxUpload from "@/components/XlsxUpload.vue";
   import { DbTypes } from '@/data';
 
-  import { useSetup } from './utils/index';
+  import { useSetup, getFrequentTags } from './utils/index';
   import { useConfigData } from './utils/ConfigData';
 
   export default defineComponent({
@@ -118,6 +122,24 @@
         await refresh();
       }
 
+      const nameTags = computed(() => {
+        return getFrequentTags(tableData.value.map(t => t.name)).map(t => ({
+          label: t,
+          value: t,
+        }));
+      });
+
+      /**
+       * 数据筛选，只对 filters 有效，列的筛选方法，该方法的返回值用来决定该行是否显示
+       * @param param0 
+       */
+      function nameFilter({ value, option, cellValue, row, column }) {
+        if (option.value === '') {
+          return true;
+        }
+        return cellValue.includes(option.value);
+      }
+
       return {
         ...setup,
         ...setupConfigData,
@@ -128,6 +150,9 @@
         DbTypes,
         providerNameFormatter,
         rowDragendEvent,
+
+        nameTags,
+        nameFilter,
       };
     },
   });
