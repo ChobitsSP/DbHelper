@@ -87,7 +87,7 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
         values += `'${value}'`;
       }
     }
-    else if (TypeIsString(column.type)) {
+    else if (TypeIsString(column.type) && typeof value === 'string') {
       values += `'${getEscape(value)}'`;
     } else {
       values += value;
