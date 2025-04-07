@@ -22,16 +22,17 @@ function StringEqualsIgnoreCase(str1: string, str2: string) {
   return str1.toLowerCase() === str2.toLowerCase();
 }
 
-export function TypeIsDecimal(type: string) {
-  return ["decimal", "numeric", "money"].some(t => StringEqualsIgnoreCase(t, type));
-}
-
-export function TypeIsLong(type: string) {
-  return ['bigint'].some(t => StringEqualsIgnoreCase(t, type));
-}
-
 export function TypeIsNumber(type: string) {
-  return numberlist.some(t => StringEqualsIgnoreCase(t, type));
+  return [
+    "money",
+    "decimal",
+    "NUMBER",
+    "integer",
+    "smallint",
+    "int",
+    "numeric",
+    "bigint",
+  ].some(t => StringEqualsIgnoreCase(t, type));
 }
 
 export function TypeIsString(type: string) {
@@ -75,7 +76,7 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
       else if (TypeIsDate(column.type)) {
         values += `'${moment().format('YYYY-MM-DD HH:mm:ss')}'`;
       }
-      else if (TypeIsNumber(column.type) || TypeIsLong(column.type) || TypeIsDecimal(column.type)) {
+      else if (TypeIsNumber(column.type)) {
         values += `0`;
       }
       else if (TypeIsString(column.type)) {
