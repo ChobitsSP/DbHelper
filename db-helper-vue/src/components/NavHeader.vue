@@ -14,18 +14,26 @@
         <el-menu-item v-for="child in menu.children"
                       :index="child.url"
                       :key="child.name">
-          {{ child.name }}
+          <a class="menu-link"
+             :href="child.url">{{ child.name }}</a>
         </el-menu-item>
       </el-submenu>
       <el-menu-item v-else
                     :key="menu.name"
                     :index="menu.url">
-        {{ menu.name }}
+        <a class="menu-link"
+           :href="menu.url">{{ menu.name }}</a>
       </el-menu-item>
     </template>
-
   </el-menu>
 </template>
+
+<style lang="scss" scoped>
+  .menu-link {
+    color: #fff;
+    text-decoration: none;
+  }
+</style>
 
 <script lang="ts">
   import { defineComponent, computed } from 'vue';
@@ -42,29 +50,6 @@
     {
       name: 'Home',
       url: '/',
-    },
-    {
-      name: '文档',
-      hide: true,
-      children: [
-        {
-          name: 'Table',
-          children: [
-            {
-              name: 'bootstrap-table',
-              url: '//server3.hsort.com:8035/bootstrap-table.wenzhixin.net.cn/zh-cn/documentation/index.html',
-            },
-            {
-              name: 'bootstrap-table config',
-              url: '/BtTable/Dom2Config',
-            },
-            {
-              name: 'angular-ui',
-              url: '//server3.hsort.com:8082/angular-ui.github.io/bootstrap/index.html',
-            },
-          ],
-        },
-      ],
     },
     {
       name: 'Database',
@@ -85,6 +70,21 @@
         {
           name: 'ImportData',
           url: '/Database/ImportData',
+        },
+      ],
+    },
+    {
+      name: 'Docs',
+      hide: true,
+      children: [
+        {
+          name: 'element-ui',
+          children: [
+            {
+              name: 'element-ui',
+              url: 'https://element2.chobits.app',
+            },
+          ],
         },
       ],
     },
