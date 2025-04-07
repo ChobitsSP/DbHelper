@@ -46,8 +46,14 @@ export function TypeIsJs(type: string) {
   return ["string", "number", "boolean", "Date"].some(t => StringEqualsIgnoreCase(t, type));
 }
 
-function getEscape(value: string) {
-  return value.replace(/'/g, "''");
+/**
+ * SQL 字符串
+ * @param value - 要转义的字符串
+ * @param char - 用于转义的字符，默认为单引号
+ * @returns 转义后的字符串
+ */
+function getEscape(value: string, char = "'"): string {
+  return value.replace(new RegExp(char, 'g'), `${char}${char}`);
 }
 
 export function BuildInsertSql(tableName: string, columns: IColumn[], row: Record<string, string>) {
