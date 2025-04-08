@@ -83,6 +83,12 @@ namespace SqlApiCore.Controllers
             var chunkFiles = Directory.GetFiles(chunkFolder);
             using (var finalFileStream = new FileStream(finalFilePath, FileMode.Create))
             {
+                chunkFiles = chunkFiles.OrderBy(filePath =>
+                {
+                    var fileInfo = new FileInfo(filePath);
+                    return int.Parse(fileInfo.Name);
+                }).ToArray();
+
                 foreach (var chunkFile in chunkFiles)
                 {
                     using (var chunkFileStream = new FileStream(chunkFile, FileMode.Open))
