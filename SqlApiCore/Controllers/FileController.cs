@@ -17,6 +17,41 @@ namespace SqlApiCore.Controllers
             }
         }
 
+        public class ChunkCheckRequest
+        {
+            public string resumableIdentifier { get; set; }
+            public int resumableChunkNumber { get; set; }
+            public int resumableChunkSize { get; set; }
+            public int resumableCurrentChunkSize { get; set; }
+            public int resumableTotalSize { get; set; }
+            public int resumableTotalChunks { get; set; }
+            public string resumableType { get; set; }
+            public string resumableFilename { get; set; }
+            public string resumableRelativePath { get; set; }
+        }
+
+        [HttpGet("upload")]
+        public IActionResult UploadChunkCheck([FromQuery] ChunkCheckRequest req)
+        {
+            var chunkFolder = Path.Combine(_uploadFolder, req.resumableIdentifier);
+            var chunkPath = Path.Combine(chunkFolder, req.resumableChunkNumber.ToString());
+
+            if (System.IO.File.Exists(chunkPath))
+            {
+                var fileInfo = new FileInfo(chunkPath);
+                if (fileInfo.Length == req.resumableCurrentChunkSize)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return Conflict("Chunk size mismatch");
+                }
+            }
+
+            return NoContent();
+        }
+
         [HttpPost]
         [Route("upload")]
         public async Task<IActionResult> UploadChunk(IFormFile file, [FromForm] string resumableIdentifier, [FromForm] int resumableChunkNumber)
