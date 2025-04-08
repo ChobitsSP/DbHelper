@@ -27,4 +27,11 @@ export default [
       title: 'PasswordGenerator',
     },
   },
+  {
+    path: '/OtherUtils/FileUpload',
+    component: () => import('./FileUpload/index.vue'),
+    meta: {
+      title: 'FileUpload',
+    },
+  },
 ];

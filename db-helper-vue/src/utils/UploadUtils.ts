@@ -24,8 +24,12 @@ export async function ResumableUpload(dom: HTMLInputElement) {
       body: new URLSearchParams({ resumableIdentifier: file.uniqueIdentifier, fileName: file.fileName })
     }).then(response => response.json())
       .then(data => {
-        Message.success('File successfully uploaded and merged');
-        console.log('File successfully merged:', data);
+        if (data.code !== 0) {
+          Message.error(data.msg);
+        }
+        else {
+          Message.success('File successfully uploaded and merged');
+        }
       })
       .catch(error => console.error('Error merging file:', error));
   });
