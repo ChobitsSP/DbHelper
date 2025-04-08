@@ -7,7 +7,10 @@ export async function ResumableUpload(dom: HTMLInputElement) {
   const r = new Resumable({
     target: '/api/File/upload',
     query: function (file) {
-      return { resumableIdentifier: file.uniqueIdentifier, resumableChunkNumber: file.currentChunk + 1 };
+      return {
+        resumableIdentifier: file.uniqueIdentifier,
+        // resumableChunkNumber: file.currentChunk + 1,
+      };
     }
   });
 
