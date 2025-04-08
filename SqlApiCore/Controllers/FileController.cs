@@ -19,7 +19,7 @@ namespace SqlApiCore.Controllers
 
         [HttpPost]
         [Route("upload")]
-        public async Task<ItemResult> UploadChunk(IFormFile file, [FromForm] string resumableIdentifier, [FromForm] int resumableChunkNumber)
+        public async Task<IActionResult> UploadChunk(IFormFile file, [FromForm] string resumableIdentifier, [FromForm] int resumableChunkNumber)
         {
             var chunkFolder = Path.Combine(_uploadFolder, resumableIdentifier);
 
@@ -35,7 +35,7 @@ namespace SqlApiCore.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            return new ItemResult();
+            return Ok();
         }
 
         [HttpPost]
