@@ -22,6 +22,14 @@ function StringEqualsIgnoreCase(str1: string, str2: string) {
   return str1.toLowerCase() === str2.toLowerCase();
 }
 
+export function TypeIsDecimal(type: string) {
+  return ["decimal", "numeric", "money"].some(t => StringEqualsIgnoreCase(t, type));
+}
+
+export function TypeIsLong(type: string) {
+  return ['bigint'].some(t => StringEqualsIgnoreCase(t, type));
+}
+
 export function TypeIsNumber(type: string) {
   return [
     "money",
