@@ -6,12 +6,6 @@ export async function ResumableUpload(dom: HTMLInputElement) {
   // await LoadScript('static/lib/resumable.min.js');
   const r = new Resumable({
     target: '/api/File/upload',
-    query: function (file) {
-      return {
-        resumableIdentifier: file.uniqueIdentifier,
-        // resumableChunkNumber: file.currentChunk + 1,
-      };
-    }
   });
 
   r.assignBrowse(dom, false);
