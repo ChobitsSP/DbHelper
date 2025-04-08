@@ -13,11 +13,11 @@ COPY ["SqlApiCore/SqlApiCore.csproj", "SqlApiCore/"]
 RUN dotnet restore "./SqlApiCore/SqlApiCore.csproj"
 COPY . .
 WORKDIR "/src/SqlApiCore"
-RUN dotnet build "./SqlApiCore.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./SqlApiCore.csproj" -c $BUILD_CONFIGURATION -o /app/build -f net8.0
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./SqlApiCore.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./SqlApiCore.csproj" -c $BUILD_CONFIGURATION -o /app/publish -f net8.0 /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
