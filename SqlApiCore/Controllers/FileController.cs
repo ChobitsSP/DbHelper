@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SqlApiCore.Models;
 
 namespace SqlApiCore.Controllers
@@ -8,31 +7,58 @@ namespace SqlApiCore.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        public class UploadRequest
+        private readonly string _uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+
+        public FileController()
         {
-            public IFormFile File { get; set; }
+            if (!Directory.Exists(_uploadFolder))
+            {
+                Directory.CreateDirectory(_uploadFolder);
+            }
         }
 
-        [HttpPost("Upload")]
-        public async Task<ItemResult> Upload(UploadRequest req)
+        [HttpPost]
+        [Route("upload")]
+        public async Task<ItemResult> UploadChunk(IFormFile file, [FromForm] string resumableIdentifier, [FromForm] int resumableChunkNumber)
         {
-            var file = req.File;
-            if (file == null || file.Length == 0)
+            var chunkFolder = Path.Combine(_uploadFolder, resumableIdentifier);
+
+            if (!Directory.Exists(chunkFolder))
             {
-                return new ItemResult("File is empty");
+                Directory.CreateDirectory(chunkFolder);
             }
 
-            var saveDir = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
-            if (!Directory.Exists(saveDir))
-            {
-                Directory.CreateDirectory(saveDir);
-            }
+            var chunkPath = Path.Combine(chunkFolder, resumableChunkNumber.ToString());
 
-            var filePath = Path.Combine(saveDir, file.FileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(chunkPath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
+
+            return new ItemResult();
+        }
+
+        [HttpPost]
+        [Route("merge")]
+        public ItemResult MergeChunks([FromForm] string resumableIdentifier, [FromForm] string fileName)
+        {
+            var chunkFolder = Path.Combine(_uploadFolder, resumableIdentifier);
+            var finalFilePath = Path.Combine(_uploadFolder, fileName);
+
+            var chunkFiles = Directory.GetFiles(chunkFolder);
+            using (var finalFileStream = new FileStream(finalFilePath, FileMode.Create))
+            {
+                foreach (var chunkFile in chunkFiles)
+                {
+                    using (var chunkFileStream = new FileStream(chunkFile, FileMode.Open))
+                    {
+                        chunkFileStream.CopyTo(finalFileStream);
+                    }
+                }
+            }
+
+            Directory.Delete(chunkFolder, true);
+
             return new ItemResult();
         }
     }
