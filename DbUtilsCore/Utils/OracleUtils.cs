@@ -14,6 +14,7 @@ namespace DbUtilsCore.Utils
         public class TableColumnsItem
         {
             public int COLUMN_ID { get; set; }
+            public string TABLE_NAME { get; set; }
             public string COLUMN_NAME { get; set; }
             public string COMMENTS { get; set; }
             public string DATA_TYPE { get; set; }
@@ -22,15 +23,32 @@ namespace DbUtilsCore.Utils
 
         public async Task<List<TableColumn>> GetColumns(string table)
         {
-            table = DbHelper.SafeTableName(table);
+            var filter = string.Empty;
 
-            string fields = "t2.COLUMN_ID,t1.COLUMN_NAME,COMMENTS,t2.DATA_TYPE,t2.DATA_LENGTH,t2.NULLABLE";
+            if (!string.IsNullOrEmpty(table))
+            {
+                filter = " and t1.table_name = :table";
+            }
 
-            string sql = "select {0} from user_col_comments t1 inner join user_tab_columns t2 on t1.COLUMN_NAME = t2.COLUMN_NAME and t1.TABLE_NAME = t2.TABLE_NAME where t1.table_name = '{1}' order by column_id asc";
+            var sql = $@"
+select
+  t1.TABLE_NAME,
+  t2.COLUMN_ID,
+  t1.COLUMN_NAME,
+  COMMENTS,
+  t2.DATA_TYPE,
+  t2.DATA_LENGTH,
+  t2.NULLABLE
+from
+  user_col_comments t1
+  inner join user_tab_columns t2 on t1.COLUMN_NAME = t2.COLUMN_NAME
+  and t1.TABLE_NAME = t2.TABLE_NAME
+where 1=1
+  {filter}
+order by t1.TABLE_NAME, column_id
+";
 
-            sql = string.Format(sql, fields, table);
-
-            var list = await client.QueryAsync<TableColumnsItem>(sql);
+            var list = await client.QueryAsync<TableColumnsItem>(sql, new { table });
 
             var result = list.Select(t => new TableColumn()
             {
@@ -39,6 +57,7 @@ namespace DbUtilsCore.Utils
                 comments = t.COMMENTS,
                 null_able = t.NULLABLE == "Y",
                 type = t.DATA_TYPE,
+                table = t.TABLE_NAME,
             }).ToList();
 
             return result;
