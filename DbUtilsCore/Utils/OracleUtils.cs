@@ -29,8 +29,8 @@ namespace DbUtilsCore.Utils
 
             if (!string.IsNullOrEmpty(table))
             {
-                filter = " and t1.table_name = :table";
-                paramList.Add("table", table);
+                filter = " and t1.table_name = :table_name";
+                paramList.Add("table_name", table);
             }
 
             var sql = $@"
