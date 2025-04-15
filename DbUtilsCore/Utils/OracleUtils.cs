@@ -25,9 +25,12 @@ namespace DbUtilsCore.Utils
         {
             var filter = string.Empty;
 
+            var paramList = new Dictionary<string, object>();
+
             if (!string.IsNullOrEmpty(table))
             {
                 filter = " and t1.table_name = :table";
+                paramList.Add("table", table);
             }
 
             var sql = $@"
@@ -48,7 +51,7 @@ where 1=1
 order by t1.TABLE_NAME, column_id
 ";
 
-            var list = await client.QueryAsync<TableColumnsItem>(sql, new { table });
+            var list = await client.QueryAsync<TableColumnsItem>(sql, paramList);
 
             var result = list.Select(t => new TableColumn()
             {
