@@ -14,6 +14,13 @@ export default [
     },
   },
   {
+    path: '/OtherUtils/Csv2NetClass',
+    component: () => import('./Csv2NetClass/Index.vue'),
+    meta: {
+      title: 'Convert Csv to C# Class',
+    },
+  },
+  {
     path: '/OtherUtils/Jar2Pom',
     component: () => import('./Jar2Pom/index.vue'),
     meta: {

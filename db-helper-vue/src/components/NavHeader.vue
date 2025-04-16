@@ -99,6 +99,10 @@
           name: 'Csv2Json',
           url: '/OtherUtils/Csv2Json',
         },
+        {
+          name: 'Csv2NetClass',
+          url: '/OtherUtils/Csv2NetClass',
+        },
         // {
         //   name: '动态生成',
         //   url: '/Table/TableInfoDoc',
