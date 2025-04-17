@@ -13,6 +13,7 @@ import GolangCurd from "./GolangCurd";
 import GolangStruct from "./GolangStruct";
 import GinApi from "./GinApi";
 // import Ef6 from "./Ef6";
+import EfClass from "./EfClass";
 import EfCore from "./EfCore";
 import JavaModel from "./JavaModel";
 import JavaMybatis from "./JavaMybatis";
@@ -31,6 +32,7 @@ export const AllFunctions: FunctionItem[] = [
   { label: 'VxeTable', value: VxeTable },
   { label: 'ElementForm', value: ElementForm },
   { label: 'EfCore', value: EfCore },
+  { label: 'EfClass', value: EfClass },
   { label: 'AlertColumn', value: AlertColumn },
   // { label: 'Ef6', value: Ef6 },
   { label: 'ElementRule', value: ElementRule },
