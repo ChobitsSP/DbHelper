@@ -30,6 +30,8 @@
         <el-button type="success"
                    :loading="loading"
                    @click="exportData">导出</el-button>
+        <el-button type="success"
+                   @click="exportCurrentData">导出当前结果</el-button>
       </el-form-item>
     </el-form>
     <div class="sql-input-wrapper">
@@ -144,6 +146,12 @@
         }
       }
 
+      function exportCurrentData() {
+        const allList = tableData.value;
+        const fileName = `export-${moment().format('YYYYMMDD-HHmmss')}`;
+        exportToExcel(allList, fileName);
+      }
+
       async function getAllList() {
         const config = await DbUtils.DbConfigGet(queryConfig.value.dbId);
         const sql = getSql();
@@ -199,6 +207,8 @@
         onDbChange,
 
         queryWords,
+
+        exportCurrentData,
       };
     },
   });
