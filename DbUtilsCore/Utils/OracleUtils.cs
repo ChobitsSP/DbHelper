@@ -19,6 +19,9 @@ namespace DbUtilsCore.Utils
             public string COMMENTS { get; set; }
             public string DATA_TYPE { get; set; }
             public string NULLABLE { get; set; }
+            public long? DATA_LENGTH { get; set; }
+            public int? DATA_PRECISION { get; set; }
+            public int? DATA_SCALE { get; set; }
         }
 
         public async Task<List<TableColumn>> GetColumns(string table)
@@ -41,6 +44,8 @@ select
   COMMENTS,
   t2.DATA_TYPE,
   t2.DATA_LENGTH,
+  t2.DATA_PRECISION,
+  t2.DATA_SCALE,
   t2.NULLABLE
 from
   user_col_comments t1
@@ -61,6 +66,9 @@ order by t1.TABLE_NAME, column_id
                 null_able = t.NULLABLE == "Y",
                 type = t.DATA_TYPE,
                 table = t.TABLE_NAME,
+                character_maximum_length = t.DATA_LENGTH,
+                numeric_precision = t.DATA_PRECISION,
+                numeric_scale = t.DATA_SCALE,
             }).ToList();
 
             return result;
