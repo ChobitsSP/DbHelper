@@ -24,6 +24,8 @@ namespace SqlWebApi
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
         }
     }
 
