@@ -65,6 +65,61 @@ function getEscape(value: string, char = "'"): string {
   return value.replace(new RegExp(char, 'g'), `${char}${char}`);
 }
 
+export function BuildUpdateSql(tableName: string, columns: IColumn[], row: Record<string, string>, keyFields: string[] = []) {
+  const setSql = Object.keys(row).filter(key => !keyFields.includes(key)).map(field => {
+    const column = columns.find(t => t.name === field);
+    const value = GetSqlValue(column, row[field]);
+    return `${field} = ${value}`
+  }).join(',');
+
+  const whereSql = keyFields.map(field => {
+    const column = columns.find(t => t.name === field);
+    const value = GetSqlValue(column, row[field]);
+    return `${field} = ${value}`
+  }).join(' and ');
+
+  let sql = `update ${tableName} set ${setSql} where ${whereSql}`;
+  return sql;
+}
+
+function GetSqlValue(column: IColumn, value: string) {
+  if (value == null || value === '') {
+    if (column.null_able) {
+      return 'null';
+    }
+    else if (TypeIsDate(column.type)) {
+      return `'${moment().format('YYYY-MM-DD HH:mm:ss')}'`;
+    }
+    else if (TypeIsNumber(column.type)) {
+      return `0`;
+    }
+    else if (TypeIsString(column.type)) {
+      return `''`;
+    }
+    else {
+      throw new Error(`column ${column.name} type ${column.type} cannot be null`);
+    }
+  }
+  else if (TypeIsDate(column.type)) {
+    if (moment(value).isValid()) {
+      return `'${moment(value).format('YYYY-MM-DD HH:mm:ss')}'`;
+    }
+    else {
+      return `'${value}'`;
+    }
+  }
+  else if (TypeIsString(column.type)) {
+    if (typeof value === 'string') {
+      return `'${getEscape(value)}'`;
+    }
+    else {
+      return `'${value}'`;
+    }
+  } else {
+    return value;
+  }
+}
+
 export function BuildInsertSql(tableName: string, columns: IColumn[], row: Record<string, string>) {
   let sql = `insert into ${tableName} (`;
   let values = "values (";
@@ -74,44 +129,7 @@ export function BuildInsertSql(tableName: string, columns: IColumn[], row: Recor
       values += ", ";
     }
     sql += column.name;
-
-    const value = row[column.name];
-
-    if (value == null || value === '') {
-      if (column.null_able) {
-        values += 'null';
-      }
-      else if (TypeIsDate(column.type)) {
-        values += `'${moment().format('YYYY-MM-DD HH:mm:ss')}'`;
-      }
-      else if (TypeIsNumber(column.type)) {
-        values += `0`;
-      }
-      else if (TypeIsString(column.type)) {
-        values += `''`;
-      }
-      else {
-        throw new Error(`column ${column.name} type ${column.type} cannot be null`);
-      }
-    }
-    else if (TypeIsDate(column.type)) {
-      if (moment(value).isValid()) {
-        values += `'${moment(value).format('YYYY-MM-DD HH:mm:ss')}'`;
-      }
-      else {
-        values += `'${value}'`;
-      }
-    }
-    else if (TypeIsString(column.type)) {
-      if (typeof value === 'string') {
-        values += `'${getEscape(value)}'`;
-      }
-      else {
-        values += `'${value}'`;
-      }
-    } else {
-      values += value;
-    }
+    values += GetSqlValue(column, row[column.name]);
   });
   sql += ") ";
   values += ")";
