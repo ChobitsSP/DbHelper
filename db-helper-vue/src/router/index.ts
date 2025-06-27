@@ -21,6 +21,15 @@ const routes = [
       ...Database,
     ],
   },
+  {
+    name: '404',
+    path: '*',
+    component: () => import('../views/Error.vue'),
+    meta: {
+      title: '404',
+      noauth: true,
+    },
+  },
 ];
 
 const router = new Router({
