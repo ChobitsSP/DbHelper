@@ -1,0 +1,44 @@
+{
+  "name": "db-helper",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vite",
+    "dev": "vue-cli-service serve --open",
+    "build": "vue-cli-service build --no-module"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.18.4",
+    "@codemirror/lang-sql": "^6.8.0",
+    "@vueuse/core": "^11.3.0",
+    "bignumber.js": "^9.3.0",
+    "clipboard": "^1.7.1",
+    "codemirror": "^6.0.1",
+    "element-plus": "^2.10.5",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
+    "jszip": "^3.10.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
+    "node-sql-parser": "^5.3.6",
+    "qrious": "^4.0.2",
+    "qs": "^6.6.0",
+    "resumablejs": "^1.1.0",
+    "rxjs": "^5.4.2",
+    "scriptjs": "^2.5.9",
+    "vue": "^3.5.18",
+    "vue-router": "^4.5.1",
+    "vxe-pc-ui": "^4.8.4",
+    "vxe-table": "^4.15.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.121",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-typescript": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "typescript": "^5.6.2",
+    "vite": "^7.0.6"
+  }
+}
