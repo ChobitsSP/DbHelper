@@ -16,21 +16,10 @@ module.exports = {
     },
   },
   chainWebpack: (config) => {
-    // // 移除 prefetch 插件
-    // config.plugins.delete('prefetch-index');
-
-    // // 移除 preload 插件
-    // config.plugins.delete('preload-index');
-
-    // // 修改 html-webpack-plugin 配置 禁用defer="defer"
-    // config.plugin('html-index').tap((args) => {
-    //   args[0].inject = 'body';
-    //   args[0].scriptLoading = 'blocking';
-    //   return args;
-    // });
-
     config.externals({
-      // jquery: 'jQuery',
+      vue: 'Vue',
+      VueRouter: 'VueRouter',
+      'element-plus': 'ElementPlus',
     });
   },
 };

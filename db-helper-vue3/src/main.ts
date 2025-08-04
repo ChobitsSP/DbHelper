@@ -5,7 +5,7 @@ import App from './App.vue';
 const app = createApp(App);
 
 import ElementPlus from 'element-plus';
-import 'element-plus/dist/index.css';
+// import 'element-plus/dist/index.css';
 app.use(ElementPlus);
 
 import VxeUIAll from 'vxe-pc-ui';
