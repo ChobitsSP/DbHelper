@@ -9,6 +9,9 @@ import ElementPlus from 'element-plus';
 // import 'element-plus/dist/index.css';
 app.use(ElementPlus);
 
+import { InitVxeConfig } from './utils/VxeTableConfig';
+InitVxeConfig();
+
 import VxeUIAll from 'vxe-pc-ui';
 import 'vxe-pc-ui/es/style.css';
 app.use(VxeUIAll);
