@@ -8,6 +8,12 @@ const router = createRouter({
   routes: [
     ...Common,
     ...Test,
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../views/Common/NotFound/index.vue'),
+      props: true,
+    },
   ],
 });
 

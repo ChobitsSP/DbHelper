@@ -17,6 +17,19 @@ import VxeUITable from 'vxe-table';
 import 'vxe-table/es/style.css';
 app.use(VxeUITable);
 
+import * as filters from './filters';
+app.config.globalProperties.$filters = {};
+// register global utility filters.
+Object.keys(filters).forEach((key) => {
+  app.config.globalProperties.$filters[key] = filters[key];
+});
+
+import * as directives from './directives';
+// register global directives.
+Object.keys(directives).forEach((key) => {
+  app.directive(key, directives[key]);
+});
+
 app.mount('#app');
 
 (function () {

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-button type="primary">Primary
-      Button</el-button>
+    <h1>Page Not Found</h1>
+    <p>The page you are looking for does not exist.</p>
   </div>
 </template>
 
@@ -9,6 +9,5 @@
   import { defineComponent } from 'vue';
 
   export default defineComponent({
-    name: 'App',
   });
 </script>
