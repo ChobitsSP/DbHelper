@@ -1,11 +1,16 @@
 <template>
-  <router-view />
+  <div>
+    <el-button type="primary">Primary
+      Button</el-button>
+  </div>
 </template>
 
 <script lang="ts">
   import { defineComponent } from 'vue';
 
   export default defineComponent({
-    name: 'App',
+    setup() {
+      return {};
+    },
   });
 </script>
