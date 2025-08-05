@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vite",
     "dev": "vue-cli-service serve --open",
-    "build": "vue-cli-service build --no-module"
+    "build": "vue-cli-service build --no-module",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.4",
