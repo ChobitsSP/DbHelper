@@ -8,7 +8,7 @@ interface Config {
 
 interface MyProps<T> {
   init: (config?: T) => Promise<any>;
-  submit?: (config: Config & T, type: number) => Promise<any>;
+  submit?: (config: Config & T, data?: any) => Promise<any>;
   onClose?: (config: Config & T) => Promise<any>;
   maxWidth?: number;
   /** rxemit 使用的事件名称 */
@@ -37,8 +37,8 @@ export function useDialog<T = {}>(props: MyProps<T>) {
     return props.init(config);
   }
 
-  function onSubmit(type?: number) { // type 模板操作类型1 保存 2另存
-    return props.submit && props.submit(_config, type);
+  function onSubmit(data?: any) {
+    return props.submit && props.submit(_config, data);
   }
 
   function onClose() {
