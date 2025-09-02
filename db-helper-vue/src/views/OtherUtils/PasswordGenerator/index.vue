@@ -20,6 +20,10 @@
         <el-checkbox v-model="includeSymbols">包含符号</el-checkbox>
       </el-form-item>
       <el-form-item>
+        <el-checkbox v-model="excludeSimilar">忽略近形字 (如 0/O, 1/l/I
+          等)</el-checkbox>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary"
                    @click="generatePassword">生成密码</el-button>
       </el-form-item>
@@ -43,30 +47,55 @@
       const includeLower = ref(true)
       const includeNumbers = ref(true)
       const includeSymbols = ref(false)
+      const excludeSimilar = ref(true) // 新增选项
       const generatedPassword = ref('')
 
       const generatePassword = () => {
-        let charset = ''
-        if (includeUpper.value) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        if (includeLower.value) charset += 'abcdefghijklmnopqrstuvwxyz'
-        if (includeNumbers.value) charset += '0123456789'
-        if (includeSymbols.value) charset += '!@#$%^&*()_+~`|}{[]:;?><,./-='
+        let pools: string[] = []
+        if (includeUpper.value) pools.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        if (includeLower.value) pools.push('abcdefghijklmnopqrstuvwxyz')
+        if (includeNumbers.value) pools.push('0123456789')
+        if (includeSymbols.value) pools.push('!@#$%^&*()_+~`|}{[]:;?><,./-=')
 
-        if (charset === '') {
+        if (pools.length === 0) {
           ElMessage.warning('请至少选择一种字符类型')
           return
         }
 
-        let password = ''
-        for (let i = 0; i < passwordLength.value; i++) {
-          const randomIndex = Math.floor(Math.random() * charset.length)
-          password += charset[randomIndex]
+        // 需要排除的近形字
+        const similarChars = 'O0o1lI|5S8B9gq'
+        if (excludeSimilar.value) {
+          pools = pools.map(pool =>
+            pool.split('').filter(c => !similarChars.includes(c)).join('')
+          )
         }
 
-        generatedPassword.value = password
+        // 确保每类至少包含一个
+        let passwordArray: string[] = []
+        for (const pool of pools) {
+          if (pool.length > 0) {
+            const randIndex = Math.floor(Math.random() * pool.length)
+            passwordArray.push(pool[randIndex])
+          }
+        }
+
+        // 剩余长度补齐
+        const allChars = pools.join('')
+        for (let i = passwordArray.length; i < passwordLength.value; i++) {
+          const randIndex = Math.floor(Math.random() * allChars.length)
+          passwordArray.push(allChars[randIndex])
+        }
+
+        // 打乱顺序（防止前几个总是固定类别）
+        for (let i = passwordArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+            ;[passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]]
+        }
+
+        generatedPassword.value = passwordArray.join('')
       }
 
-      generatePassword();
+      generatePassword()
 
       return {
         passwordLength,
@@ -74,6 +103,7 @@
         includeLower,
         includeNumbers,
         includeSymbols,
+        excludeSimilar,
         generatedPassword,
         generatePassword
       }
