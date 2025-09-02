@@ -28,7 +28,8 @@
                    @click="generatePassword">生成密码</el-button>
       </el-form-item>
       <el-form-item label="生成的密码:">
-        <el-input v-model="generatedPassword"
+        <el-input :value="generatedPassword"
+                  v-copy="generatedPassword"
                   readonly></el-input>
       </el-form-item>
     </el-form>
