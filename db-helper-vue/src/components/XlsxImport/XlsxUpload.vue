@@ -16,13 +16,13 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, nextTick, ref } from 'vue';
-  import { LoadRows } from '@/mixins/XlsxImport';
+  import { defineComponent, nextTick, ref, PropType } from 'vue';
+  import { LoadRows, ColumnInfo } from '@/mixins/XlsxImport';
 
   export default defineComponent({
     props: {
       columns: {
-        type: Array,
+        type: Array as PropType<ColumnInfo[]>,
         default: () => [],
       },
       loading: {
@@ -35,7 +35,7 @@
       },
       label: {
         type: String,
-        default: '上传Excel',
+        default: 'upload',
       },
     },
     emits: ['input'],
@@ -46,7 +46,7 @@
         const target = event.target as HTMLInputElement;
         if (target.files && target.files.length > 0) {
           const file = target.files[0];
-          const rows = await LoadRows(file, props.columns as any[]);
+          const rows = await LoadRows(file, props.columns);
           context.emit('input', rows);
           await nextTick();
           target.value = '';
